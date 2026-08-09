@@ -8,12 +8,19 @@ public struct TrackLabel: Codable, Equatable, Identifiable {
     public var name: String
     public var colorKey: String
     public var archived: Bool
+    /// Daily minimum goal in minutes (nil = no goal). Stored data without
+    /// the field decodes as nil — pre-goal labels stay valid.
+    public var goalMinutes: Int?
 
-    public init(id: String, name: String, colorKey: String, archived: Bool = false) {
+    public init(
+        id: String, name: String, colorKey: String,
+        archived: Bool = false, goalMinutes: Int? = nil
+    ) {
         self.id = id
         self.name = name
         self.colorKey = colorKey
         self.archived = archived
+        self.goalMinutes = goalMinutes
     }
 
     /// The six labels the app ships with (stable slug ids — entries
