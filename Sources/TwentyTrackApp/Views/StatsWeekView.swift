@@ -43,7 +43,8 @@ struct StatsWeekView: View {
                 LabelTotalsList(
                     totals: totals,
                     untrackedSeconds: untrackedWeekSeconds,
-                    labelsByID: labelsByID
+                    labelsByID: labelsByID,
+                    goalMultiplier: 7
                 )
                 fazitList
             }
@@ -65,8 +66,8 @@ struct StatsWeekView: View {
             )
             StatTile(title: "Fokus-Quote", value: StatsFigures.focusShare(totals))
             StatTile(
-                title: "Getrackt",
-                value: TimeFormatting.wording(seconds: StatsMath.trackedSeconds(allEntries))
+                title: "Ablenkung",
+                value: TimeFormatting.wording(seconds: totals["no-focus"] ?? 0)
             )
         }
     }

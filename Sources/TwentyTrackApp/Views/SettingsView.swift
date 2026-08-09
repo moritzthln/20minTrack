@@ -81,6 +81,7 @@ struct SettingsView: View {
                 }
             ))
             .textFieldStyle(.roundedBorder)
+            goalMenu(for: label)
             Button {
                 preferences.archiveLabel(id: label.id)
                 load()
@@ -115,6 +116,34 @@ struct SettingsView: View {
         .menuStyle(.borderlessButton)
         .menuIndicator(.hidden)
         .fixedSize()
+    }
+
+    /// Daily minimum goal per label, 30-minute steps.
+    private func goalMenu(for label: TrackLabel) -> some View {
+        Menu {
+            Button("Kein Ziel") {
+                var updated = label
+                updated.goalMinutes = nil
+                persist(updated)
+            }
+            ForEach(Array(stride(from: 30, through: 600, by: 30)), id: \.self) { minutes in
+                Button(TimeFormatting.wording(seconds: TimeInterval(minutes * 60))) {
+                    var updated = label
+                    updated.goalMinutes = minutes
+                    persist(updated)
+                }
+            }
+        } label: {
+            Text(label.goalMinutes.map {
+                "Ziel \(TimeFormatting.wording(seconds: TimeInterval($0 * 60)))"
+            } ?? "Ziel –")
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
+        .help("Tägliches Mindestziel — Statistik zeigt ✓ bei Erreichen (Woche: Ziel × 7)")
     }
 
     private func addLabel() {

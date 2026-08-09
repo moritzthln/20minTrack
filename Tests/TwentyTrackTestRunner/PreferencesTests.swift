@@ -59,6 +59,18 @@ func runPreferencesLabelTests() {
         }
     }
 
+    test("label goals roundtrip and pre-goal data decodes") {
+        try withPreferences { prefs in
+            var label = prefs.labels[0]
+            label.goalMinutes = 270
+            prefs.updateLabel(label)
+            try expectEqual(prefs.labels[0].goalMinutes, 270)
+        }
+        let old = #"[{"id":"x","name":"X","colorKey":"green","archived":false}]"#
+        let decoded = try JSONDecoder().decode([TrackLabel].self, from: Data(old.utf8))
+        try expectNil(decoded[0].goalMinutes)
+    }
+
     test("archiveLabel hides from active but stays resolvable") {
         try withPreferences { prefs in
             prefs.archiveLabel(id: "fun")

@@ -80,11 +80,14 @@ enum StatsFigures {
 }
 
 /// Per-label duration list with proportional color bars behind each row,
-/// sorted by duration, plus an untracked line.
+/// sorted by duration, plus an untracked line. Labels with a daily goal
+/// show "· Ziel …" and a green check once reached (`goalMultiplier` = 7
+/// in the week view).
 struct LabelTotalsList: View {
     let totals: [String: TimeInterval]
     let untrackedSeconds: TimeInterval
     let labelsByID: [String: TrackLabel]
+    var goalMultiplier = 1
 
     private var rows: [(label: TrackLabel?, id: String, seconds: TimeInterval)] {
         totals
@@ -108,7 +111,8 @@ struct LabelTotalsList: View {
                     name: row.label?.name ?? "Unbekannt",
                     seconds: row.seconds,
                     share: true,
-                    secondaryName: false
+                    secondaryName: false,
+                    goalMinutes: row.label?.goalMinutes
                 )
             }
             if untrackedSeconds > 0 {
@@ -117,7 +121,8 @@ struct LabelTotalsList: View {
                     name: "Nicht erfasst",
                     seconds: untrackedSeconds,
                     share: false,
-                    secondaryName: true
+                    secondaryName: true,
+                    goalMinutes: nil
                 )
             }
             if rows.isEmpty && untrackedSeconds <= 0 {
@@ -130,15 +135,21 @@ struct LabelTotalsList: View {
 
     private func barRow(
         color: Color, name: String, seconds: TimeInterval,
-        share: Bool, secondaryName: Bool
+        share: Bool, secondaryName: Bool, goalMinutes: Int?
     ) -> some View {
-        HStack(spacing: 8) {
+        let goalTarget = goalMinutes.map { TimeInterval($0 * 60 * goalMultiplier) }
+        return HStack(spacing: 8) {
             Circle().fill(color).frame(width: 9, height: 9)
             Text(name)
                 .lineLimit(1)
                 .foregroundStyle(secondaryName ? Color.secondary : Color.primary)
             Spacer()
-            durationText(seconds, share: share)
+            durationText(seconds, share: share, goalTarget: goalTarget)
+            if let goalTarget, seconds >= goalTarget {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(Color.green)
+                    .font(.caption)
+            }
         }
         .font(.callout)
         .padding(.vertical, 3)
@@ -152,10 +163,15 @@ struct LabelTotalsList: View {
         }
     }
 
-    private func durationText(_ seconds: TimeInterval, share: Bool) -> some View {
+    private func durationText(
+        _ seconds: TimeInterval, share: Bool, goalTarget: TimeInterval?
+    ) -> some View {
         var text = TimeFormatting.wording(seconds: seconds)
         if share, let percent = StatsMath.percentLabel(seconds: seconds, total: trackedTotal) {
             text += " · \(percent)"
+        }
+        if let goalTarget {
+            text += " · Ziel \(TimeFormatting.wording(seconds: goalTarget))"
         }
         return Text(text)
             .foregroundStyle(.secondary)

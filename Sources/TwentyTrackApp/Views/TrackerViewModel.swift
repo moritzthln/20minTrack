@@ -186,6 +186,13 @@ final class TrackerViewModel: ObservableObject {
         finishChange()
     }
 
+    /// Live-save path for the always-visible popover notes field: writes
+    /// straight through without a reload (no cursor fights while typing);
+    /// `todayFazit` catches up on the next reload.
+    func saveFazitLive(_ text: String) {
+        dayStore.setFazit(text, onDay: Date())
+    }
+
     func togglePause() {
         preferences.trackingPaused.toggle()
         NotificationCenter.default.post(name: .trackerSettingsChanged, object: nil)

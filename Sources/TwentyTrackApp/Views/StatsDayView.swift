@@ -124,8 +124,8 @@ struct StatsDayView: View {
             )
             StatTile(title: "Fokus-Quote", value: StatsFigures.focusShare(totals))
             StatTile(
-                title: "Getrackt",
-                value: TimeFormatting.wording(seconds: StatsMath.trackedSeconds(entries))
+                title: "Ablenkung",
+                value: TimeFormatting.wording(seconds: totals["no-focus"] ?? 0)
             )
         }
     }

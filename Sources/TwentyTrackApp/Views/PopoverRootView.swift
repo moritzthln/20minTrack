@@ -12,20 +12,39 @@ struct PopoverRootView: View {
     private enum Mode: Equatable {
         case auto
         case edit(slot: DateInterval, existing: Entry?)
-        case fazit
     }
 
     @State private var mode: Mode = .auto
+    @State private var fazitDraft = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             content
             todaySection
+            fazitSection
             Divider()
             footer
         }
         .padding(16)
         .frame(width: 540)
+    }
+
+    /// Always-visible daily notes, saved live on every keystroke.
+    private var fazitSection: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Tagesfazit / Notizen")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            TextEditor(text: $fazitDraft)
+                .font(.callout)
+                .frame(height: 54)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.primary.opacity(0.12), lineWidth: 1)
+                )
+                .onChange(of: fazitDraft) { model.saveFazitLive($0) }
+        }
+        .onAppear { fazitDraft = model.todayFazit }
     }
 
     @ViewBuilder
@@ -70,15 +89,6 @@ struct PopoverRootView: View {
                     if let existing {
                         model.deleteEntry(id: existing.id, day: slot.start)
                     }
-                    mode = .auto
-                },
-                onCancel: { mode = .auto }
-            )
-        case .fazit:
-            FazitView(
-                initial: model.todayFazit,
-                onSave: { text in
-                    model.setTodayFazit(text)
                     mode = .auto
                 },
                 onCancel: { mode = .auto }
@@ -129,7 +139,6 @@ struct PopoverRootView: View {
 
     private var footer: some View {
         HStack(spacing: 14) {
-            footerButton("square.and.pencil", help: "Tagesfazit") { mode = .fazit }
             footerButton("chart.bar", help: "Statistik", action: onOpenStats)
             Button {
                 model.toggleMuted()

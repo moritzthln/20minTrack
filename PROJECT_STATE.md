@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v11 merged — always-visible live-saving Fazit/notes field in the popover (pencil mode removed), per-label daily goals (30-min steps, settings menu) with "Ziel …" + green check in stats (week = goal x 7), Getrackt tile replaced by Ablenkung
+
 - 2026-08-09: v10 merged — stats overhaul: stat tiles (Fokus, Fokus-Quote, Getrackt; week adds Avg Fokus/Tag over active days), proportional color bars behind label rows, clickable chronological entry list with notes (day), week Fazit list
 
 - 2026-08-09: v9 merged — one-click reuse of the last note in the check-in; new "Halbfokus" label (yellow, Cmd-2) between Fokus and Ablenkung (written to defaults, ids stable)
