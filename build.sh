@@ -2,6 +2,12 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# Pin the Command Line Tools toolchain (same SDK as the Timer app):
+# the Xcode 26 SDK displaces the NSPopover below the status item.
+if [ -d /Library/Developer/CommandLineTools ]; then
+  export DEVELOPER_DIR=/Library/Developer/CommandLineTools
+fi
+
 echo "▸ Building release binary…"
 swift build -c release 2>&1 | tail -2
 

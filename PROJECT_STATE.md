@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: build.sh pins the CLT toolchain (DEVELOPER_DIR) — the Xcode 26 SDK displaces the status-item popover ~2 cm; Timer comparison confirmed identical code, so the SDK is the variable; realign workaround removed again
+
 - 2026-08-09: Xcode license accepted by user — project verified green on the Xcode toolchain (Swift 6.3.3, build + 78 tests + release install); custom test runner kept deliberately
 
 - 2026-08-09: v20 merged — drag-to-select on day strips (click = slot/gap as before, drag = exact span into the editor), live selection highlight + hover time label; note: Xcode was installed on the machine mid-session, builds ran via DEVELOPER_DIR=CommandLineTools until the user accepts the Xcode license
