@@ -34,6 +34,13 @@ struct LabelBarChart: View {
                         .allowsHitTesting(false)
                 }
             }
+            // Fixed height: without it the ZStack shrinks to the tallest
+            // bar and the goal line's offset escapes into the header
+            // whenever every bar is below the goal.
+            .frame(
+                height: barAreaHeight + (showValues ? 16 : 0),
+                alignment: .bottom
+            )
             HStack(spacing: values.count > 12 ? 2 : 8) {
                 ForEach(Array(values.enumerated()), id: \.offset) { index, item in
                     Text(axisLabel(item.date, index))
