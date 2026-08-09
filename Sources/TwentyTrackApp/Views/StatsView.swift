@@ -79,15 +79,77 @@ enum StatsFigures {
     }
 }
 
+/// Progress bars for every label carrying a daily goal: done / target,
+/// remaining time or a green "erreicht" (`goalMultiplier` = 7 in the week
+/// view). Renders nothing when no active label has a goal.
+struct GoalsSection: View {
+    let labels: [TrackLabel]
+    let totals: [String: TimeInterval]
+    var goalMultiplier = 1
+
+    private var goalLabels: [TrackLabel] {
+        labels.filter { $0.goalMinutes != nil && !$0.archived }
+    }
+
+    var body: some View {
+        if !goalLabels.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Ziele")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                ForEach(goalLabels) { label in
+                    goalRow(label)
+                }
+            }
+        }
+    }
+
+    private func goalRow(_ label: TrackLabel) -> some View {
+        let color = LabelPalette.color(for: label.colorKey)
+        let target = TimeInterval((label.goalMinutes ?? 0) * 60 * goalMultiplier)
+        let done = totals[label.id] ?? 0
+        let reached = done >= target
+        return VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 8) {
+                Circle().fill(color).frame(width: 9, height: 9)
+                Text(label.name).lineLimit(1)
+                Spacer()
+                Text("\(TimeFormatting.wording(seconds: done)) / \(TimeFormatting.wording(seconds: target))")
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+                if reached {
+                    HStack(spacing: 3) {
+                        Image(systemName: "checkmark.circle.fill")
+                        Text("erreicht")
+                    }
+                    .foregroundStyle(Color.green)
+                    .font(.caption)
+                } else {
+                    Text("noch \(TimeFormatting.wording(seconds: target - done))")
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
+                }
+            }
+            .font(.callout)
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.primary.opacity(0.08))
+                    Capsule()
+                        .fill(reached ? Color.green : color)
+                        .frame(width: max(3, geo.size.width * min(done / max(target, 1), 1)))
+                }
+            }
+            .frame(height: 7)
+        }
+    }
+}
+
 /// Per-label duration list with proportional color bars behind each row,
-/// sorted by duration, plus an untracked line. Labels with a daily goal
-/// show "· Ziel …" and a green check once reached (`goalMultiplier` = 7
-/// in the week view).
+/// sorted by duration, plus an untracked line.
 struct LabelTotalsList: View {
     let totals: [String: TimeInterval]
     let untrackedSeconds: TimeInterval
     let labelsByID: [String: TrackLabel]
-    var goalMultiplier = 1
 
     private var rows: [(label: TrackLabel?, id: String, seconds: TimeInterval)] {
         totals
@@ -111,8 +173,7 @@ struct LabelTotalsList: View {
                     name: row.label?.name ?? "Unbekannt",
                     seconds: row.seconds,
                     share: true,
-                    secondaryName: false,
-                    goalMinutes: row.label?.goalMinutes
+                    secondaryName: false
                 )
             }
             if untrackedSeconds > 0 {
@@ -121,8 +182,7 @@ struct LabelTotalsList: View {
                     name: "Nicht erfasst",
                     seconds: untrackedSeconds,
                     share: false,
-                    secondaryName: true,
-                    goalMinutes: nil
+                    secondaryName: true
                 )
             }
             if rows.isEmpty && untrackedSeconds <= 0 {
@@ -135,21 +195,15 @@ struct LabelTotalsList: View {
 
     private func barRow(
         color: Color, name: String, seconds: TimeInterval,
-        share: Bool, secondaryName: Bool, goalMinutes: Int?
+        share: Bool, secondaryName: Bool
     ) -> some View {
-        let goalTarget = goalMinutes.map { TimeInterval($0 * 60 * goalMultiplier) }
-        return HStack(spacing: 8) {
+        HStack(spacing: 8) {
             Circle().fill(color).frame(width: 9, height: 9)
             Text(name)
                 .lineLimit(1)
                 .foregroundStyle(secondaryName ? Color.secondary : Color.primary)
             Spacer()
-            durationText(seconds, share: share, goalTarget: goalTarget)
-            if let goalTarget, seconds >= goalTarget {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.green)
-                    .font(.caption)
-            }
+            durationText(seconds, share: share)
         }
         .font(.callout)
         .padding(.vertical, 3)
@@ -163,15 +217,10 @@ struct LabelTotalsList: View {
         }
     }
 
-    private func durationText(
-        _ seconds: TimeInterval, share: Bool, goalTarget: TimeInterval?
-    ) -> some View {
+    private func durationText(_ seconds: TimeInterval, share: Bool) -> some View {
         var text = TimeFormatting.wording(seconds: seconds)
         if share, let percent = StatsMath.percentLabel(seconds: seconds, total: trackedTotal) {
             text += " · \(percent)"
-        }
-        if let goalTarget {
-            text += " · Ziel \(TimeFormatting.wording(seconds: goalTarget))"
         }
         return Text(text)
             .foregroundStyle(.secondary)

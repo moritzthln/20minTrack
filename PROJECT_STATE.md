@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v14 merged — dedicated "Ziele" section with progress bars (done/target, remaining, green reached; week x7) replacing inline goal text; package.sh builds a shareable ZIP (app + German install guide, xattr note for ad-hoc signing)
+
 - 2026-08-09: v12+v13 merged — goal input reworked: dropdown → plain minutes field → hours + minutes fields (empty = no goal, live-saved)
 
 - 2026-08-09: v11 merged — always-visible live-saving Fazit/notes field in the popover (pencil mode removed), per-label daily goals (30-min steps, settings menu) with "Ziel …" + green check in stats (week = goal x 7), Getrackt tile replaced by Ablenkung
