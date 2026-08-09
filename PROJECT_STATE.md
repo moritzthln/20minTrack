@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: Toolchain cleanup verified for real — mixed .build artifacts (Swift 6.3 objects + CLT linker) broke test.sh with missing coro-stub symbols and a pipe swallowed the failure once; .build wiped, everything rebuilt from scratch on CLT: 78 tests green, release installed
+
 - 2026-08-09: Single toolchain standard — test.sh added with the same CLT pin as build.sh, CLAUDE.md commands updated (Xcode 26 installed but not used for this project until the SDK popover bug is fixed)
 
 - 2026-08-09: build.sh pins the CLT toolchain (DEVELOPER_DIR) — the Xcode 26 SDK displaces the status-item popover ~2 cm; Timer comparison confirmed identical code, so the SDK is the variable; realign workaround removed again

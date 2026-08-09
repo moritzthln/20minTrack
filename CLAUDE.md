@@ -51,6 +51,8 @@ fixes that, remove the pin in `build.sh` + `test.sh` together.
 - Build + install release app: `./build.sh` → `/Applications/20minTrack.app`
 - Share package: `./package.sh` → `dist/20minTrack.zip`
 - Note: `xcrun … PlatformPath` lines in build output are harmless CLT noise.
+- After any accidental Xcode-toolchain build: `rm -rf .build` — mixed
+  toolchain artifacts break the CLT link (missing coro stub symbols).
 
 ## Architecture
 
