@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v9 merged — one-click reuse of the last note in the check-in; new "Halbfokus" label (yellow, Cmd-2) between Fokus and Ablenkung (written to defaults, ids stable)
+
 - 2026-08-09: v8 merged — today-balance line in check-in, evening Fazit window (default 21:30, once/day, respects mute+Focus), Timer-focus label suggestion (>=50 % overlap preselects Fokus Arbeit), browser tab domains as own usage segments (site:<domain>, 10 s poll, no double counting; needs per-browser automation permission)
 
 - 2026-08-09: v7 merged — menu bar is one bare number circle (countdown minutes; filled = open blocks; no text title)

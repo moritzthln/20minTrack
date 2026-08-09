@@ -11,6 +11,7 @@ struct CheckinView: View {
     let labels: [TrackLabel]
     let calendar: Calendar
     let todayLine: String?
+    let lastText: String?
     let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
     let onSave: (_ from: Date, _ labelID: String, _ text: String) -> Void
@@ -57,6 +58,21 @@ struct CheckinView: View {
                 .textFieldStyle(.roundedBorder)
                 .focused($textFocused)
                 .onSubmit { save(labelID: selectedLabelID) }
+            if let lastText, text.isEmpty {
+                Button {
+                    text = lastText
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "arrow.uturn.backward")
+                        Text("„\(lastText)“")
+                            .lineLimit(1)
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .help("Letzten Text übernehmen")
+            }
             LabelChipsView(
                 labels: labels,
                 selectedID: $selectedLabelID,

@@ -97,6 +97,15 @@ final class TrackerViewModel: ObservableObject {
         return usageStore.totals(in: range)
     }
 
+    /// The most recent non-empty note (yesterday + today) — offered as a
+    /// one-click "continue the same thing" fill in the check-in.
+    var lastEntryText: String? {
+        entriesYesterdayAndToday(now: Date())
+            .sorted { $0.end < $1.end }
+            .last { !$0.text.isEmpty }?
+            .text
+    }
+
     /// "Heute: Fokus Arbeit 2 h 40 · Ablenkung 40 min · …" — top four.
     var todaySummaryLine: String? {
         let totals = StatsMath.totals(todayEntries)
