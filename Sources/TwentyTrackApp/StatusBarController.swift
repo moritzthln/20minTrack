@@ -16,6 +16,7 @@ final class StatusBarController: NSObject {
     private let calendar: Calendar
     private let viewModel: TrackerViewModel
     private let scheduler: BoundaryScheduler
+    private let usageTracker: AppUsageTracker
     private let statsController: StatsWindowController
     private let settingsController: SettingsWindowController
 
@@ -25,19 +26,30 @@ final class StatusBarController: NSObject {
     /// when wake events re-fire the boundary hook.
     private var lastPromptedEnd: Date?
 
-    init(preferences: Preferences, dayStore: DayStore, calendar: Calendar) {
+    init(
+        preferences: Preferences, dayStore: DayStore,
+        usageStore: AppUsageStore, usageTracker: AppUsageTracker, calendar: Calendar
+    ) {
         self.preferences = preferences
         self.calendar = calendar
+        self.usageTracker = usageTracker
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         self.viewModel = TrackerViewModel(
-            preferences: preferences, dayStore: dayStore, calendar: calendar
+            preferences: preferences, dayStore: dayStore,
+            usageStore: usageStore, calendar: calendar
         )
         self.scheduler = BoundaryScheduler(calendar: calendar)
         self.statsController = StatsWindowController(
-            dayStore: dayStore, preferences: preferences, calendar: calendar
+            dayStore: dayStore, preferences: preferences, calendar: calendar,
+            usageFor: { [weak usageTracker] range in
+                usageTracker?.flush()
+                return usageStore.totals(in: range)
+            }
         )
         self.settingsController = SettingsWindowController(preferences: preferences)
         super.init()
+
+        viewModel.flushUsage = { [weak usageTracker] in usageTracker?.flush() }
 
         if let button = statusItem.button {
             button.target = self
@@ -80,6 +92,11 @@ final class StatusBarController: NSObject {
         if let settingsObserver {
             NotificationCenter.default.removeObserver(settingsObserver)
         }
+    }
+
+    /// Called from applicationWillTerminate: closes the open usage segment.
+    func prepareForTermination() {
+        usageTracker.prepareForTermination()
     }
 
     // MARK: - Check-in loop

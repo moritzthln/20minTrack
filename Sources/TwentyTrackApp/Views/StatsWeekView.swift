@@ -15,7 +15,10 @@ struct StatsWeekView: View {
     }
 
     private var labelsByID: [String: TrackLabel] {
-        Dictionary(uniqueKeysWithValues: preferences.labels.map { ($0.id, $0) })
+        Dictionary(
+            preferences.labels.map { ($0.id, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
     }
 
     private var isCurrentWeek: Bool {

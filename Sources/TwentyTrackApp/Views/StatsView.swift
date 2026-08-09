@@ -7,6 +7,7 @@ struct StatsView: View {
     let dayStore: DayStore
     let preferences: Preferences
     let calendar: Calendar
+    let usageFor: (DateInterval) -> [AppUsageTotal]
 
     private enum Tab: String, CaseIterable {
         case day = "Tag"
@@ -27,7 +28,10 @@ struct StatsView: View {
             .frame(maxWidth: 220)
             switch tab {
             case .day:
-                StatsDayView(dayStore: dayStore, preferences: preferences, calendar: calendar)
+                StatsDayView(
+                    dayStore: dayStore, preferences: preferences,
+                    calendar: calendar, usageFor: usageFor
+                )
             case .week:
                 StatsWeekView(dayStore: dayStore, preferences: preferences, calendar: calendar)
             }

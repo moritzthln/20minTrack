@@ -1,19 +1,31 @@
 import SwiftUI
 import TwentyCore
 
-/// One day: navigation, strip with hour marks, per-label totals, Fazit.
+/// One day: navigation, clickable strip (backfill editor), per-label
+/// totals, Fazit.
 struct StatsDayView: View {
     let dayStore: DayStore
     let preferences: Preferences
     let calendar: Calendar
+    let usageFor: (DateInterval) -> [AppUsageTotal]
+
+    private struct EditTarget: Identifiable {
+        let id = UUID()
+        let slot: DateInterval
+        let existing: Entry?
+    }
 
     @State private var day = Date()
     @State private var entries: [Entry] = []
     @State private var fazitDraft = ""
     @State private var savedFazit = ""
+    @State private var editTarget: EditTarget?
 
     private var labelsByID: [String: TrackLabel] {
-        Dictionary(uniqueKeysWithValues: preferences.labels.map { ($0.id, $0) })
+        Dictionary(
+            preferences.labels.map { ($0.id, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
     }
 
     private var isToday: Bool {
@@ -37,6 +49,44 @@ struct StatsDayView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear(perform: load)
+        .sheet(item: $editTarget) { target in
+            SlotEditView(
+                day: day,
+                slot: target.slot,
+                existing: target.existing,
+                labels: preferences.activeLabels,
+                calendar: calendar,
+                usageFor: usageFor,
+                onSave: { start, end, labelID, text in
+                    if let existing = target.existing {
+                        dayStore.remove(id: existing.id, onDay: day)
+                    }
+                    dayStore.insert(start: start, end: end, labelID: labelID, text: text)
+                    finishEdit()
+                },
+                onDelete: {
+                    if let existing = target.existing {
+                        dayStore.remove(id: existing.id, onDay: day)
+                    }
+                    finishEdit()
+                },
+                onCancel: { editTarget = nil }
+            )
+            .padding(16)
+            .frame(width: 320)
+        }
+    }
+
+    private func finishEdit() {
+        editTarget = nil
+        load()
+        // Today edited here → menu bar / popover must reload (anchor advance).
+        NotificationCenter.default.post(name: .trackerSettingsChanged, object: nil)
+    }
+
+    private func entry(at slot: DateInterval) -> Entry? {
+        let mid = slot.start.addingTimeInterval(slot.duration / 2)
+        return entries.first { $0.start <= mid && mid < $0.end }
     }
 
     private var header: some View {
@@ -72,7 +122,10 @@ struct StatsDayView: View {
                 labelsByID: labelsByID,
                 calendar: calendar,
                 now: isToday ? Date() : nil,
-                height: 26
+                height: 26,
+                onTapSlot: { slot in
+                    editTarget = EditTarget(slot: slot, existing: entry(at: slot))
+                }
             )
             HStack {
                 ForEach(["0", "6", "12", "18", "24"], id: \.self) { mark in

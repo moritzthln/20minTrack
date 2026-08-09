@@ -19,11 +19,17 @@ Baut die Release-App und installiert nach `/Applications/20minTrack.app`.
 
 - **Menüleiste**: `20⃝ 7 m` = nächster Check-in in 7 min; gefülltes
   Symbol + Zahl = offene Blöcke warten. Klick öffnet das Popover.
-- **Check-in**: Notiz tippen, Label wählen, Enter. „Überspringen" lässt
-  den Zeitraum leer. „Von"-Auswahl, wenn mehrere Blöcke offen sind.
-- **Tagesstrip**: Klick auf einen Block → eintragen/bearbeiten/löschen.
+- **Check-in**: Label wählen, optional Notiz, Enter. Darunter steht,
+  welche Apps im Zeitraum benutzt wurden („Benutzt: Chrome 12 min …").
+  „Überspringen" lässt den Zeitraum leer. „Von"-Auswahl, wenn mehrere
+  Blöcke offen sind.
+- **Tagesstrip**: Klick auf einen Block → eintragen/bearbeiten/löschen —
+  nur Label nötig, Text optional.
 - **Fazit**: Stift-Symbol im Popover (oder in der Statistik pro Tag).
-- **Statistik**: Balken-Symbol — Tag- und Wochenansicht.
+- **Statistik**: Balken-Symbol — Tag- und Wochenansicht. Der Tagesstrip
+  ist auch hier klickbar: damit lassen sich vergangene Tage nachtragen
+  (z. B. Schlaf), inkl. „bis 24:00". Nachgetragene Blöcke fragt der
+  Check-in nicht mehr ab.
 - **Einstellungen**: Labels (Name, Farbe, archivieren, neue), Ton,
   Auto-Popover, Pause, Login-Start.
 

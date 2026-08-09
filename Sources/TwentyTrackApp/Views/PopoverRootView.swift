@@ -36,6 +36,7 @@ struct PopoverRootView: View {
                     pending: pending,
                     labels: model.activeLabels,
                     calendar: model.calendar,
+                    usageFor: { model.usageTotals(in: $0) },
                     onSave: { from, labelID, text in
                         model.saveCheckin(from: from, labelID: labelID, text: text)
                     },
@@ -51,6 +52,7 @@ struct PopoverRootView: View {
                 existing: existing,
                 labels: model.activeLabels,
                 calendar: model.calendar,
+                usageFor: { model.usageTotals(in: $0) },
                 onSave: { start, end, labelID, text in
                     model.replaceEntry(
                         originalID: existing?.id, day: slot.start,

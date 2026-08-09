@@ -2,11 +2,13 @@ import Foundation
 import SwiftUI
 import TwentyCore
 
-/// Observable state over Preferences + DayStore for the popover views.
-/// All writes go through here so the status item can refresh afterwards.
+/// Observable state over Preferences + DayStore (+ AppUsageStore) for the
+/// popover views. All writes go through here so the status item can
+/// refresh afterwards.
 final class TrackerViewModel: ObservableObject {
     let preferences: Preferences
     let dayStore: DayStore
+    let usageStore: AppUsageStore
     let calendar: Calendar
 
     @Published private(set) var pending: DateInterval?
@@ -17,10 +19,16 @@ final class TrackerViewModel: ObservableObject {
 
     /// Called after every data change — the status bar hooks its refresh here.
     var onDataChanged: (() -> Void)?
+    /// Writes the recorder's open segment before usage queries.
+    var flushUsage: (() -> Void)?
 
-    init(preferences: Preferences, dayStore: DayStore, calendar: Calendar) {
+    init(
+        preferences: Preferences, dayStore: DayStore,
+        usageStore: AppUsageStore, calendar: Calendar
+    ) {
         self.preferences = preferences
         self.dayStore = dayStore
+        self.usageStore = usageStore
         self.calendar = calendar
         ensureAnchor()
         reload()
@@ -36,6 +44,7 @@ final class TrackerViewModel: ObservableObject {
 
     func reload(now: Date = Date()) {
         ensureAnchor(now: now)
+        normalizeAnchor(now: now)
         if let range = CheckinRules.pendingRange(
             anchor: preferences.checkinAnchor, now: now, calendar: calendar
         ) {
@@ -46,8 +55,44 @@ final class TrackerViewModel: ObservableObject {
         todayEntries = dayStore.entries(onDay: now)
         let all = preferences.labels
         activeLabels = all.filter { !$0.archived }
-        labelsByID = Dictionary(uniqueKeysWithValues: all.map { ($0.id, $0) })
+        labelsByID = Dictionary(
+            all.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first }
+        )
         todayFazit = dayStore.fazit(onDay: now) ?? ""
+    }
+
+    /// Clamps a future anchor (clock set back) and advances it over blocks
+    /// that manual edits already covered — backfilled time never re-prompts.
+    private func normalizeAnchor(now: Date) {
+        guard let anchor = preferences.checkinAnchor else { return }
+        let floorNow = SlotGrid.floorBoundary(now, calendar: calendar)
+        let todayStart = calendar.startOfDay(for: now)
+        let lookbackFloor = calendar.date(byAdding: .day, value: -1, to: todayStart) ?? todayStart
+        var adjusted = max(min(anchor, floorNow), min(lookbackFloor, floorNow))
+        adjusted = AnchorAdvance.advanced(
+            from: adjusted, upTo: floorNow,
+            entries: entriesYesterdayAndToday(now: now), calendar: calendar
+        )
+        if adjusted != anchor {
+            preferences.checkinAnchor = adjusted
+        }
+    }
+
+    private func entriesYesterdayAndToday(now: Date) -> [Entry] {
+        var result = dayStore.entries(onDay: now)
+        if let yesterday = calendar.date(byAdding: .day, value: -1, to: now) {
+            result += dayStore.entries(onDay: yesterday)
+        }
+        return result
+    }
+
+    // MARK: - App usage
+
+    /// Per-app time within `range` (memory aid line for the check-in and
+    /// the slot editor).
+    func usageTotals(in range: DateInterval) -> [AppUsageTotal] {
+        flushUsage?()
+        return usageStore.totals(in: range)
     }
 
     // MARK: - Check-in
@@ -56,7 +101,8 @@ final class TrackerViewModel: ObservableObject {
     /// edits inside the window survive — then settles the whole window.
     func saveCheckin(from: Date, labelID: String, text: String) {
         guard let pending else { return }
-        let start = max(from, pending.start)
+        let start = min(max(from, pending.start), pending.end)
+        guard start < pending.end else { return }
         let range = DateInterval(start: start, end: pending.end)
         let blocked = entriesAround(range).map { DateInterval(start: $0.start, end: $0.end) }
         for gap in GapFill.gaps(in: range, blocked: blocked) {
@@ -112,6 +158,7 @@ final class TrackerViewModel: ObservableObject {
 
     func togglePause() {
         preferences.trackingPaused.toggle()
+        NotificationCenter.default.post(name: .trackerSettingsChanged, object: nil)
         finishChange()
     }
 

@@ -7,11 +7,16 @@ final class StatsWindowController {
     private let dayStore: DayStore
     private let preferences: Preferences
     private let calendar: Calendar
+    private let usageFor: (DateInterval) -> [AppUsageTotal]
 
-    init(dayStore: DayStore, preferences: Preferences, calendar: Calendar) {
+    init(
+        dayStore: DayStore, preferences: Preferences, calendar: Calendar,
+        usageFor: @escaping (DateInterval) -> [AppUsageTotal]
+    ) {
         self.dayStore = dayStore
         self.preferences = preferences
         self.calendar = calendar
+        self.usageFor = usageFor
     }
 
     func show() {
@@ -31,7 +36,8 @@ final class StatsWindowController {
         }
         // Fresh view on every open so the numbers reload (Timer pattern).
         window?.contentView = NSHostingView(rootView: StatsView(
-            dayStore: dayStore, preferences: preferences, calendar: calendar
+            dayStore: dayStore, preferences: preferences,
+            calendar: calendar, usageFor: usageFor
         ))
         NSApp.activate(ignoringOtherApps: true)
         window?.makeKeyAndOrderFront(nil)
