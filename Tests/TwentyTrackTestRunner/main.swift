@@ -1,0 +1,10 @@
+// Test entry point — every suite registers its tests via a run function.
+runSlotGridTests()
+runCheckinRulesTests()
+runDayStoreTests()
+runGapFillTests()
+runPreferencesTests()
+runStatsMathTests()
+runTimeFormattingTests()
+runMenuBarPresentationTests()
+finishTestRun()
