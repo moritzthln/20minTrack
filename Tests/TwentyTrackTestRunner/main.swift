@@ -2,6 +2,7 @@
 runSlotGridTests()
 runCheckinRulesTests()
 runDayStoreTests()
+runGapFillTests()
 runPreferencesTests()
 runStatsMathTests()
 runTimeFormattingTests()
