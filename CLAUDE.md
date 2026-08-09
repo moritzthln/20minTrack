@@ -2,10 +2,15 @@
 
 macOS menu bar time tracker: the day is a grid of wall-clock-aligned
 20-minute blocks. Every 20 minutes the app chimes and asks "Was hast du
-gemacht?" — one line of text plus a label. Missed blocks (sleep, away)
-collapse into one pending range settled at the next check-in; a strip of
-today's blocks allows manual edits. Daily Fazit, per-label statistics
-(Tag/Woche). Sibling of `~/AI/Tools/Timer` — same house style.
+gemacht?" — one line of text (optional) plus a label. Missed blocks
+(sleep, away) collapse into one pending range settled at the next
+check-in; a strip of today's blocks allows manual edits. Daily Fazit,
+per-label statistics (Tag/Woche). v2 adds a local frontmost-app recorder
+feeding a "Benutzt: Chrome 12 min …" memory-aid line into the check-in
+and the slot editor, makes the statistics day strip clickable (backfill
+editor for past days, "24:00" end option), and advances the check-in
+anchor over manually backfilled blocks so they never re-prompt.
+Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)
 
@@ -16,7 +21,8 @@ today's blocks allows manual edits. Daily Fazit, per-label statistics
   runner executable.
 - No backend, no network. Persistence: UserDefaults (domain
   `com.moritzthelen.twentymintrack`) + one JSON file per day under
-  `~/Library/Application Support/20minTrack/days/`
+  `~/Library/Application Support/20minTrack/days/` (entries + Fazit) and
+  `…/20minTrack/usage/` (app usage segments)
 
 ## Commands
 
@@ -46,6 +52,13 @@ today's blocks allows manual edits. Daily Fazit, per-label statistics
   - `TimeFormatting` ("1 h 25 min", "09:05") · `MenuBarPresentation`
     (paused → pause icon; pending → filled symbol + block count; else
     "n m" to next boundary)
+  - v2: `AppUsageSegment`/`AppUsageTotal` + `AppUsageStore` (per-day
+    JSON, heartbeat `upsert` insert-or-replace by id with midnight
+    split, `totals(in:)` for two-adjacent-day ranges) + `AppUsageMath`
+    (clipped per-bundle aggregation, latest name wins) ·
+    `AnchorAdvance` (anchor walks over fully covered blocks — backfilled
+    time counts as settled; used in `TrackerViewModel.normalizeAnchor`
+    together with the future-anchor clamp)
 - `Sources/TwentyTrackApp/` — executable (bundle: `20minTrack.app`):
   - `main.swift` — accessory policy, duplicate-instance guard, ⌘Q menu
   - `StatusBarController` — status item + popover owner; boundary →
@@ -57,6 +70,12 @@ today's blocks allows manual edits. Daily Fazit, per-label statistics
   - `SoundPlayer` (single Glass chime) · `LaunchAtLogin` (SMAppService,
     no LaunchAgent fallback) · `StatsWindowController` ·
     `SettingsWindowController`
+  - v2 `AppUsageTracker` — frontmost-app recorder: didActivate opens/
+    closes segments, sleep/lock close, wake/unlock reopen, 60 s
+    heartbeat upsert, `flush()` before usage reads, own app never
+    recorded, `trackingPaused` pauses it. **No input-idle detection**
+    (documented limitation: an app left frontmost counts until
+    lock/sleep)
   - `Views/` — `TrackerViewModel` (all writes go through it; check-in
     saves fill gaps then advance the anchor; strip edits never move the
     anchor), `PopoverRootView` (checkin/idle/edit/fazit modes + today
@@ -69,9 +88,14 @@ today's blocks allows manual edits. Daily Fazit, per-label statistics
 ## Conventions
 
 - UI strings German, code/comments/commits English
-- Spec: `docs/superpowers/specs/2026-08-09-20mintrack-design.md`
+- Specs: `docs/superpowers/specs/2026-08-09-20mintrack-design.md` (v1),
+  `docs/superpowers/specs/2026-08-09-20mintrack-v2-design.md` (v2)
 - Plan: `docs/superpowers/plans/2026-08-09-20mintrack-implementation.md`
+  (v1; v2 executed spec-direct)
 - Hard limits: files ≤ 800 lines, functions ≤ 80 lines
 - Non-goals v1 (do not add unasked): Notification Center, bundled
   sounds, export, month view, goals/streaks/heatmaps, sync, hotkeys,
   floating window, auto-prompted Fazit
+- Non-goals v2: automatic sleep window / auto-fill (explicitly rejected
+  by the user), input-idle presence detection, browser-tab domains,
+  usage statistics views, multi-day spans in one editor save

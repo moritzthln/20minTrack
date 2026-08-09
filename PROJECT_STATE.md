@@ -2,62 +2,78 @@
 
 ## Status
 
-v1 implemented on `feat/v1` (2026-08-09): menu bar 20-minute tracker —
-grid math, pending-range check-in with chime + auto-popover, per-day
+v1 + v2 implemented and merged to `main` (2026-08-09). Menu bar
+20-minute tracker: grid check-ins with chime + auto-popover, per-day
 JSON store (midnight split, overlap trim, gap-filling saves), today
-strip with slot editor, Tagesfazit, statistics (Tag/Woche), settings
-(labels CRUD, volume, pause, login item). 51 unit tests green; app
-built, installed, launched headless (process verified). Code review
-pending, then merge.
+strip with slot editor, Tagesfazit, statistics (Tag/Woche), settings.
+v2: local frontmost-app recorder feeding a "Benutzt: …" line into
+check-in + slot editor, clickable stats day strip (backfill past days,
+"24:00" option), anchor advance (backfilled blocks never re-prompt).
+Independent code review done — both blockers and both warnings fixed,
+cheap nits hardened. 67 unit tests green. Installed to
+/Applications/20minTrack.app and running.
 
 ## In Progress
 
-- Independent code review (reviewer subagent), then merge to `main`
+- (nothing)
 
 ## Next Up
 
-- User live-E2E: hear the chime at a real boundary, save a check-in,
-  fill a slot via the strip, write a Fazit, check both stats views
-- Morning test: overnight gap prompts once shortly after wake/login and
-  saves as "Schlafen" across midnight (lands in both day files)
+- User live-E2E: chime at a real boundary, save a check-in (usage line
+  visible after some minutes of recording), backfill yesterday via
+  Statistik → Tag → strip click, write a Fazit, check Woche view
+- Settings: enable "Beim Anmelden starten" so tracking survives reboots
 - Optional: private GitHub repo + push (still local-only)
 
 ## Known Issues
 
-- UI not yet visually inspected (headless session): views verified by
-  build + launch only; core logic is unit-tested
-- First prompt after login arrives ~2 s after launch by design; after
-  wake it can chime while the lid is barely open — acceptable, revisit
-  if annoying
-- `swift build` prints `xcrun … PlatformPath` errors — pre-existing CLT
-  noise on this machine (Timer has the same), harmless
+- UI not visually inspected (headless session): views verified by
+  build + launch; core logic unit-tested (67)
+- Usage recorder has no input-idle detection (documented v2 non-goal):
+  an app left frontmost counts until screen lock / sleep
+- DST fall-back hour (once a year): repeated wall times floor to the
+  first occurrence — the repeated hour prompts late (at 03:00) as one
+  collected check-in; absolute-time accounting stays correct (review
+  nit, accepted)
+- Timezone change requires an app restart (Calendar snapshot; review
+  nit, accepted for a personal app)
+- Day-file JSON stores Apple reference timestamps, not ISO dates
+  (review nit; kept — live data already exists, decoder compatibility
+  not worth it)
 
 ## Recent Decisions
 
-- 2026-08-09: Native macOS menu bar app in the Timer house style (user
-  pointed at the Timer as the reference; a 20-min nag belongs in the
-  menu bar, not a browser tab) — autonomous-session assumption,
-  recorded in the spec
-- 2026-08-09: Blocks are wall-clock aligned (:00/:20/:40) — predictable
-  prompts, clean stats; 72 blocks/day
-- 2026-08-09: One persisted `checkinAnchor` marks settled time; the
-  check-in covers anchor → last boundary, capped at start of yesterday
-  (a week offline never produces a monster block)
-- 2026-08-09: Check-in saves fill only untracked gaps (`GapFill`) so
-  manual strip edits inside the pending window survive; strip edits
-  never move the anchor
-- 2026-08-09: Overlap trim on insert (last write wins) is the single
-  editing rule — relabel/correct = insert over it
-- 2026-08-09: Labels archive instead of delete (stable slug ids for the
-  six defaults) so history always resolves name + color
-- 2026-08-09: v1 chime = single system "Glass" (gentle, 3×/h), no
-  bundled sounds; Notification Center deliberately unused (popover +
-  chime, Timer precedent)
+- 2026-08-09 (v2): NO automatic sleep window — user explicitly rejected
+  it ("nein keins"); sleep is backfilled manually (check-in over the
+  night gap or stats editor), text stays optional everywhere
+- 2026-08-09 (v2): Check-in usage line loads on appear and on span
+  changes (not per keystroke); the recorder flushes before every read
+- 2026-08-09 (v2): Usage segments keep one id across midnight pieces —
+  ids are unique per day file, so replace-by-id heartbeats stay correct
+- 2026-08-09 (v2): Anchor normalization = clamp future anchors
+  (clock set back) + max with start-of-yesterday + AnchorAdvance over
+  covered blocks, all in `TrackerViewModel.normalizeAnchor`
+- 2026-08-09 (review): Rename/recolor persists per keystroke into
+  UserDefaults but no longer posts notifications or reloads day files;
+  empty rename never persists (`updateLabel` guard)
+- 2026-08-09 (review): Check-in drafts reset only when the pending
+  START moves — a boundary firing mid-typing grows the end without
+  wiping input
+- 2026-08-09 (v1): Wall-clock 20-min grid; one persisted checkinAnchor;
+  lookback capped at start of yesterday; check-in fills only gaps
+  (GapFill) so manual edits survive; overlap trim = the single editing
+  rule; labels archive instead of delete; single Glass chime
+- 2026-08-09 (v1): Native macOS menu bar app in the Timer house style
+  (user pointed at Timer as the reference)
 
 ## Recently Done
 
-- 2026-08-09: v1 implemented spec-direct-plus-compact-plan in 12
-  commits on `feat/v1` (51 tests, TDD for all of TwentyCore); app
-  installed to /Applications and launch-verified; docs written
-  (CLAUDE.md, README, PROJECT_STATE)
-- 2026-08-09: Spec + implementation plan committed
+- 2026-08-09: v2 merged to main — usage recorder + line, stats backfill
+  editor, anchor advance; review fixes (split oversized test functions,
+  prefs test cleanup, input-wipe fix, dictionary uniquing, future-anchor
+  clamp, saveCheckin hardening, settings pause sync); 67 tests
+- 2026-08-09: Independent code review of v1 (reviewer subagent): 2
+  blockers (oversized test functions), 2 warnings, 10 nits — all
+  blockers/warnings fixed, cheap nits hardened, 4 accepted + documented
+- 2026-08-09: v1 shipped — spec + plan, 51 tests, installed and
+  launch-verified; docs (CLAUDE.md, README, PROJECT_STATE)
