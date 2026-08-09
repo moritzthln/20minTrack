@@ -99,8 +99,12 @@ final class TrackerViewModel: ObservableObject {
 
     /// The most recent non-empty note (yesterday + today) — offered as a
     /// one-click "continue the same thing" fill in the check-in.
+    /// Pre-planned future entries do not count until they have started
+    /// (a running pre-planned block does — continuing it is the point).
     var lastEntryText: String? {
-        entriesYesterdayAndToday(now: Date())
+        let now = Date()
+        return entriesYesterdayAndToday(now: now)
+            .filter { $0.start <= now }
             .sorted { $0.end < $1.end }
             .last { !$0.text.isEmpty }?
             .text
