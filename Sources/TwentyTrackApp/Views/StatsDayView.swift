@@ -222,13 +222,20 @@ struct StatsDayView: View {
                 calendar: calendar,
                 now: isToday ? Date() : nil,
                 height: 26,
-                onTapSlot: { slot in
-                    let existing = entry(at: slot)
-                    editTarget = EditTarget(
-                        slot: expandedSlot(slot),
-                        existing: existing,
-                        existingIDs: existing.map { [$0.id] } ?? []
+                onSelect: { interval in
+                    let blocks = SlotGrid.blockCount(
+                        start: interval.start, end: interval.end, calendar: calendar
                     )
+                    if blocks <= 1 {
+                        let existing = entry(at: interval)
+                        editTarget = EditTarget(
+                            slot: expandedSlot(interval),
+                            existing: existing,
+                            existingIDs: existing.map { [$0.id] } ?? []
+                        )
+                    } else {
+                        editTarget = EditTarget(slot: interval, existing: nil, existingIDs: [])
+                    }
                 }
             )
             HStack {

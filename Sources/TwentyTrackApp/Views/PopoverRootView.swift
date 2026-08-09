@@ -112,10 +112,21 @@ struct PopoverRootView: View {
                 calendar: model.calendar,
                 now: Date(),
                 height: 20,
-                onTapSlot: { slot in
-                    mode = .edit(slot: expandedSlot(slot), existing: entry(at: slot))
-                }
+                onSelect: handleSelect
             )
+        }
+    }
+
+    /// Click = one slot (empty ones expand to the whole gap); drag = the
+    /// exact dragged span as a fresh entry over whatever lies beneath.
+    private func handleSelect(_ interval: DateInterval) {
+        let blocks = SlotGrid.blockCount(
+            start: interval.start, end: interval.end, calendar: model.calendar
+        )
+        if blocks <= 1 {
+            mode = .edit(slot: expandedSlot(interval), existing: entry(at: interval))
+        } else {
+            mode = .edit(slot: interval, existing: nil)
         }
     }
 
