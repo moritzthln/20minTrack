@@ -10,6 +10,7 @@ struct CheckinView: View {
     let pending: DateInterval
     let labels: [TrackLabel]
     let calendar: Calendar
+    let todayLine: String?
     let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
     let onSave: (_ from: Date, _ labelID: String, _ text: String) -> Void
@@ -45,6 +46,12 @@ struct CheckinView: View {
             Text("Was hast du gemacht?")
                 .font(.headline)
             spanLine
+            if let todayLine {
+                Text("Heute: \(todayLine)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
             UsageLineView(usage: usage)
             TextField("Kurz notieren… (optional)", text: $text)
                 .textFieldStyle(.roundedBorder)

@@ -20,6 +20,9 @@ final class StatusBarController: NSObject {
     private let statsController: StatsWindowController
     private let settingsController: SettingsWindowController
     private let checkinWindowController: CheckinWindowController
+    private let fazitWindowController: FazitWindowController
+    /// The day the evening Fazit prompt already fired (or was settled).
+    private var lastFazitPromptDay: Date?
 
     private var titleRefreshTimer: Foundation.Timer?
     private var settingsObserver: NSObjectProtocol?
@@ -49,6 +52,7 @@ final class StatusBarController: NSObject {
         )
         self.settingsController = SettingsWindowController(preferences: preferences)
         self.checkinWindowController = CheckinWindowController(viewModel: viewModel)
+        self.fazitWindowController = FazitWindowController(viewModel: viewModel)
         super.init()
 
         viewModel.flushUsage = { [weak usageTracker] in usageTracker?.flush() }
@@ -139,6 +143,7 @@ final class StatusBarController: NSObject {
         if viewModel.pending == nil, checkinWindowController.isVisible {
             checkinWindowController.close()
         }
+        checkFazitPrompt(now: now)
         let pendingBlocks = viewModel.pending.map {
             SlotGrid.blockCount(start: $0.start, end: $0.end, calendar: calendar)
         } ?? 0
@@ -155,6 +160,27 @@ final class StatusBarController: NSObject {
             accessibilityDescription: "20minTrack"
         ) ?? NSImage(systemSymbolName: "clock", accessibilityDescription: "20minTrack")
         button.title = presentation.title.isEmpty ? "" : " " + presentation.title
+    }
+
+    /// Evening reminder: once per day after the configured time, only
+    /// while today's Fazit is still empty; respects mute and Focus.
+    private func checkFazitPrompt(now: Date) {
+        guard preferences.fazitPromptEnabled,
+              !preferences.trackingPaused,
+              !preferences.muted else { return }
+        let minute = calendar.component(.hour, from: now) * 60
+            + calendar.component(.minute, from: now)
+        guard minute >= preferences.fazitPromptMinute else { return }
+        let today = calendar.startOfDay(for: now)
+        guard lastFazitPromptDay != today else { return }
+        guard viewModel.todayFazit.isEmpty else {
+            lastFazitPromptDay = today
+            return
+        }
+        if preferences.suppressDuringFocus, isSystemFocusActive() { return }
+        lastFazitPromptDay = today
+        SoundPlayer.playChime(volume: preferences.chimeVolume)
+        fazitWindowController.show()
     }
 
     @objc private func statusButtonClicked() {

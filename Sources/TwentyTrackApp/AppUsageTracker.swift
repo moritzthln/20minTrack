@@ -2,16 +2,20 @@ import AppKit
 import TwentyCore
 
 /// Records which app is frontmost — the local memory aid behind the
-/// "Benutzt: …" line. Segments close on app switch, sleep, and screen
-/// lock; a 60 s heartbeat persists the open segment (crash loses ≤ 60 s).
-/// No input-idle detection (v2 limitation, documented): an app left
-/// frontmost counts until lock/sleep. The own app is never recorded.
-/// `trackingPaused` pauses recording too.
+/// "In dieser Zeit benutzt" list. While a browser is frontmost the open
+/// segment carries the active tab's domain instead of the browser
+/// (`site:<domain>` / name = domain, re-checked every 10 s), so browser
+/// time and site time never double-count. Segments close on app switch,
+/// sleep, and screen lock; a 60 s heartbeat persists the open segment.
+/// No input-idle detection (documented limitation). The own app is never
+/// recorded; `trackingPaused` pauses recording.
 final class AppUsageTracker {
     private let store: AppUsageStore
     private let preferences: Preferences
-    private var current: (id: UUID, bundleID: String, name: String, start: Date)?
+    private var current: (id: UUID, segmentBundleID: String, name: String, start: Date)?
+    private var frontBundleID: String?
     private var heartbeat: Foundation.Timer?
+    private var domainPoll: Foundation.Timer?
     private var workspaceObservers: [NSObjectProtocol] = []
     private var distributedObservers: [NSObjectProtocol] = []
     private var settingsObserver: NSObjectProtocol?
@@ -22,18 +26,26 @@ final class AppUsageTracker {
         self.preferences = preferences
         registerObservers()
 
-        let timer = Foundation.Timer(timeInterval: 60, repeats: true) { [weak self] _ in
+        let beat = Foundation.Timer(timeInterval: 60, repeats: true) { [weak self] _ in
             self?.flush()
         }
-        timer.tolerance = 10
-        RunLoop.main.add(timer, forMode: .common)
-        heartbeat = timer
+        beat.tolerance = 10
+        RunLoop.main.add(beat, forMode: .common)
+        heartbeat = beat
+
+        let poll = Foundation.Timer(timeInterval: 10, repeats: true) { [weak self] _ in
+            self?.pollBrowserDomain()
+        }
+        poll.tolerance = 2
+        RunLoop.main.add(poll, forMode: .common)
+        domainPoll = poll
 
         openFrontmost()
     }
 
     deinit {
         heartbeat?.invalidate()
+        domainPoll?.invalidate()
         let workspace = NSWorkspace.shared.notificationCenter
         for token in workspaceObservers {
             workspace.removeObserver(token)
@@ -51,7 +63,7 @@ final class AppUsageTracker {
     func flush(at date: Date = Date()) {
         guard let current else { return }
         store.upsert(AppUsageSegment(
-            id: current.id, bundleID: current.bundleID, name: current.name,
+            id: current.id, bundleID: current.segmentBundleID, name: current.name,
             start: current.start, end: date
         ))
     }
@@ -104,15 +116,42 @@ final class AppUsageTracker {
         if current != nil {
             closeCurrent(at: date)
         }
+        frontBundleID = app?.bundleIdentifier
         guard !preferences.trackingPaused,
               let app, let bundleID = app.bundleIdentifier,
               bundleID != ownBundleID else { return }
-        current = (UUID(), bundleID, app.localizedName ?? bundleID, date)
+        let identity = segmentIdentity(bundleID: bundleID, appName: app.localizedName ?? bundleID)
+        current = (UUID(), identity.bundleID, identity.name, date)
     }
 
     private func closeCurrent(at date: Date) {
         flush(at: date)
         current = nil
+    }
+
+    /// Browser frontmost with a readable tab → the segment is the domain.
+    private func segmentIdentity(
+        bundleID: String, appName: String
+    ) -> (bundleID: String, name: String) {
+        if BrowserScripting.isBrowser(bundleID),
+           let domain = BrowserScripting.activeTabDomain(bundleID: bundleID) {
+            return ("site:" + domain, domain)
+        }
+        return (bundleID, appName)
+    }
+
+    /// Re-checks the active tab while a browser stays frontmost; a domain
+    /// change closes the segment and opens the next one.
+    private func pollBrowserDomain() {
+        guard !preferences.trackingPaused,
+              let frontBundleID, BrowserScripting.isBrowser(frontBundleID),
+              let openSegment = current else { return }
+        let appName = NSWorkspace.shared.frontmostApplication?.localizedName ?? frontBundleID
+        let identity = segmentIdentity(bundleID: frontBundleID, appName: appName)
+        guard identity.bundleID != openSegment.segmentBundleID else { return }
+        let now = Date()
+        closeCurrent(at: now)
+        current = (UUID(), identity.bundleID, identity.name, now)
     }
 
     private func reconcilePause() {

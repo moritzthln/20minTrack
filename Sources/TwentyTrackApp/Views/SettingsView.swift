@@ -13,6 +13,8 @@ struct SettingsView: View {
     @State private var autoOpen = true
     @State private var trackingPaused = false
     @State private var suppressFocus = true
+    @State private var fazitEnabled = true
+    @State private var fazitMinute = 1290
     @State private var loginEnabled = false
     @State private var loginStatus = ""
 
@@ -162,6 +164,29 @@ struct SettingsView: View {
                     preferences.suppressDuringFocus = value
                 }
             ))
+            HStack {
+                Toggle("Abends ans Tagesfazit erinnern", isOn: Binding(
+                    get: { fazitEnabled },
+                    set: { value in
+                        fazitEnabled = value
+                        preferences.fazitPromptEnabled = value
+                    }
+                ))
+                Picker("", selection: Binding(
+                    get: { fazitMinute },
+                    set: { value in
+                        fazitMinute = value
+                        preferences.fazitPromptMinute = value
+                    }
+                )) {
+                    ForEach(Array(stride(from: 18 * 60, through: 23 * 60 + 45, by: 15)), id: \.self) { minute in
+                        Text(String(format: "%02d:%02d", minute / 60, minute % 60)).tag(minute)
+                    }
+                }
+                .labelsHidden()
+                .fixedSize()
+                .disabled(!fazitEnabled)
+            }
             Toggle("Tracking pausieren", isOn: Binding(
                 get: { trackingPaused },
                 set: { value in
@@ -209,6 +234,8 @@ struct SettingsView: View {
         autoOpen = preferences.autoOpenPopover
         trackingPaused = preferences.trackingPaused
         suppressFocus = preferences.suppressDuringFocus
+        fazitEnabled = preferences.fazitPromptEnabled
+        fazitMinute = preferences.fazitPromptMinute
         loginEnabled = LaunchAtLogin.isEnabled
         loginStatus = LaunchAtLogin.statusDescription
     }
