@@ -13,6 +13,9 @@ struct StatsDayView: View {
         let id = UUID()
         let slot: DateInterval
         let existing: Entry?
+        /// All underlying entry ids the editor's save/delete must replace
+        /// (several when a merged display row was clicked).
+        let existingIDs: [UUID]
     }
 
     @State private var day = Date()
@@ -66,16 +69,16 @@ struct StatsDayView: View {
                 preselectedLabelID: preferences.lastLabelID,
                 usageFor: usageFor,
                 onSave: { start, end, labelID, text in
-                    if let existing = target.existing {
-                        dayStore.remove(id: existing.id, onDay: day)
+                    for id in target.existingIDs {
+                        dayStore.remove(id: id, onDay: day)
                     }
                     dayStore.insert(start: start, end: end, labelID: labelID, text: text)
                     preferences.lastLabelID = labelID
                     finishEdit()
                 },
                 onDelete: {
-                    if let existing = target.existing {
-                        dayStore.remove(id: existing.id, onDay: day)
+                    for id in target.existingIDs {
+                        dayStore.remove(id: id, onDay: day)
                     }
                     finishEdit()
                 },
@@ -131,38 +134,48 @@ struct StatsDayView: View {
         }
     }
 
-    /// Chronological entries with their notes — click to edit.
+    /// Chronological entries with their notes — adjacent same-label,
+    /// same-text blocks collapse into one row; click edits the whole span.
     private var entryList: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            if !entries.isEmpty {
+        let merged = EntryMerge.merged(entries)
+        return VStack(alignment: .leading, spacing: 4) {
+            if !merged.isEmpty {
                 Text("Einträge")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                ForEach(entries) { entry in
-                    entryRow(entry)
+                ForEach(merged) { row in
+                    entryRow(row)
                 }
             }
         }
     }
 
-    private func entryRow(_ entry: Entry) -> some View {
+    private func entryRow(_ row: MergedEntry) -> some View {
         Button {
             editTarget = EditTarget(
-                slot: DateInterval(start: entry.start, end: entry.end), existing: entry
+                slot: DateInterval(start: row.start, end: row.end),
+                existing: Entry(
+                    id: row.ids[0], start: row.start, end: row.end,
+                    labelID: row.labelID, text: row.text
+                ),
+                existingIDs: row.ids
             )
         } label: {
             HStack(spacing: 6) {
-                Text("\(TimeFormatting.clock(entry.start, calendar: calendar))–\(TimeFormatting.clock(entry.end, calendar: calendar))")
+                Text("\(TimeFormatting.clock(row.start, calendar: calendar))–\(TimeFormatting.clock(row.end, calendar: calendar))")
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
                     .frame(width: 88, alignment: .leading)
                 Circle()
-                    .fill(LabelPalette.color(labelID: entry.labelID, labelsByID: labelsByID))
+                    .fill(LabelPalette.color(labelID: row.labelID, labelsByID: labelsByID))
                     .frame(width: 7, height: 7)
-                Text(labelsByID[entry.labelID]?.name ?? "Unbekannt")
+                Text(labelsByID[row.labelID]?.name ?? "Unbekannt")
                     .lineLimit(1)
-                if !entry.text.isEmpty {
-                    Text("· \(entry.text)")
+                Text(TimeFormatting.wording(seconds: row.end.timeIntervalSince(row.start)))
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+                if !row.text.isEmpty {
+                    Text("· \(row.text)")
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
@@ -172,7 +185,7 @@ struct StatsDayView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help("Eintrag bearbeiten")
+        .help("Zeitraum bearbeiten")
     }
 
     private var header: some View {
@@ -210,7 +223,12 @@ struct StatsDayView: View {
                 now: isToday ? Date() : nil,
                 height: 26,
                 onTapSlot: { slot in
-                    editTarget = EditTarget(slot: expandedSlot(slot), existing: entry(at: slot))
+                    let existing = entry(at: slot)
+                    editTarget = EditTarget(
+                        slot: expandedSlot(slot),
+                        existing: existing,
+                        existingIDs: existing.map { [$0.id] } ?? []
+                    )
                 }
             )
             HStack {

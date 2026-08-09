@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v19 merged — EntryMerge (Core, TDD): adjacent same-label same-text entries collapse to one row in the stats entry list (display-only, ids carried for whole-span edit/delete), duration shown per row
+
 - 2026-08-09: v17 merged — "Wochenverlauf" bar chart in the week view: 7 bottom-aligned bars per selectable label with h:mm values and the daily goal as a reference line
 
 - 2026-08-09: v15 merged — partial "Von" saves no longer drop the earlier span: the anchor only advances via AnchorAdvance over covered blocks, so unlabeled time before the chosen start stays pending
