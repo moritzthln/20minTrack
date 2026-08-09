@@ -60,6 +60,27 @@ func expectNil<T>(
                file: file, line: line)
 }
 
+/// Fixed calendar for deterministic tests (incl. DST assertions).
+let testCalendar: Calendar = {
+    var cal = Calendar(identifier: .gregorian)
+    cal.timeZone = TimeZone(identifier: "Europe/Berlin")!
+    return cal
+}()
+
+func makeDate(
+    _ year: Int, _ month: Int, _ day: Int,
+    _ hour: Int, _ minute: Int, _ second: Int = 0
+) -> Date {
+    var comps = DateComponents()
+    comps.year = year
+    comps.month = month
+    comps.day = day
+    comps.hour = hour
+    comps.minute = minute
+    comps.second = second
+    return testCalendar.date(from: comps)!
+}
+
 func finishTestRun() -> Never {
     print("---")
     print("\(totalTests) tests, \(failedTests) failures")
