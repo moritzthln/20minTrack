@@ -21,6 +21,17 @@ func runEntryMergeTests() {
         try expectEqual(merged[0].ids.count, 3)
     }
 
+    test("text comparison ignores case") {
+        let merged = EntryMerge.merged([
+            entry(17, 0, 17, 20, "fun", "youtube"),
+            entry(17, 20, 17, 40, "fun", "Youtube"),
+            entry(17, 40, 18, 0, "fun", "YOUTUBE"),
+        ])
+        try expectEqual(merged.count, 1)
+        try expectEqual(merged[0].text, "youtube", "first spelling wins")
+        try expectEqual(merged[0].end, makeDate(2026, 8, 9, 18, 0))
+    }
+
     test("empty texts merge, different texts do not") {
         let empties = EntryMerge.merged([
             entry(10, 0, 10, 20, "orga"),
