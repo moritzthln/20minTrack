@@ -32,18 +32,24 @@ struct StatsDayView: View {
         calendar.isDate(day, inSameDayAs: Date())
     }
 
+    private var totals: [String: TimeInterval] {
+        StatsMath.totals(entries)
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 header
+                tileRow
                 stripSection
                 LabelTotalsList(
-                    totals: StatsMath.totals(entries),
+                    totals: totals,
                     untrackedSeconds: StatsMath.untrackedSeconds(
                         day: day, reference: Date(), entries: entries, calendar: calendar
                     ),
                     labelsByID: labelsByID
                 )
+                entryList
                 fazitSection
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -108,6 +114,64 @@ struct StatsDayView: View {
             }
         }
         return gap.duration > 0 ? gap : slot
+    }
+
+    private var tileRow: some View {
+        HStack(spacing: 8) {
+            StatTile(
+                title: "Fokus",
+                value: TimeFormatting.wording(seconds: StatsFigures.focusSeconds(totals))
+            )
+            StatTile(title: "Fokus-Quote", value: StatsFigures.focusShare(totals))
+            StatTile(
+                title: "Getrackt",
+                value: TimeFormatting.wording(seconds: StatsMath.trackedSeconds(entries))
+            )
+        }
+    }
+
+    /// Chronological entries with their notes — click to edit.
+    private var entryList: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if !entries.isEmpty {
+                Text("Einträge")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                ForEach(entries) { entry in
+                    entryRow(entry)
+                }
+            }
+        }
+    }
+
+    private func entryRow(_ entry: Entry) -> some View {
+        Button {
+            editTarget = EditTarget(
+                slot: DateInterval(start: entry.start, end: entry.end), existing: entry
+            )
+        } label: {
+            HStack(spacing: 6) {
+                Text("\(TimeFormatting.clock(entry.start, calendar: calendar))–\(TimeFormatting.clock(entry.end, calendar: calendar))")
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                    .frame(width: 88, alignment: .leading)
+                Circle()
+                    .fill(LabelPalette.color(labelID: entry.labelID, labelsByID: labelsByID))
+                    .frame(width: 7, height: 7)
+                Text(labelsByID[entry.labelID]?.name ?? "Unbekannt")
+                    .lineLimit(1)
+                if !entry.text.isEmpty {
+                    Text("· \(entry.text)")
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 0)
+            }
+            .font(.caption)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help("Eintrag bearbeiten")
     }
 
     private var header: some View {
