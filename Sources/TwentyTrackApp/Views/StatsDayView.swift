@@ -41,6 +41,7 @@ struct StatsDayView: View {
             VStack(alignment: .leading, spacing: 14) {
                 header
                 tileRow
+                GoalsSection(labels: preferences.labels, totals: totals)
                 stripSection
                 LabelTotalsList(
                     totals: totals,

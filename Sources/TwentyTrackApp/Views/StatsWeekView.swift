@@ -39,12 +39,12 @@ struct StatsWeekView: View {
             VStack(alignment: .leading, spacing: 14) {
                 header
                 tileRow
+                GoalsSection(labels: preferences.labels, totals: totals, goalMultiplier: 7)
                 dayRows
                 LabelTotalsList(
                     totals: totals,
                     untrackedSeconds: untrackedWeekSeconds,
-                    labelsByID: labelsByID,
-                    goalMultiplier: 7
+                    labelsByID: labelsByID
                 )
                 fazitList
             }
