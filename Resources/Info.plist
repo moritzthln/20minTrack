@@ -12,6 +12,7 @@
     <key>CFBundleShortVersionString</key><string>1.0.0</string>
     <key>CFBundleVersion</key><string>1</string>
     <key>LSMinimumSystemVersion</key><string>13.0</string>
+    <key>NSAppleEventsUsageDescription</key><string>20minTrack liest die Adresse des aktiven Browser-Tabs, um Websites in der Benutzt-Liste einzeln zu zeigen.</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
 </dict>

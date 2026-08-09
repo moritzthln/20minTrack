@@ -114,6 +114,15 @@ func runPreferencesSettingTests() {
         }
     }
 
+    test("fazit prompt defaults to 21:30 enabled and clamps") {
+        try withPreferences { prefs in
+            try expect(prefs.fazitPromptEnabled, "enabled by default")
+            try expectEqual(prefs.fazitPromptMinute, 1290)
+            prefs.fazitPromptMinute = 5000
+            try expectEqual(prefs.fazitPromptMinute, 1439)
+        }
+    }
+
     test("focus assertions detect active records and fail open") {
         let active = #"{"data":[{"storeAssertionRecords":[{"assertionDetails":{"assertionDetailsModeIdentifier":"com.apple.donotdisturb.mode.default"}}]}]}"#
         let empty = #"{"data":[{"storeAssertionRecords":[]}]}"#

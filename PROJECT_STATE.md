@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v8 merged — today-balance line in check-in, evening Fazit window (default 21:30, once/day, respects mute+Focus), Timer-focus label suggestion (>=50 % overlap preselects Fokus Arbeit), browser tab domains as own usage segments (site:<domain>, 10 s poll, no double counting; needs per-browser automation permission)
+
 - 2026-08-09: v7 merged — menu bar is one bare number circle (countdown minutes; filled = open blocks; no text title)
 
 - 2026-08-09: v6 merged — app-usage shown as a visible boxed list ("In dieser Zeit benutzt", top 6) in check-in + slot editor; recorder verified live (70 segments on day one)

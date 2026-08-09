@@ -97,6 +97,29 @@ final class TrackerViewModel: ObservableObject {
         return usageStore.totals(in: range)
     }
 
+    /// "Heute: Fokus Arbeit 2 h 40 · Ablenkung 40 min · …" — top four.
+    var todaySummaryLine: String? {
+        let totals = StatsMath.totals(todayEntries)
+        guard !totals.isEmpty else { return nil }
+        return totals
+            .sorted { $0.value > $1.value }
+            .prefix(4)
+            .map { id, seconds in
+                "\(labelsByID[id]?.name ?? "Unbekannt") \(TimeFormatting.wording(seconds: seconds))"
+            }
+            .joined(separator: " · ")
+    }
+
+    /// Preselects "Fokus Arbeit" when Timer focus sessions covered at
+    /// least half of the span; nil defers to the last used label.
+    func suggestedLabelID(for range: DateInterval) -> String? {
+        guard let focusLabel = labelsByID["focus-mma"], !focusLabel.archived else { return nil }
+        let intervals = TimerFocusReader.intervals(in: range, calendar: calendar)
+        guard !intervals.isEmpty else { return nil }
+        let overlap = Overlap.seconds(of: intervals, with: range)
+        return overlap >= range.duration * 0.5 ? focusLabel.id : nil
+    }
+
     // MARK: - Check-in
 
     /// Fills only the untracked gaps of [from, pending.end) — manual strip

@@ -18,6 +18,8 @@ public final class Preferences {
         case trackingPaused
         case muted
         case suppressDuringFocus
+        case fazitPromptEnabled
+        case fazitPromptMinute
     }
 
     // MARK: - Labels
@@ -115,6 +117,25 @@ public final class Preferences {
     public var muted: Bool {
         get { defaults.bool(forKey: Key.muted.rawValue) }
         set { defaults.set(newValue, forKey: Key.muted.rawValue) }
+    }
+
+    /// Evening Fazit reminder (default on, 21:30). The minute is clamped
+    /// to a sane evening range.
+    public var fazitPromptEnabled: Bool {
+        get {
+            guard defaults.object(forKey: Key.fazitPromptEnabled.rawValue) != nil else { return true }
+            return defaults.bool(forKey: Key.fazitPromptEnabled.rawValue)
+        }
+        set { defaults.set(newValue, forKey: Key.fazitPromptEnabled.rawValue) }
+    }
+
+    /// Minute of day for the Fazit prompt, default 21:30 (1290).
+    public var fazitPromptMinute: Int {
+        get {
+            guard defaults.object(forKey: Key.fazitPromptMinute.rawValue) != nil else { return 1290 }
+            return min(max(defaults.integer(forKey: Key.fazitPromptMinute.rawValue), 0), 1439)
+        }
+        set { defaults.set(min(max(newValue, 0), 1439), forKey: Key.fazitPromptMinute.rawValue) }
     }
 
     /// Suppress prompts while a macOS Focus mode is active (default on).

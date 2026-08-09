@@ -37,7 +37,9 @@ struct PopoverRootView: View {
                     pending: pending,
                     labels: model.activeLabels,
                     calendar: model.calendar,
-                    preselectedLabelID: model.preferences.lastLabelID,
+                    todayLine: model.todaySummaryLine,
+                    preselectedLabelID: model.suggestedLabelID(for: pending)
+                        ?? model.preferences.lastLabelID,
                     usageFor: { model.usageTotals(in: $0) },
                     onSave: { from, labelID, text in
                         model.saveCheckin(from: from, labelID: labelID, text: text)
