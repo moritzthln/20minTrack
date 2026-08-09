@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v15 merged — partial "Von" saves no longer drop the earlier span: the anchor only advances via AnchorAdvance over covered blocks, so unlabeled time before the chosen start stays pending
+
 - 2026-08-09: v14 merged — dedicated "Ziele" section with progress bars (done/target, remaining, green reached; week x7) replacing inline goal text; package.sh builds a shareable ZIP (app + German install guide, xattr note for ad-hoc signing)
 
 - 2026-08-09: v12+v13 merged — goal input reworked: dropdown → plain minutes field → hours + minutes fields (empty = no goal, live-saved)
