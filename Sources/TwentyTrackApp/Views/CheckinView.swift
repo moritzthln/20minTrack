@@ -2,13 +2,18 @@ import SwiftUI
 import TwentyCore
 
 /// The 20-minute prompt: what happened, which label, over which span.
+/// Fast paths: the last label is preselected (Return saves), clicking the
+/// selected chip saves, ⌘1–⌘9 pick a label and save immediately.
+/// "Später" closes without settling — the span stays pending, nothing is
+/// ever silently dropped.
 struct CheckinView: View {
     let pending: DateInterval
     let labels: [TrackLabel]
     let calendar: Calendar
+    let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
     let onSave: (_ from: Date, _ labelID: String, _ text: String) -> Void
-    let onSkip: () -> Void
+    let onPostpone: () -> Void
 
     @State private var fromDate = Date.distantPast
     @State private var text = ""
@@ -31,28 +36,40 @@ struct CheckinView: View {
         SlotGrid.blockCount(start: effectiveFrom, end: pending.end, calendar: calendar)
     }
 
+    private var validPreselect: String? {
+        labels.contains { $0.id == preselectedLabelID } ? preselectedLabelID : nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Was hast du gemacht?")
                 .font(.headline)
             spanLine
             UsageLineView(usage: usage)
-            TextField("Kurz notieren…", text: $text)
+            TextField("Kurz notieren… (optional)", text: $text)
                 .textFieldStyle(.roundedBorder)
                 .focused($textFocused)
-                .onSubmit(save)
-            LabelChipsView(labels: labels, selectedID: $selectedLabelID)
+                .onSubmit { save(labelID: selectedLabelID) }
+            LabelChipsView(
+                labels: labels,
+                selectedID: $selectedLabelID,
+                onConfirm: { save(labelID: $0) }
+            )
             HStack {
-                Button("Überspringen", action: onSkip)
+                Button("Später", action: onPostpone)
                     .buttonStyle(PillButtonStyle())
+                    .help("Fragt beim nächsten Check-in wieder mit ab")
                 Spacer()
-                Button("Speichern", action: save)
+                Button("Speichern") { save(labelID: selectedLabelID) }
                     .buttonStyle(.borderedProminent)
                     .disabled(selectedLabelID == nil)
+                    .help("⏎ speichert · ⌘1–⌘9 wählt ein Label und speichert sofort")
             }
+            shortcutButtons
         }
         .onAppear {
             fromDate = pending.start
+            selectedLabelID = validPreselect
             textFocused = true
             reloadUsage()
         }
@@ -61,14 +78,23 @@ struct CheckinView: View {
         .onChange(of: pending.start) { newStart in
             fromDate = newStart
             text = ""
-            selectedLabelID = nil
+            selectedLabelID = validPreselect
         }
         .onChange(of: pending) { _ in reloadUsage() }
         .onChange(of: fromDate) { _ in reloadUsage() }
     }
 
-    private func reloadUsage() {
-        usage = usageFor(DateInterval(start: effectiveFrom, end: pending.end))
+    /// Invisible buttons carrying ⌘1–⌘9: pick the n-th label and save.
+    private var shortcutButtons: some View {
+        ForEach(Array(labels.prefix(9).enumerated()), id: \.element.id) { index, label in
+            Button("") { save(labelID: label.id) }
+                .keyboardShortcut(
+                    KeyEquivalent(Character("\(index + 1)")), modifiers: .command
+                )
+                .frame(width: 0, height: 0)
+                .opacity(0)
+                .accessibilityHidden(true)
+        }
     }
 
     private var spanLine: some View {
@@ -92,8 +118,12 @@ struct CheckinView: View {
         .font(.caption)
     }
 
-    private func save() {
-        guard let selectedLabelID else { return }
-        onSave(effectiveFrom, selectedLabelID, text)
+    private func reloadUsage() {
+        usage = usageFor(DateInterval(start: effectiveFrom, end: pending.end))
+    }
+
+    private func save(labelID: String?) {
+        guard let labelID else { return }
+        onSave(effectiveFrom, labelID, text)
     }
 }

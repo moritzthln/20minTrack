@@ -12,6 +12,7 @@ public final class Preferences {
     private enum Key: String {
         case labels
         case checkinAnchor
+        case lastLabelID
         case chimeVolume
         case autoOpenPopover
         case trackingPaused
@@ -77,6 +78,13 @@ public final class Preferences {
     public var checkinAnchor: Date? {
         get { defaults.object(forKey: Key.checkinAnchor.rawValue) as? Date }
         set { defaults.set(newValue, forKey: Key.checkinAnchor.rawValue) }
+    }
+
+    /// The most recently saved label — preselected in the next check-in
+    /// so the common "same activity continues" case is a single Return.
+    public var lastLabelID: String? {
+        get { defaults.string(forKey: Key.lastLabelID.rawValue) }
+        set { defaults.set(newValue, forKey: Key.lastLabelID.rawValue) }
     }
 
     public var chimeVolume: Double {

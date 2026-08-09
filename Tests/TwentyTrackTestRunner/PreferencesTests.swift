@@ -11,7 +11,7 @@ private func withPreferences(_ body: (Preferences) throws -> Void) rethrows {
     try body(Preferences(defaults: defaults))
 }
 
-func runPreferencesTests() {
+func runPreferencesLabelTests() {
     test("never-set labels seed the six defaults") {
         try withPreferences { prefs in
             let labels = prefs.labels
@@ -67,13 +67,23 @@ func runPreferencesTests() {
             try expectEqual(prefs.label(byID: "fun")?.name, "Spaß")
         }
     }
+}
 
+func runPreferencesSettingTests() {
     test("checkinAnchor defaults to nil and roundtrips") {
         try withPreferences { prefs in
             try expectNil(prefs.checkinAnchor)
             let anchor = makeDate(2026, 8, 9, 10, 20)
             prefs.checkinAnchor = anchor
             try expectEqual(prefs.checkinAnchor, anchor)
+        }
+    }
+
+    test("lastLabelID defaults to nil and roundtrips") {
+        try withPreferences { prefs in
+            try expectNil(prefs.lastLabelID)
+            prefs.lastLabelID = "sport"
+            try expectEqual(prefs.lastLabelID, "sport")
         }
     }
 

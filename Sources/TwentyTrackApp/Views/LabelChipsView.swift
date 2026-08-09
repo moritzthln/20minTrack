@@ -2,9 +2,12 @@ import SwiftUI
 import TwentyCore
 
 /// Selectable label chips (color dot + name), wrapping into columns.
+/// Clicking the already selected chip confirms (the "click-click saves"
+/// fast path) when `onConfirm` is set.
 struct LabelChipsView: View {
     let labels: [TrackLabel]
     @Binding var selectedID: String?
+    var onConfirm: ((String) -> Void)?
 
     private let columns = [GridItem(.adaptive(minimum: 122), spacing: 6)]
 
@@ -20,7 +23,11 @@ struct LabelChipsView: View {
         let color = LabelPalette.color(for: label.colorKey)
         let selected = selectedID == label.id
         return Button {
-            selectedID = label.id
+            if selected {
+                onConfirm?(label.id)
+            } else {
+                selectedID = label.id
+            }
         } label: {
             HStack(spacing: 6) {
                 Circle().fill(color).frame(width: 8, height: 8)

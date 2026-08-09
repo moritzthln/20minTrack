@@ -112,12 +112,7 @@ final class TrackerViewModel: ObservableObject {
             )
         }
         preferences.checkinAnchor = pending.end
-        finishChange()
-    }
-
-    func skipCheckin() {
-        guard let pending else { return }
-        preferences.checkinAnchor = pending.end
+        preferences.lastLabelID = labelID
         finishChange()
     }
 
@@ -143,6 +138,7 @@ final class TrackerViewModel: ObservableObject {
             start: start, end: end, labelID: labelID,
             text: text.trimmingCharacters(in: .whitespacesAndNewlines)
         )
+        preferences.lastLabelID = labelID
         finishChange()
     }
 

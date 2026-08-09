@@ -10,7 +10,13 @@ feeding a "Benutzt: Chrome 12 min …" memory-aid line into the check-in
 and the slot editor, makes the statistics day strip clickable (backfill
 editor for past days, "24:00" end option), and advances the check-in
 anchor over manually backfilled blocks so they never re-prompt.
-Sibling of `~/AI/Tools/Timer` — same house style.
+v3 is the no-gap fast flow: "Später" replaced skip (the span stays
+pending until labeled — nothing is silently dropped), the last saved
+label is preselected (`Preferences.lastLabelID` — Return alone saves),
+clicking the selected chip saves, ⌘1–⌘9 pick-and-save, and tapping an
+empty slot opens the editor over the whole surrounding gap (capped at
+the running block today). Sibling of `~/AI/Tools/Timer` — same house
+style.
 
 ## Tech stack (do NOT apply the workspace default stack here)
 
