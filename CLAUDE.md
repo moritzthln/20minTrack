@@ -42,9 +42,14 @@ Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Commands
 
-- Test: `swift run TwentyTrackTestRunner`  (NOT `swift test`)
-- Build (debug): `swift build`
+**One toolchain standard: Command Line Tools** (both scripts pin
+`DEVELOPER_DIR`). The machine also has Xcode 26 — do NOT build the app
+with it: its SDK displaces the status-item popover (~2 cm). When Apple
+fixes that, remove the pin in `build.sh` + `test.sh` together.
+
+- Test: `./test.sh`  (custom runner — NOT `swift test`)
 - Build + install release app: `./build.sh` → `/Applications/20minTrack.app`
+- Share package: `./package.sh` → `dist/20minTrack.zip`
 - Note: `xcrun … PlatformPath` lines in build output are harmless CLT noise.
 
 ## Architecture
