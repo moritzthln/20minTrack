@@ -66,6 +66,7 @@ struct CheckinWindowRootView: View {
                     labels: model.activeLabels,
                     calendar: model.calendar,
                     todayLine: model.todaySummaryLine,
+                    lastText: model.lastEntryText,
                     preselectedLabelID: model.suggestedLabelID(for: pending)
                         ?? model.preferences.lastLabelID,
                     usageFor: { model.usageTotals(in: $0) },
