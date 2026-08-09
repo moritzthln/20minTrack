@@ -227,7 +227,28 @@ final class StatusBarController: NSObject {
         ))
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         // No makeKey() here: under the Xcode/macOS SDK build it detaches
-        // the popover from the status item (appears displaced further
-        // down). The text field focuses itself via @FocusState anyway.
+        // the popover from the status item. The text field focuses itself
+        // via @FocusState anyway.
+        realignPopover(to: button)
+    }
+
+    /// The Xcode-SDK build places the popover ~2 cm below the status item.
+    /// Generic correction: after showing, snap the popover window's top
+    /// edge to the button's bottom edge (no-op when AppKit got it right).
+    private func realignPopover(to button: NSStatusBarButton) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self,
+                  let popoverWindow = self.popover.contentViewController?.view.window,
+                  let buttonWindow = button.window else { return }
+            let anchorRect = buttonWindow.convertToScreen(
+                button.convert(button.bounds, to: nil)
+            )
+            let delta = anchorRect.minY - popoverWindow.frame.maxY
+            guard abs(delta) > 4 else { return }
+            popoverWindow.setFrameOrigin(NSPoint(
+                x: popoverWindow.frame.origin.x,
+                y: popoverWindow.frame.origin.y + delta
+            ))
+        }
     }
 }
