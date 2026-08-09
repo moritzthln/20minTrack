@@ -81,7 +81,7 @@ struct SettingsView: View {
                 }
             ))
             .textFieldStyle(.roundedBorder)
-            goalMenu(for: label)
+            goalField(for: label)
             Button {
                 preferences.archiveLabel(id: label.id)
                 load()
@@ -118,32 +118,27 @@ struct SettingsView: View {
         .fixedSize()
     }
 
-    /// Daily minimum goal per label, 30-minute steps.
-    private func goalMenu(for label: TrackLabel) -> some View {
-        Menu {
-            Button("Kein Ziel") {
-                var updated = label
-                updated.goalMinutes = nil
-                persist(updated)
-            }
-            ForEach(Array(stride(from: 30, through: 600, by: 30)), id: \.self) { minutes in
-                Button(TimeFormatting.wording(seconds: TimeInterval(minutes * 60))) {
+    /// Daily minimum goal in minutes — plain digits, empty = no goal.
+    private func goalField(for label: TrackLabel) -> some View {
+        HStack(spacing: 3) {
+            TextField("Ziel", text: Binding(
+                get: { label.goalMinutes.map(String.init) ?? "" },
+                set: { raw in
                     var updated = label
-                    updated.goalMinutes = minutes
+                    let digits = raw.filter(\.isNumber)
+                    let minutes = min(Int(digits) ?? 0, 1440)
+                    updated.goalMinutes = minutes > 0 ? minutes : nil
                     persist(updated)
                 }
-            }
-        } label: {
-            Text(label.goalMinutes.map {
-                "Ziel \(TimeFormatting.wording(seconds: TimeInterval($0 * 60)))"
-            } ?? "Ziel –")
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            ))
+            .textFieldStyle(.roundedBorder)
+            .multilineTextAlignment(.trailing)
+            .frame(width: 52)
+            Text("min")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
-        .menuStyle(.borderlessButton)
-        .menuIndicator(.hidden)
-        .fixedSize()
-        .help("Tägliches Mindestziel — Statistik zeigt ✓ bei Erreichen (Woche: Ziel × 7)")
+        .help("Tagesziel in Minuten (leer = kein Ziel) — Statistik zeigt ✓ bei Erreichen, Woche ×7")
     }
 
     private func addLabel() {
