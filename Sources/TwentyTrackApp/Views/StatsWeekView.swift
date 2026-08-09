@@ -90,13 +90,14 @@ struct StatsWeekView: View {
                 .labelsHidden()
                 .fixedSize()
             }
-            WeekLabelChart(
-                days: weekDays.map { day in
+            LabelBarChart(
+                values: weekDays.map { day in
                     (day, StatsMath.totals(entriesByDay[day] ?? [])[chartLabelID] ?? 0)
                 },
                 color: LabelPalette.color(labelID: chartLabelID, labelsByID: labelsByID),
                 goalSeconds: labelsByID[chartLabelID]?.goalMinutes.map { TimeInterval($0 * 60) },
-                dayName: weekdayShort
+                showValues: true,
+                axisLabel: { day, _ in weekdayShort(day) }
             )
         }
     }
@@ -214,59 +215,3 @@ struct StatsWeekView: View {
     }
 }
 
-/// Seven bottom-aligned bars ("2:40" on top, weekday below), goal as a
-/// thin reference line; the scale covers data max and goal.
-private struct WeekLabelChart: View {
-    let days: [(day: Date, seconds: TimeInterval)]
-    let color: Color
-    let goalSeconds: TimeInterval?
-    let dayName: (Date) -> String
-
-    private let barAreaHeight: CGFloat = 72
-
-    private var maxSeconds: TimeInterval {
-        max(days.map(\.seconds).max() ?? 0, goalSeconds ?? 0, 1)
-    }
-
-    var body: some View {
-        VStack(spacing: 3) {
-            ZStack(alignment: .bottom) {
-                HStack(alignment: .bottom, spacing: 8) {
-                    ForEach(days, id: \.day) { item in
-                        VStack(spacing: 2) {
-                            Text(item.seconds > 0 ? hourLabel(item.seconds) : "–")
-                                .font(.caption2)
-                                .monospacedDigit()
-                                .foregroundStyle(.secondary)
-                            RoundedRectangle(cornerRadius: 3)
-                                .fill(item.seconds > 0 ? color : Color.primary.opacity(0.06))
-                                .frame(height: max(3, barAreaHeight * item.seconds / maxSeconds))
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                }
-                if let goalSeconds {
-                    Rectangle()
-                        .fill(color.opacity(0.55))
-                        .frame(height: 1)
-                        .offset(y: -barAreaHeight * goalSeconds / maxSeconds)
-                        .help("Tagesziel")
-                }
-            }
-            HStack(spacing: 8) {
-                ForEach(days, id: \.day) { item in
-                    Text(dayName(item.day))
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                }
-            }
-        }
-    }
-
-    /// "2:40" — hours:minutes, compact enough for a bar top.
-    private func hourLabel(_ seconds: TimeInterval) -> String {
-        let minutes = Int((seconds / 60).rounded())
-        return "\(minutes / 60):\(String(format: "%02d", minutes % 60))"
-    }
-}

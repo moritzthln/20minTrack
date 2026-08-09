@@ -12,6 +12,8 @@ struct StatsView: View {
     private enum Tab: String, CaseIterable {
         case day = "Tag"
         case week = "Woche"
+        case month = "Monat"
+        case year = "Jahr"
     }
 
     @State private var tab: Tab = .day
@@ -25,7 +27,7 @@ struct StatsView: View {
             }
             .pickerStyle(.segmented)
             .labelsHidden()
-            .frame(maxWidth: 220)
+            .frame(maxWidth: 320)
             switch tab {
             case .day:
                 StatsDayView(
@@ -34,6 +36,10 @@ struct StatsView: View {
                 )
             case .week:
                 StatsWeekView(dayStore: dayStore, preferences: preferences, calendar: calendar)
+            case .month:
+                StatsMonthView(dayStore: dayStore, preferences: preferences, calendar: calendar)
+            case .year:
+                StatsYearView(dayStore: dayStore, preferences: preferences, calendar: calendar)
             }
         }
         .padding(16)
