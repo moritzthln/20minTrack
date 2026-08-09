@@ -29,11 +29,12 @@ Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)
 
-- Swift 5.10, SwiftUI views inside an AppKit shell (NSStatusItem +
-  NSPopover + NSWindow), menu-bar-only (`LSUIElement`)
+- Swift (5.10+; machine has full Xcode with Swift 6.3 since 2026-08-09),
+  SwiftUI views inside an AppKit shell (NSStatusItem + NSPopover +
+  NSWindow), menu-bar-only (`LSUIElement`)
 - Swift Package Manager only — **no Xcode project**; built via `build.sh`
-- **No XCTest**: Command Line Tools only. Tests run through a custom
-  runner executable.
+- Tests run through a custom runner executable (kept deliberately even
+  though XCTest is available now — same harness as the Timer app).
 - No backend, no network. Persistence: UserDefaults (domain
   `com.moritzthelen.twentymintrack`) + one JSON file per day under
   `~/Library/Application Support/20minTrack/days/` (entries + Fazit) and

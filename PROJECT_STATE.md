@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: Xcode license accepted by user — project verified green on the Xcode toolchain (Swift 6.3.3, build + 78 tests + release install); custom test runner kept deliberately
+
 - 2026-08-09: v20 merged — drag-to-select on day strips (click = slot/gap as before, drag = exact span into the editor), live selection highlight + hover time label; note: Xcode was installed on the machine mid-session, builds ran via DEVELOPER_DIR=CommandLineTools until the user accepts the Xcode license
 
 - 2026-08-09: v19 merged — EntryMerge (Core, TDD): adjacent same-label same-text entries collapse to one row in the stats entry list (display-only, ids carried for whole-span edit/delete), duration shown per row
