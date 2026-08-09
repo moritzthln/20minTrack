@@ -36,6 +36,17 @@ struct DayStripView: View {
             )
         }
         .frame(height: height)
+        .onHover { hovering in
+            guard onTapSlot != nil else { return }
+            if hovering {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
+        .help(onTapSlot == nil
+            ? ""
+            : "Klick auf einen Block: leere Lücke füllen oder Eintrag bearbeiten")
     }
 
     private func draw(in context: inout GraphicsContext, size: CGSize) {
