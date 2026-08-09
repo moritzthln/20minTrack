@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v7 merged — menu bar is one bare number circle (countdown minutes; filled = open blocks; no text title)
+
 - 2026-08-09: v6 merged — app-usage shown as a visible boxed list ("In dieser Zeit benutzt", top 6) in check-in + slot editor; recorder verified live (70 segments on day one)
 
 - 2026-08-09: v4 merged to main — 540 pt popover, centered floating
