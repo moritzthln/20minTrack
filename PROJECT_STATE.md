@@ -13,6 +13,10 @@ v3 (user: "immer alles ausgefüllt, intuitiv, zeitsparend"): "Später"
 replaced skip — spans stay pending until labeled, no silent gaps;
 last label preselected (Return alone saves), click-on-selected-chip
 saves, ⌘1–⌘9 pick-and-save, empty-slot tap expands to the whole gap.
+v4 (user: "sehr breit" + "aufploppen, quasi gezwungen"): popover
+540 pt wide; every boundary pops a centered floating check-in window
+(all Spaces, above fullscreen, Enter saves / Esc postpones, closes
+itself once nothing is pending).
 Independent code review done — both blockers and both warnings fixed,
 cheap nits hardened. 68 unit tests green. Installed to
 /Applications/20minTrack.app and running.
@@ -80,6 +84,9 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v4 merged to main — 540 pt popover, centered floating
+  check-in window at every boundary (autoOpenPopover gates the window
+  now); 68 tests
 - 2026-08-09: v3 merged to main — no-gap flow (Später), preselected
   last label + one-key save (Return / ⌘1–⌘9 / click-click), empty-slot
   tap expands to the whole gap; 68 tests

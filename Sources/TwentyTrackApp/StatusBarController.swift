@@ -19,6 +19,7 @@ final class StatusBarController: NSObject {
     private let usageTracker: AppUsageTracker
     private let statsController: StatsWindowController
     private let settingsController: SettingsWindowController
+    private let checkinWindowController: CheckinWindowController
 
     private var titleRefreshTimer: Foundation.Timer?
     private var settingsObserver: NSObjectProtocol?
@@ -47,6 +48,7 @@ final class StatusBarController: NSObject {
             }
         )
         self.settingsController = SettingsWindowController(preferences: preferences)
+        self.checkinWindowController = CheckinWindowController(viewModel: viewModel)
         super.init()
 
         viewModel.flushUsage = { [weak usageTracker] in usageTracker?.flush() }
@@ -109,8 +111,12 @@ final class StatusBarController: NSObject {
               pending.end != lastPromptedEnd else { return }
         lastPromptedEnd = pending.end
         SoundPlayer.playChime(volume: preferences.chimeVolume)
-        if preferences.autoOpenPopover, !popover.isShown {
-            showPopover()
+        // Center-screen prompt — impossible to miss, all Spaces, above
+        // fullscreen. Re-shown (and re-centered) even if already open so
+        // it grabs attention again at every boundary.
+        if preferences.autoOpenPopover {
+            popover.performClose(nil)
+            checkinWindowController.show()
         }
     }
 
@@ -118,6 +124,9 @@ final class StatusBarController: NSObject {
 
     func refresh() {
         let now = Date()
+        if viewModel.pending == nil, checkinWindowController.isVisible {
+            checkinWindowController.close()
+        }
         let pendingBlocks = viewModel.pending.map {
             SlotGrid.blockCount(start: $0.start, end: $0.end, calendar: calendar)
         } ?? 0

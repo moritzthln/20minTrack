@@ -18,7 +18,13 @@ Baut die Release-App und installiert nach `/Applications/20minTrack.app`.
 ## Bedienung
 
 - **Menüleiste**: `20⃝ 7 m` = nächster Check-in in 7 min; gefülltes
-  Symbol + Zahl = offene Blöcke warten. Klick öffnet das Popover.
+  Symbol + Zahl = offene Blöcke warten. Klick öffnet das (breite)
+  Popover.
+- **Blockende = Fenster mitten auf dem Bildschirm**: Zu jeder
+  20-Minuten-Grenze ploppt das Check-in-Fenster zentriert auf — über
+  allen Fenstern, auf jedem Space, auch über Fullscreen-Apps. Enter
+  speichert, Esc = „Später". Nicht zu übersehen. (Abschaltbar in den
+  Einstellungen.)
 - **Check-in in einer Taste**: Das zuletzt benutzte Label ist
   vorausgewählt — **Enter** speichert sofort. Alternativ: **⌘1–⌘9**
   wählt ein Label und speichert direkt, Klick auf das gewählte Label

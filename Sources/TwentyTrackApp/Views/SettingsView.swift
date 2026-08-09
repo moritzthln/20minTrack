@@ -134,7 +134,7 @@ struct SettingsView: View {
     private var checkinSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             sectionTitle("Check-in")
-            Toggle("Popover automatisch öffnen", isOn: Binding(
+            Toggle("Check-in-Fenster automatisch öffnen", isOn: Binding(
                 get: { autoOpen },
                 set: { value in
                     autoOpen = value
