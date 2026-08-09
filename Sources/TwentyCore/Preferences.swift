@@ -16,6 +16,8 @@ public final class Preferences {
         case chimeVolume
         case autoOpenPopover
         case trackingPaused
+        case muted
+        case suppressDuringFocus
     }
 
     // MARK: - Labels
@@ -106,5 +108,21 @@ public final class Preferences {
     public var trackingPaused: Bool {
         get { defaults.bool(forKey: Key.trackingPaused.rawValue) }
         set { defaults.set(newValue, forKey: Key.trackingPaused.rawValue) }
+    }
+
+    /// Manual "in a call" switch: prompts and chimes stay silent, tracking
+    /// and pending accumulation continue.
+    public var muted: Bool {
+        get { defaults.bool(forKey: Key.muted.rawValue) }
+        set { defaults.set(newValue, forKey: Key.muted.rawValue) }
+    }
+
+    /// Suppress prompts while a macOS Focus mode is active (default on).
+    public var suppressDuringFocus: Bool {
+        get {
+            guard defaults.object(forKey: Key.suppressDuringFocus.rawValue) != nil else { return true }
+            return defaults.bool(forKey: Key.suppressDuringFocus.rawValue)
+        }
+        set { defaults.set(newValue, forKey: Key.suppressDuringFocus.rawValue) }
     }
 }

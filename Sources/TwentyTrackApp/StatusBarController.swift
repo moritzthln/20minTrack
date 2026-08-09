@@ -103,12 +103,24 @@ final class StatusBarController: NSObject {
 
     // MARK: - Check-in loop
 
+    /// Reads macOS Focus state from the DoNotDisturb assertions database.
+    private func isSystemFocusActive() -> Bool {
+        let url = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/DoNotDisturb/DB/Assertions.json")
+        guard let data = try? Data(contentsOf: url) else { return false }
+        return FocusAssertions.isActive(json: data)
+    }
+
     private func boundaryFired() {
         viewModel.reload()
         refresh()
         guard !preferences.trackingPaused,
               let pending = viewModel.pending,
               pending.end != lastPromptedEnd else { return }
+        // Muted (call) or an active macOS Focus: stay silent, do NOT mark
+        // as prompted — the next boundary after unmute/focus-end prompts.
+        if preferences.muted { return }
+        if preferences.suppressDuringFocus, isSystemFocusActive() { return }
         lastPromptedEnd = pending.end
         SoundPlayer.playChime(volume: preferences.chimeVolume)
         // Center-screen prompt — impossible to miss, all Spaces, above

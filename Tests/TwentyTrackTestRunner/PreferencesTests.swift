@@ -101,10 +101,26 @@ func runPreferencesSettingTests() {
         try withPreferences { prefs in
             try expect(prefs.autoOpenPopover, "autoOpenPopover default true")
             try expect(!prefs.trackingPaused, "trackingPaused default false")
+            try expect(!prefs.muted, "muted default false")
+            try expect(prefs.suppressDuringFocus, "suppressDuringFocus default true")
             prefs.autoOpenPopover = false
             prefs.trackingPaused = true
+            prefs.muted = true
+            prefs.suppressDuringFocus = false
             try expect(!prefs.autoOpenPopover, "autoOpenPopover set false")
             try expect(prefs.trackingPaused, "trackingPaused set true")
+            try expect(prefs.muted, "muted set true")
+            try expect(!prefs.suppressDuringFocus, "suppressDuringFocus set false")
         }
+    }
+
+    test("focus assertions detect active records and fail open") {
+        let active = #"{"data":[{"storeAssertionRecords":[{"assertionDetails":{"assertionDetailsModeIdentifier":"com.apple.donotdisturb.mode.default"}}]}]}"#
+        let empty = #"{"data":[{"storeAssertionRecords":[]}]}"#
+        let noData = #"{"data":[]}"#
+        try expect(FocusAssertions.isActive(json: Data(active.utf8)), "active record")
+        try expect(!FocusAssertions.isActive(json: Data(empty.utf8)), "empty records")
+        try expect(!FocusAssertions.isActive(json: Data(noData.utf8)), "no data entries")
+        try expect(!FocusAssertions.isActive(json: Data("junk".utf8)), "corrupt json")
     }
 }

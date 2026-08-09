@@ -33,6 +33,10 @@ Baut die Release-App und installiert nach `/Applications/20minTrack.app`.
   **„Später"** verschiebt den Check-in — der Zeitraum bleibt offen und
   wird beim nächsten Mal wieder mit abgefragt: Es entstehen keine
   Lücken, alles wird irgendwann ausgefüllt.
+- **Ruhe, wenn nötig**: Bei aktivem macOS-Fokus („Nicht stören") kommt
+  keine Meldung (abschaltbar in den Einstellungen). Glocken-Symbol im
+  Popover = manuell stummschalten (z. B. für Calls) — Tracking läuft
+  weiter, offene Blöcke sammeln sich und werden danach abgefragt.
 - **Tagesstrip**: Klick auf einen leeren Block öffnet den Editor gleich
   mit der **ganzen zusammenhängenden Lücke** (z. B. der ganzen Nacht);
   Klick auf einen vollen Block → bearbeiten/löschen.
