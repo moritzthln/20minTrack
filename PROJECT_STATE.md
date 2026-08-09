@@ -16,7 +16,13 @@ saves, ⌘1–⌘9 pick-and-save, empty-slot tap expands to the whole gap.
 v4 (user: "sehr breit" + "aufploppen, quasi gezwungen"): popover
 540 pt wide; every boundary pops a centered floating check-in window
 (all Spaces, above fullscreen, Enter saves / Esc postpones, closes
-itself once nothing is pending).
+itself once nothing is pending) — user-confirmed live at 10:40.
+v5 (user: "im Fokus keine Meldung + selber anklicken für Calls"):
+prompts stay silent while a macOS Focus is active (Assertions.json via
+`FocusAssertions`, fail-open, settings toggle) and via the manual bell
+button in the popover footer (`muted` pref) — tracking continues,
+suppressed boundaries do not set lastPromptedEnd, so the next boundary
+after unmute prompts normally.
 Independent code review done — both blockers and both warnings fixed,
 cheap nits hardened. 68 unit tests green. Installed to
 /Applications/20minTrack.app and running.

@@ -20,8 +20,12 @@ boundary pops a centered floating check-in window
 (`CheckinWindowController`: NSWindow, level .floating, all Spaces +
 fullScreenAuxiliary, re-centered on every show, Esc postpones, closes
 itself when nothing is pending — `autoOpenPopover` now gates this
-window instead of the popover). Sibling of `~/AI/Tools/Timer` — same
-house style.
+window instead of the popover). v5: prompt suppression — while a macOS
+Focus mode is active (`FocusAssertions` parses
+~/Library/DoNotDisturb/DB/Assertions.json, fail-open; settings toggle
+`suppressDuringFocus`) and via the manual popover bell (`muted` pref,
+"in a call"); suppressed boundaries leave `lastPromptedEnd` untouched.
+Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)
 

@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var chimeVolume = 0.5
     @State private var autoOpen = true
     @State private var trackingPaused = false
+    @State private var suppressFocus = true
     @State private var loginEnabled = false
     @State private var loginStatus = ""
 
@@ -154,6 +155,13 @@ struct SettingsView: View {
                 Button("Test") { SoundPlayer.playChime(volume: preferences.chimeVolume) }
                     .buttonStyle(PillButtonStyle())
             }
+            Toggle("Bei macOS-Fokus keine Meldungen", isOn: Binding(
+                get: { suppressFocus },
+                set: { value in
+                    suppressFocus = value
+                    preferences.suppressDuringFocus = value
+                }
+            ))
             Toggle("Tracking pausieren", isOn: Binding(
                 get: { trackingPaused },
                 set: { value in
@@ -200,6 +208,7 @@ struct SettingsView: View {
         chimeVolume = preferences.chimeVolume
         autoOpen = preferences.autoOpenPopover
         trackingPaused = preferences.trackingPaused
+        suppressFocus = preferences.suppressDuringFocus
         loginEnabled = LaunchAtLogin.isEnabled
         loginStatus = LaunchAtLogin.statusDescription
     }

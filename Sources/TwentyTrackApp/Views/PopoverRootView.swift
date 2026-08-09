@@ -128,6 +128,16 @@ struct PopoverRootView: View {
         HStack(spacing: 14) {
             footerButton("square.and.pencil", help: "Tagesfazit") { mode = .fazit }
             footerButton("chart.bar", help: "Statistik", action: onOpenStats)
+            Button {
+                model.toggleMuted()
+            } label: {
+                Image(systemName: model.muted ? "bell.slash.fill" : "bell")
+                    .foregroundStyle(model.muted ? Color.orange : Color.secondary)
+            }
+            .buttonStyle(.plain)
+            .help(model.muted
+                ? "Meldungen wieder aktivieren"
+                : "Meldungen pausieren (z. B. für Calls) — Tracking läuft weiter")
             Spacer()
             Menu {
                 Button(model.preferences.trackingPaused ? "Tracking fortsetzen" : "Tracking pausieren") {
