@@ -9,6 +9,7 @@ struct StatsWeekView: View {
 
     @State private var anchorDay = Date()
     @State private var entriesByDay: [Date: [Entry]] = [:]
+    @State private var fazitByDay: [Date: String] = [:]
 
     private var weekDays: [Date] {
         StatsMath.weekDays(containing: anchorDay, calendar: calendar)
@@ -29,20 +30,69 @@ struct StatsWeekView: View {
         entriesByDay.values.flatMap { $0 }
     }
 
+    private var totals: [String: TimeInterval] {
+        StatsMath.totals(allEntries)
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 header
+                tileRow
                 dayRows
                 LabelTotalsList(
-                    totals: StatsMath.totals(allEntries),
+                    totals: totals,
                     untrackedSeconds: untrackedWeekSeconds,
                     labelsByID: labelsByID
                 )
+                fazitList
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear(perform: load)
+    }
+
+    private var tileRow: some View {
+        let focus = StatsFigures.focusSeconds(totals)
+        let activeDays = weekDays.filter { !(entriesByDay[$0] ?? []).isEmpty }.count
+        return HStack(spacing: 8) {
+            StatTile(title: "Fokus", value: TimeFormatting.wording(seconds: focus))
+            StatTile(
+                title: "Ø Fokus/Tag",
+                value: activeDays > 0
+                    ? TimeFormatting.wording(seconds: focus / Double(activeDays))
+                    : "–"
+            )
+            StatTile(title: "Fokus-Quote", value: StatsFigures.focusShare(totals))
+            StatTile(
+                title: "Getrackt",
+                value: TimeFormatting.wording(seconds: StatsMath.trackedSeconds(allEntries))
+            )
+        }
+    }
+
+    /// The week's daily conclusions — the written review in one place.
+    private var fazitList: some View {
+        let fazite = weekDays.compactMap { day in
+            fazitByDay[day].map { (day: day, text: $0) }
+        }
+        return VStack(alignment: .leading, spacing: 4) {
+            if !fazite.isEmpty {
+                Text("Fazite")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                ForEach(fazite, id: \.day) { item in
+                    HStack(alignment: .top, spacing: 8) {
+                        Text(weekdayShort(item.day))
+                            .foregroundStyle(.secondary)
+                            .frame(width: 22, alignment: .leading)
+                        Text(item.text)
+                            .lineLimit(3)
+                    }
+                    .font(.caption)
+                }
+            }
+        }
     }
 
     private var header: some View {
@@ -128,5 +178,8 @@ struct StatsWeekView: View {
         entriesByDay = Dictionary(uniqueKeysWithValues: weekDays.map {
             ($0, dayStore.entries(onDay: $0))
         })
+        fazitByDay = weekDays.reduce(into: [:]) { result, day in
+            result[day] = dayStore.fazit(onDay: day)
+        }
     }
 }
