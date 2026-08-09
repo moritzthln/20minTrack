@@ -118,27 +118,44 @@ struct SettingsView: View {
         .fixedSize()
     }
 
-    /// Daily minimum goal in minutes — plain digits, empty = no goal.
+    /// Daily minimum goal as hours + minutes — both empty = no goal.
     private func goalField(for label: TrackLabel) -> some View {
-        HStack(spacing: 3) {
-            TextField("Ziel", text: Binding(
-                get: { label.goalMinutes.map(String.init) ?? "" },
+        let goal = label.goalMinutes ?? 0
+        return HStack(spacing: 3) {
+            TextField("0", text: Binding(
+                get: { label.goalMinutes.map { String($0 / 60) } ?? "" },
                 set: { raw in
-                    var updated = label
-                    let digits = raw.filter(\.isNumber)
-                    let minutes = min(Int(digits) ?? 0, 1440)
-                    updated.goalMinutes = minutes > 0 ? minutes : nil
-                    persist(updated)
+                    let hours = min(Int(raw.filter(\.isNumber)) ?? 0, 24)
+                    setGoal(label, minutes: hours * 60 + goal % 60)
                 }
             ))
             .textFieldStyle(.roundedBorder)
             .multilineTextAlignment(.trailing)
-            .frame(width: 52)
+            .frame(width: 34)
+            Text("h")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            TextField("0", text: Binding(
+                get: { label.goalMinutes.map { String($0 % 60) } ?? "" },
+                set: { raw in
+                    let minutes = min(Int(raw.filter(\.isNumber)) ?? 0, 59)
+                    setGoal(label, minutes: (goal / 60) * 60 + minutes)
+                }
+            ))
+            .textFieldStyle(.roundedBorder)
+            .multilineTextAlignment(.trailing)
+            .frame(width: 34)
             Text("min")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .help("Tagesziel in Minuten (leer = kein Ziel) — Statistik zeigt ✓ bei Erreichen, Woche ×7")
+        .help("Tagesziel (leer = kein Ziel) — Statistik zeigt ✓ bei Erreichen, Woche ×7")
+    }
+
+    private func setGoal(_ label: TrackLabel, minutes: Int) {
+        var updated = label
+        updated.goalMinutes = minutes > 0 ? min(minutes, 1440) : nil
+        persist(updated)
     }
 
     private func addLabel() {
