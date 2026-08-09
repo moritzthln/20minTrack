@@ -2,15 +2,19 @@
 
 ## Status
 
-v1 + v2 implemented and merged to `main` (2026-08-09). Menu bar
+v1 + v2 + v3 implemented and merged to `main` (2026-08-09). Menu bar
 20-minute tracker: grid check-ins with chime + auto-popover, per-day
 JSON store (midnight split, overlap trim, gap-filling saves), today
 strip with slot editor, Tagesfazit, statistics (Tag/Woche), settings.
 v2: local frontmost-app recorder feeding a "Benutzt: …" line into
 check-in + slot editor, clickable stats day strip (backfill past days,
 "24:00" option), anchor advance (backfilled blocks never re-prompt).
+v3 (user: "immer alles ausgefüllt, intuitiv, zeitsparend"): "Später"
+replaced skip — spans stay pending until labeled, no silent gaps;
+last label preselected (Return alone saves), click-on-selected-chip
+saves, ⌘1–⌘9 pick-and-save, empty-slot tap expands to the whole gap.
 Independent code review done — both blockers and both warnings fixed,
-cheap nits hardened. 67 unit tests green. Installed to
+cheap nits hardened. 68 unit tests green. Installed to
 /Applications/20minTrack.app and running.
 
 ## In Progress
@@ -43,6 +47,14 @@ cheap nits hardened. 67 unit tests green. Installed to
 
 ## Recent Decisions
 
+- 2026-08-09 (v3): Skip is gone — "Später" only closes the popover; the
+  anchor moves exclusively through saving (or AnchorAdvance over
+  manually covered blocks). The lookback cap (start of yesterday)
+  remains the only way time can end up permanently unlabeled; those
+  days are backfilled via the stats editor
+- 2026-08-09 (v3): ⌘-shortcuts save immediately (pick + save in one),
+  implemented as invisible keyboard-shortcut buttons so the auto-focused
+  text field keeps plain digits
 - 2026-08-09 (v2): NO automatic sleep window — user explicitly rejected
   it ("nein keins"); sleep is backfilled manually (check-in over the
   night gap or stats editor), text stays optional everywhere
@@ -68,6 +80,9 @@ cheap nits hardened. 67 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: v3 merged to main — no-gap flow (Später), preselected
+  last label + one-key save (Return / ⌘1–⌘9 / click-click), empty-slot
+  tap expands to the whole gap; 68 tests
 - 2026-08-09: v2 merged to main — usage recorder + line, stats backfill
   editor, anchor advance; review fixes (split oversized test functions,
   prefs test cleanup, input-wipe fix, dictionary uniquing, future-anchor

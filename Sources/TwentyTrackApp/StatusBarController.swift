@@ -166,6 +166,9 @@ final class StatusBarController: NSObject {
         // draft text) resets, stored values reload. Timer pattern.
         popover.contentViewController = NSHostingController(rootView: PopoverRootView(
             model: viewModel,
+            onClosePopover: { [weak self] in
+                self?.popover.performClose(nil)
+            },
             onOpenStats: { [weak self] in
                 self?.popover.performClose(nil)
                 self?.statsController.show()

@@ -8,6 +8,7 @@ struct SlotEditView: View {
     let existing: Entry?
     let labels: [TrackLabel]
     let calendar: Calendar
+    let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
     let onSave: (_ start: Date, _ end: Date, _ labelID: String, _ text: String) -> Void
     let onDelete: () -> Void
@@ -40,9 +41,14 @@ struct SlotEditView: View {
             }
             .font(.caption)
             UsageLineView(usage: usage)
-            TextField("Kurz notieren…", text: $text)
+            TextField("Kurz notieren… (optional)", text: $text)
                 .textFieldStyle(.roundedBorder)
-            LabelChipsView(labels: labels, selectedID: $selectedLabelID)
+                .onSubmit { save(labelID: selectedLabelID) }
+            LabelChipsView(
+                labels: labels,
+                selectedID: $selectedLabelID,
+                onConfirm: { save(labelID: $0) }
+            )
             HStack {
                 if existing != nil {
                     Button("Löschen", role: .destructive, action: onDelete)
@@ -51,12 +57,9 @@ struct SlotEditView: View {
                 Spacer()
                 Button("Abbrechen", action: onCancel)
                     .buttonStyle(PillButtonStyle())
-                Button("Speichern") {
-                    guard let selectedLabelID, to > from else { return }
-                    onSave(from, to, selectedLabelID, text)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(selectedLabelID == nil || to <= from)
+                Button("Speichern") { save(labelID: selectedLabelID) }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(selectedLabelID == nil || to <= from)
             }
         }
         .onAppear {
@@ -98,6 +101,11 @@ struct SlotEditView: View {
         usage = usageFor(DateInterval(start: from, end: to))
     }
 
+    private func save(labelID: String?) {
+        guard let labelID, to > from else { return }
+        onSave(from, to, labelID, text)
+    }
+
     private func prefill() {
         if let existing {
             from = existing.start
@@ -107,6 +115,8 @@ struct SlotEditView: View {
         } else {
             from = slot.start
             to = slot.end
+            selectedLabelID = labels.contains { $0.id == preselectedLabelID }
+                ? preselectedLabelID : nil
         }
     }
 }

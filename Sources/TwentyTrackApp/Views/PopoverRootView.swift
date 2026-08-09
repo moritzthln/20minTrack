@@ -5,6 +5,7 @@ import TwentyCore
 /// A fresh hosting controller per open resets the local mode.
 struct PopoverRootView: View {
     @ObservedObject var model: TrackerViewModel
+    let onClosePopover: () -> Void
     let onOpenStats: () -> Void
     let onOpenSettings: () -> Void
 
@@ -36,11 +37,12 @@ struct PopoverRootView: View {
                     pending: pending,
                     labels: model.activeLabels,
                     calendar: model.calendar,
+                    preselectedLabelID: model.preferences.lastLabelID,
                     usageFor: { model.usageTotals(in: $0) },
                     onSave: { from, labelID, text in
                         model.saveCheckin(from: from, labelID: labelID, text: text)
                     },
-                    onSkip: { model.skipCheckin() }
+                    onPostpone: onClosePopover
                 )
             } else {
                 IdleView(calendar: model.calendar, paused: model.preferences.trackingPaused)
@@ -52,6 +54,7 @@ struct PopoverRootView: View {
                 existing: existing,
                 labels: model.activeLabels,
                 calendar: model.calendar,
+                preselectedLabelID: model.preferences.lastLabelID,
                 usageFor: { model.usageTotals(in: $0) },
                 onSave: { start, end, labelID, text in
                     model.replaceEntry(
@@ -97,10 +100,28 @@ struct PopoverRootView: View {
                 now: Date(),
                 height: 20,
                 onTapSlot: { slot in
-                    mode = .edit(slot: slot, existing: entry(at: slot))
+                    mode = .edit(slot: expandedSlot(slot), existing: entry(at: slot))
                 }
             )
         }
+    }
+
+    /// A tapped empty slot expands to the whole surrounding untracked gap
+    /// (capped at the running block today) — one edit backfills it all.
+    private func expandedSlot(_ slot: DateInterval) -> DateInterval {
+        guard entry(at: slot) == nil else { return slot }
+        let calendar = model.calendar
+        let dayStart = calendar.startOfDay(for: Date())
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else { return slot }
+        let blocked = model.todayEntries.map { DateInterval(start: $0.start, end: $0.end) }
+        let mid = slot.start.addingTimeInterval(slot.duration / 2)
+        guard var gap = GapFill.gaps(in: DateInterval(start: dayStart, end: dayEnd), blocked: blocked)
+            .first(where: { $0.start <= mid && mid < $0.end }) else { return slot }
+        let cap = max(slot.end, SlotGrid.floorBoundary(Date(), calendar: calendar))
+        if gap.end > cap {
+            gap = DateInterval(start: gap.start, end: cap)
+        }
+        return gap.duration > 0 ? gap : slot
     }
 
     private var footer: some View {

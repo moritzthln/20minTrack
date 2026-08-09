@@ -56,12 +56,14 @@ struct StatsDayView: View {
                 existing: target.existing,
                 labels: preferences.activeLabels,
                 calendar: calendar,
+                preselectedLabelID: preferences.lastLabelID,
                 usageFor: usageFor,
                 onSave: { start, end, labelID, text in
                     if let existing = target.existing {
                         dayStore.remove(id: existing.id, onDay: day)
                     }
                     dayStore.insert(start: start, end: end, labelID: labelID, text: text)
+                    preferences.lastLabelID = labelID
                     finishEdit()
                 },
                 onDelete: {
@@ -87,6 +89,25 @@ struct StatsDayView: View {
     private func entry(at slot: DateInterval) -> Entry? {
         let mid = slot.start.addingTimeInterval(slot.duration / 2)
         return entries.first { $0.start <= mid && mid < $0.end }
+    }
+
+    /// A tapped empty slot expands to the whole surrounding untracked gap
+    /// (capped at the running block when viewing today).
+    private func expandedSlot(_ slot: DateInterval) -> DateInterval {
+        guard entry(at: slot) == nil else { return slot }
+        let dayStart = calendar.startOfDay(for: day)
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else { return slot }
+        let blocked = entries.map { DateInterval(start: $0.start, end: $0.end) }
+        let mid = slot.start.addingTimeInterval(slot.duration / 2)
+        guard var gap = GapFill.gaps(in: DateInterval(start: dayStart, end: dayEnd), blocked: blocked)
+            .first(where: { $0.start <= mid && mid < $0.end }) else { return slot }
+        if isToday {
+            let cap = max(slot.end, SlotGrid.floorBoundary(Date(), calendar: calendar))
+            if gap.end > cap {
+                gap = DateInterval(start: gap.start, end: cap)
+            }
+        }
+        return gap.duration > 0 ? gap : slot
     }
 
     private var header: some View {
@@ -124,7 +145,7 @@ struct StatsDayView: View {
                 now: isToday ? Date() : nil,
                 height: 26,
                 onTapSlot: { slot in
-                    editTarget = EditTarget(slot: slot, existing: entry(at: slot))
+                    editTarget = EditTarget(slot: expandedSlot(slot), existing: entry(at: slot))
                 }
             )
             HStack {
