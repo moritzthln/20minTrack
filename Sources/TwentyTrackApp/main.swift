@@ -17,7 +17,9 @@ let delegate = AppDelegate()
 app.delegate = delegate
 app.setActivationPolicy(.accessory)
 
-// Hidden main menu so ⌘Q works while the popover is key.
+// Hidden main menu. Deliberately NO ⌘Q shortcut: a reflexive ⌘Q while
+// the check-in window is key must never kill the tracker. Quitting works
+// via the popover "…" menu and the status item's right-click menu.
 let mainMenu = NSMenu()
 let appMenuItem = NSMenuItem()
 let appMenu = NSMenu()
@@ -25,7 +27,7 @@ appMenu.addItem(
     NSMenuItem(
         title: "20minTrack beenden",
         action: #selector(NSApplication.terminate(_:)),
-        keyEquivalent: "q"
+        keyEquivalent: ""
     )
 )
 appMenuItem.submenu = appMenu

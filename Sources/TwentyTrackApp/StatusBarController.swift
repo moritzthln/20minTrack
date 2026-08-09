@@ -200,7 +200,7 @@ final class StatusBarController: NSObject {
         menu.addItem(NSMenuItem(
             title: "20minTrack beenden",
             action: #selector(NSApplication.terminate(_:)),
-            keyEquivalent: "q"
+            keyEquivalent: ""
         ))
         guard let button = statusItem.button else { return }
         menu.popUp(positioning: nil, at: NSPoint(x: 0, y: button.bounds.height + 4), in: button)
