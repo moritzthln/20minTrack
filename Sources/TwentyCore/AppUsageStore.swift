@@ -46,6 +46,16 @@ public final class AppUsageStore {
         load(day: date).sorted { $0.start < $1.start }
     }
 
+    /// Aggregated per-app time for a range spanning at most two adjacent
+    /// days (check-in window / day editor).
+    public func totals(in range: DateInterval) -> [AppUsageTotal] {
+        var segments = self.segments(onDay: range.start)
+        if !calendar.isDate(range.start, inSameDayAs: range.end) {
+            segments += self.segments(onDay: range.end)
+        }
+        return AppUsageMath.totals(segments: segments, in: range)
+    }
+
     // MARK: - Files
 
     private func upsertPiece(_ piece: AppUsageSegment) {

@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import TwentyCore
 
@@ -25,6 +26,10 @@ struct SettingsView: View {
         }
         .frame(width: 380, height: 560)
         .onAppear(perform: load)
+        // Keep in sync when e.g. the popover menu toggles the pause.
+        .onReceive(
+            NotificationCenter.default.publisher(for: .trackerSettingsChanged)
+        ) { _ in load() }
     }
 
     // MARK: - Labels
@@ -59,7 +64,7 @@ struct SettingsView: View {
                 set: { newKey in
                     var updated = label
                     updated.colorKey = newKey
-                    save(updated)
+                    persist(updated)
                 }
             ))
             TextField("Name", text: Binding(
@@ -67,7 +72,9 @@ struct SettingsView: View {
                 set: { newName in
                     var updated = label
                     updated.name = newName
-                    save(updated)
+                    // updateLabel ignores empty names, the draft keeps the
+                    // typing state — clearing and retyping works smoothly.
+                    persist(updated)
                 }
             ))
             .textFieldStyle(.roundedBorder)
@@ -114,10 +121,12 @@ struct SettingsView: View {
         notifyChanged()
     }
 
-    private func save(_ label: TrackLabel) {
+    /// Persists rename/recolor and mirrors the typed value into the local
+    /// draft. No notification and no disk-reload per keystroke — other
+    /// views pick labels up on their next reload.
+    private func persist(_ label: TrackLabel) {
         preferences.updateLabel(label)
-        load()
-        notifyChanged()
+        labels = labels.map { $0.id == label.id ? label : $0 }
     }
 
     // MARK: - Check-in

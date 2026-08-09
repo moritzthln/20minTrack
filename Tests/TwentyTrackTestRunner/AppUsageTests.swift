@@ -93,6 +93,19 @@ func runAppUsageTests() {
         try expectEqual(totals[1].seconds, 6 * 60, accuracy: 0.5)
     }
 
+    test("store totals reads both days of a midnight-spanning range") {
+        let store = makeUsageStore()
+        store.upsert(AppUsageSegment(
+            bundleID: "com.a", name: "Alpha",
+            start: makeDate(2026, 8, 8, 23, 50), end: makeDate(2026, 8, 9, 0, 10)
+        ))
+        let totals = store.totals(in: DateInterval(
+            start: makeDate(2026, 8, 8, 23, 40), end: makeDate(2026, 8, 9, 0, 20)
+        ))
+        try expectEqual(totals.count, 1)
+        try expectEqual(totals[0].seconds, 20 * 60, accuracy: 0.5)
+    }
+
     test("totals ignores segments outside the range and keeps the latest name") {
         let totals = AppUsageMath.totals(
             segments: [

@@ -8,6 +8,7 @@ struct SlotEditView: View {
     let existing: Entry?
     let labels: [TrackLabel]
     let calendar: Calendar
+    let usageFor: (DateInterval) -> [AppUsageTotal]
     let onSave: (_ start: Date, _ end: Date, _ labelID: String, _ text: String) -> Void
     let onDelete: () -> Void
     let onCancel: () -> Void
@@ -16,6 +17,7 @@ struct SlotEditView: View {
     @State private var to = Date.distantPast
     @State private var text = ""
     @State private var selectedLabelID: String?
+    @State private var usage: [AppUsageTotal] = []
 
     private var dayBoundaries: [Date] {
         let dayStart = calendar.startOfDay(for: day)
@@ -37,6 +39,7 @@ struct SlotEditView: View {
                 timePicker(selection: $to, options: toOptions)
             }
             .font(.caption)
+            UsageLineView(usage: usage)
             TextField("Kurz notieren…", text: $text)
                 .textFieldStyle(.roundedBorder)
             LabelChipsView(labels: labels, selectedID: $selectedLabelID)
@@ -56,22 +59,43 @@ struct SlotEditView: View {
                 .disabled(selectedLabelID == nil || to <= from)
             }
         }
-        .onAppear(perform: prefill)
+        .onAppear {
+            prefill()
+            reloadUsage()
+        }
         .onChange(of: from) { newFrom in
             if to <= newFrom {
                 to = SlotGrid.nextBoundary(after: newFrom, calendar: calendar)
             }
+            reloadUsage()
         }
+        .onChange(of: to) { _ in reloadUsage() }
     }
 
     private func timePicker(selection: Binding<Date>, options: [Date]) -> some View {
         Picker("", selection: selection) {
             ForEach(options, id: \.self) { option in
-                Text(TimeFormatting.clock(option, calendar: calendar)).tag(option)
+                Text(timeLabel(option)).tag(option)
             }
         }
         .labelsHidden()
         .fixedSize()
+    }
+
+    /// The day-end boundary reads "24:00", not "00:00" of the next day.
+    private func timeLabel(_ date: Date) -> String {
+        if date == dayBoundaries.last {
+            return "24:00"
+        }
+        return TimeFormatting.clock(date, calendar: calendar)
+    }
+
+    private func reloadUsage() {
+        guard to > from else {
+            usage = []
+            return
+        }
+        usage = usageFor(DateInterval(start: from, end: to))
     }
 
     private func prefill() {

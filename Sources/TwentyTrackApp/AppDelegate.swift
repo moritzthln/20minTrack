@@ -8,8 +8,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let calendar = Calendar.current
         let preferences = Preferences()
         let dayStore = DayStore(directory: DayStore.defaultDirectory(), calendar: calendar)
-        statusBarController = StatusBarController(
-            preferences: preferences, dayStore: dayStore, calendar: calendar
+        let usageStore = AppUsageStore(
+            directory: AppUsageStore.defaultDirectory(), calendar: calendar
         )
+        let usageTracker = AppUsageTracker(store: usageStore, preferences: preferences)
+        statusBarController = StatusBarController(
+            preferences: preferences, dayStore: dayStore,
+            usageStore: usageStore, usageTracker: usageTracker, calendar: calendar
+        )
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        statusBarController?.prepareForTermination()
     }
 }

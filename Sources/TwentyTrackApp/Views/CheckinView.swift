@@ -6,12 +6,14 @@ struct CheckinView: View {
     let pending: DateInterval
     let labels: [TrackLabel]
     let calendar: Calendar
+    let usageFor: (DateInterval) -> [AppUsageTotal]
     let onSave: (_ from: Date, _ labelID: String, _ text: String) -> Void
     let onSkip: () -> Void
 
     @State private var fromDate = Date.distantPast
     @State private var text = ""
     @State private var selectedLabelID: String?
+    @State private var usage: [AppUsageTotal] = []
     @FocusState private var textFocused: Bool
 
     /// Selectable span starts: every boundary in the window except its end.
@@ -34,6 +36,7 @@ struct CheckinView: View {
             Text("Was hast du gemacht?")
                 .font(.headline)
             spanLine
+            UsageLineView(usage: usage)
             TextField("Kurz notieren…", text: $text)
                 .textFieldStyle(.roundedBorder)
                 .focused($textFocused)
@@ -51,12 +54,21 @@ struct CheckinView: View {
         .onAppear {
             fromDate = pending.start
             textFocused = true
+            reloadUsage()
         }
-        .onChange(of: pending) { newValue in
-            fromDate = newValue.start
+        // Reset drafts only when the span START moves (anchor changed).
+        // A growing END (boundary fired while typing) must not wipe input.
+        .onChange(of: pending.start) { newStart in
+            fromDate = newStart
             text = ""
             selectedLabelID = nil
         }
+        .onChange(of: pending) { _ in reloadUsage() }
+        .onChange(of: fromDate) { _ in reloadUsage() }
+    }
+
+    private func reloadUsage() {
+        usage = usageFor(DateInterval(start: effectiveFrom, end: pending.end))
     }
 
     private var spanLine: some View {
