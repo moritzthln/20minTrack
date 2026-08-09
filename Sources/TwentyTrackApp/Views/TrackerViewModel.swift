@@ -145,7 +145,10 @@ final class TrackerViewModel: ObservableObject {
                 labelID: labelID, text: text.trimmingCharacters(in: .whitespacesAndNewlines)
             )
         }
-        preferences.checkinAnchor = pending.end
+        // No manual anchor jump: normalizeAnchor advances over covered
+        // blocks on reload. A save from a later "Von" keeps the earlier
+        // part pending — nothing is silently dropped, the check-in keeps
+        // asking until every block is labeled.
         preferences.lastLabelID = labelID
         finishChange()
     }
