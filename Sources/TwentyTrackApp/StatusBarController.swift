@@ -226,6 +226,8 @@ final class StatusBarController: NSObject {
             }
         ))
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-        popover.contentViewController?.view.window?.makeKey()
+        // No makeKey() here: under the Xcode/macOS SDK build it detaches
+        // the popover from the status item (appears displaced further
+        // down). The text field focuses itself via @FocusState anyway.
     }
 }
