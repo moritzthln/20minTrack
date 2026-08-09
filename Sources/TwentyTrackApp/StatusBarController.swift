@@ -67,6 +67,12 @@ final class StatusBarController: NSObject {
         }
 
         refresh()
+
+        // Login/relaunch has no wake event: prompt shortly after start when
+        // something is already pending (e.g. last night's sleep).
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.boundaryFired()
+        }
     }
 
     deinit {
