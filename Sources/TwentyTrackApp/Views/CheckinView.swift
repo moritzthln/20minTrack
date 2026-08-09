@@ -58,7 +58,8 @@ struct CheckinView: View {
             HStack {
                 Button("Später", action: onPostpone)
                     .buttonStyle(PillButtonStyle())
-                    .help("Fragt beim nächsten Check-in wieder mit ab")
+                    .keyboardShortcut(.cancelAction)
+                    .help("Esc — fragt beim nächsten Check-in wieder mit ab")
                 Spacer()
                 Button("Speichern") { save(labelID: selectedLabelID) }
                     .buttonStyle(.borderedProminent)

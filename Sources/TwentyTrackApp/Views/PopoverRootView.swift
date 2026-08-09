@@ -24,8 +24,8 @@ struct PopoverRootView: View {
             Divider()
             footer
         }
-        .padding(14)
-        .frame(width: 300)
+        .padding(16)
+        .frame(width: 540)
     }
 
     @ViewBuilder

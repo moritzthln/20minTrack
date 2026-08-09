@@ -15,8 +15,13 @@ pending until labeled — nothing is silently dropped), the last saved
 label is preselected (`Preferences.lastLabelID` — Return alone saves),
 clicking the selected chip saves, ⌘1–⌘9 pick-and-save, and tapping an
 empty slot opens the editor over the whole surrounding gap (capped at
-the running block today). Sibling of `~/AI/Tools/Timer` — same house
-style.
+the running block today). v4: the popover is wide (540 pt) and every
+boundary pops a centered floating check-in window
+(`CheckinWindowController`: NSWindow, level .floating, all Spaces +
+fullScreenAuxiliary, re-centered on every show, Esc postpones, closes
+itself when nothing is pending — `autoOpenPopover` now gates this
+window instead of the popover). Sibling of `~/AI/Tools/Timer` — same
+house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)
 
