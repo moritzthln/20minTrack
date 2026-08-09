@@ -50,8 +50,12 @@ public final class Preferences {
     }
 
     /// Replaces the stored label with the same id; unknown ids are ignored.
+    /// An empty (whitespace-only) name never persists — the old name stays.
     public func updateLabel(_ label: TrackLabel) {
-        labels = labels.map { $0.id == label.id ? label : $0 }
+        var sanitized = label
+        sanitized.name = label.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !sanitized.name.isEmpty else { return }
+        labels = labels.map { $0.id == sanitized.id ? sanitized : $0 }
     }
 
     public func archiveLabel(id: String) {

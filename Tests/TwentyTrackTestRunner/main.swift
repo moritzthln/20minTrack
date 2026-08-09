@@ -1,7 +1,10 @@
 // Test entry point — every suite registers its tests via a run function.
-runSlotGridTests()
+runSlotGridFloorNextTests()
+runSlotGridRangeTests()
 runCheckinRulesTests()
-runDayStoreTests()
+runDayStoreInsertTests()
+runDayStoreTrimTests()
+runDayStoreFazitTests()
 runGapFillTests()
 runAppUsageTests()
 runAnchorAdvanceTests()

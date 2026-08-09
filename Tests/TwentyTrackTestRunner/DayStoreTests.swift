@@ -7,7 +7,7 @@ private func makeStore() -> (DayStore, URL) {
     return (DayStore(directory: dir, calendar: testCalendar), dir)
 }
 
-func runDayStoreTests() {
+func runDayStoreInsertTests() {
     test("insert and read back sorted by start") {
         let (store, _) = makeStore()
         store.insert(
@@ -43,6 +43,29 @@ func runDayStoreTests() {
         try expectEqual(day2[0].text, "geschlafen")
     }
 
+    test("remove deletes by id") {
+        let (store, _) = makeStore()
+        store.insert(
+            start: makeDate(2026, 8, 9, 10, 0), end: makeDate(2026, 8, 9, 10, 20),
+            labelID: "orga", text: "a"
+        )
+        let day = makeDate(2026, 8, 9, 12, 0)
+        let id = store.entries(onDay: day)[0].id
+        store.remove(id: id, onDay: day)
+        try expectEqual(store.entries(onDay: day).count, 0)
+    }
+
+    test("inverted range is discarded") {
+        let (store, _) = makeStore()
+        store.insert(
+            start: makeDate(2026, 8, 9, 10, 20), end: makeDate(2026, 8, 9, 10, 20),
+            labelID: "orga", text: "a"
+        )
+        try expectEqual(store.entries(onDay: makeDate(2026, 8, 9, 12, 0)).count, 0)
+    }
+}
+
+func runDayStoreTrimTests() {
     test("exact overlap replaces the old entry") {
         let (store, _) = makeStore()
         store.insert(
@@ -129,19 +152,9 @@ func runDayStoreTests() {
         try expectEqual(entries.count, 1)
         try expectEqual(entries[0].labelID, "sport")
     }
+}
 
-    test("remove deletes by id") {
-        let (store, _) = makeStore()
-        store.insert(
-            start: makeDate(2026, 8, 9, 10, 0), end: makeDate(2026, 8, 9, 10, 20),
-            labelID: "orga", text: "a"
-        )
-        let day = makeDate(2026, 8, 9, 12, 0)
-        let id = store.entries(onDay: day)[0].id
-        store.remove(id: id, onDay: day)
-        try expectEqual(store.entries(onDay: day).count, 0)
-    }
-
+func runDayStoreFazitTests() {
     test("fazit roundtrips and empty clears it") {
         let (store, _) = makeStore()
         let day = makeDate(2026, 8, 9, 12, 0)
@@ -174,14 +187,5 @@ func runDayStoreTests() {
             labelID: "orga", text: "a"
         )
         try expectEqual(store.entries(onDay: day).count, 1)
-    }
-
-    test("inverted range is discarded") {
-        let (store, _) = makeStore()
-        store.insert(
-            start: makeDate(2026, 8, 9, 10, 20), end: makeDate(2026, 8, 9, 10, 20),
-            labelID: "orga", text: "a"
-        )
-        try expectEqual(store.entries(onDay: makeDate(2026, 8, 9, 12, 0)).count, 0)
     }
 }

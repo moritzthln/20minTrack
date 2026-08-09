@@ -1,7 +1,7 @@
 import Foundation
 import TwentyCore
 
-func runSlotGridTests() {
+func runSlotGridFloorNextTests() {
     test("floorBoundary keeps an exact boundary") {
         try expectEqual(
             SlotGrid.floorBoundary(makeDate(2026, 8, 9, 10, 0), calendar: testCalendar),
@@ -41,7 +41,9 @@ func runSlotGridTests() {
             makeDate(2026, 8, 10, 0, 0)
         )
     }
+}
 
+func runSlotGridRangeTests() {
     test("isOnGrid accepts boundaries and rejects everything else") {
         try expect(SlotGrid.isOnGrid(makeDate(2026, 8, 9, 10, 40), calendar: testCalendar), "10:40")
         try expect(!SlotGrid.isOnGrid(makeDate(2026, 8, 9, 10, 40, 30), calendar: testCalendar), "10:40:30")
