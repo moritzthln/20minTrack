@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: Two labels per span — HalfSplit (Core, TDD) halves every 20-min block (10/10), optional second label via SecondLabelRow in check-in + slot editor (also in the stats backfill sheet), day strips now draw sub-slot pieces proportionally so split blocks show both colors
+
 - 2026-08-09: Month + year stats tabs — tiles (Fokus, Avg/aktiver Tag, Quote, Ablenkung), per-day/per-month LabelBarChart (extracted shared component with tooltips, goal line, dense-axis mode), month goals x day count, month untracked over active days only, year aggregates via one day sweep
 
 - 2026-08-09: Toolchain cleanup verified for real — mixed .build artifacts (Swift 6.3 objects + CLT linker) broke test.sh with missing coro-stub symbols and a pipe swallowed the failure once; .build wiped, everything rebuilt from scratch on CLT: 78 tests green, release installed

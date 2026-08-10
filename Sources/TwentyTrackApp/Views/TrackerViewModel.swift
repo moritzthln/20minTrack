@@ -137,17 +137,17 @@ final class TrackerViewModel: ObservableObject {
 
     /// Fills only the untracked gaps of [from, pending.end) — manual strip
     /// edits inside the window survive — then settles the whole window.
-    func saveCheckin(from: Date, labelID: String, text: String) {
+    func saveCheckin(
+        from: Date, labelID: String, secondLabelID: String? = nil, text: String
+    ) {
         guard let pending else { return }
         let start = min(max(from, pending.start), pending.end)
         guard start < pending.end else { return }
         let range = DateInterval(start: start, end: pending.end)
         let blocked = entriesAround(range).map { DateInterval(start: $0.start, end: $0.end) }
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         for gap in GapFill.gaps(in: range, blocked: blocked) {
-            dayStore.insert(
-                start: gap.start, end: gap.end,
-                labelID: labelID, text: text.trimmingCharacters(in: .whitespacesAndNewlines)
-            )
+            insertSpan(gap, labelID: labelID, secondLabelID: secondLabelID, text: trimmedText)
         }
         // No manual anchor jump: normalizeAnchor advances over covered
         // blocks on reload. A save from a later "Von" keeps the earlier
@@ -155,6 +155,28 @@ final class TrackerViewModel: ObservableObject {
         // asking until every block is labeled.
         preferences.lastLabelID = labelID
         finishChange()
+    }
+
+    /// Writes one span: a single label fills it whole, two labels halve
+    /// every 20-minute block (10 min each).
+    func insertSpan(
+        _ span: DateInterval, labelID: String, secondLabelID: String?, text: String
+    ) {
+        guard let secondLabelID, secondLabelID != labelID else {
+            dayStore.insert(
+                start: span.start, end: span.end, labelID: labelID, text: text
+            )
+            return
+        }
+        for pair in HalfSplit.halves(of: span, calendar: calendar) {
+            dayStore.insert(
+                start: pair.first.start, end: pair.first.end, labelID: labelID, text: text
+            )
+            dayStore.insert(
+                start: pair.second.start, end: pair.second.end,
+                labelID: secondLabelID, text: text
+            )
+        }
     }
 
     /// The pending window spans at most yesterday + today (lookback cap).
@@ -170,13 +192,14 @@ final class TrackerViewModel: ObservableObject {
 
     func replaceEntry(
         originalID: UUID?, day: Date,
-        start: Date, end: Date, labelID: String, text: String
+        start: Date, end: Date, labelID: String, secondLabelID: String? = nil, text: String
     ) {
         if let originalID {
             dayStore.remove(id: originalID, onDay: day)
         }
-        dayStore.insert(
-            start: start, end: end, labelID: labelID,
+        insertSpan(
+            DateInterval(start: start, end: end),
+            labelID: labelID, secondLabelID: secondLabelID,
             text: text.trimmingCharacters(in: .whitespacesAndNewlines)
         )
         preferences.lastLabelID = labelID

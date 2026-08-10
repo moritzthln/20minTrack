@@ -10,7 +10,10 @@ struct SlotEditView: View {
     let calendar: Calendar
     let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
-    let onSave: (_ start: Date, _ end: Date, _ labelID: String, _ text: String) -> Void
+    let onSave: (
+        _ start: Date, _ end: Date, _ labelID: String,
+        _ secondLabelID: String?, _ text: String
+    ) -> Void
     let onDelete: () -> Void
     let onCancel: () -> Void
 
@@ -18,6 +21,7 @@ struct SlotEditView: View {
     @State private var to = Date.distantPast
     @State private var text = ""
     @State private var selectedLabelID: String?
+    @State private var secondLabelID: String?
     @State private var usage: [AppUsageTotal] = []
 
     private var dayBoundaries: [Date] {
@@ -48,6 +52,9 @@ struct SlotEditView: View {
                 labels: labels,
                 selectedID: $selectedLabelID,
                 onConfirm: { save(labelID: $0) }
+            )
+            SecondLabelRow(
+                labels: labels, primaryID: selectedLabelID, secondID: $secondLabelID
             )
             HStack {
                 if existing != nil {
@@ -103,7 +110,7 @@ struct SlotEditView: View {
 
     private func save(labelID: String?) {
         guard let labelID, to > from else { return }
-        onSave(from, to, labelID, text)
+        onSave(from, to, labelID, secondLabelID == labelID ? nil : secondLabelID, text)
     }
 
     private func prefill() {

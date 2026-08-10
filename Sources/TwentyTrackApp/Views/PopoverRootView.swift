@@ -61,8 +61,11 @@ struct PopoverRootView: View {
                     preselectedLabelID: model.suggestedLabelID(for: pending)
                         ?? model.preferences.lastLabelID,
                     usageFor: { model.usageTotals(in: $0) },
-                    onSave: { from, labelID, text in
-                        model.saveCheckin(from: from, labelID: labelID, text: text)
+                    onSave: { from, labelID, secondLabelID, text in
+                        model.saveCheckin(
+                            from: from, labelID: labelID,
+                            secondLabelID: secondLabelID, text: text
+                        )
                     },
                     onPostpone: onClosePopover
                 )
@@ -78,10 +81,11 @@ struct PopoverRootView: View {
                 calendar: model.calendar,
                 preselectedLabelID: model.preferences.lastLabelID,
                 usageFor: { model.usageTotals(in: $0) },
-                onSave: { start, end, labelID, text in
+                onSave: { start, end, labelID, secondLabelID, text in
                     model.replaceEntry(
                         originalID: existing?.id, day: slot.start,
-                        start: start, end: end, labelID: labelID, text: text
+                        start: start, end: end, labelID: labelID,
+                        secondLabelID: secondLabelID, text: text
                     )
                     mode = .auto
                 },

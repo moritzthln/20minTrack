@@ -134,10 +134,26 @@ struct DayStripView: View {
                 x: CGFloat(index) * slotWidth, y: 0,
                 width: max(0.5, slotWidth - 1), height: size.height
             )
+            // Untracked base, then every overlapping entry proportionally
+            // — a block split between two labels shows both colors.
             context.fill(
                 Path(roundedRect: rect, cornerRadius: 1.5),
-                with: .color(color(for: slot))
+                with: .color(LabelPalette.untracked)
             )
+            for entry in entries where entry.end > slot.start && entry.start < slot.end {
+                let pieceStart = max(entry.start, slot.start)
+                let pieceEnd = min(entry.end, slot.end)
+                let from = pieceStart.timeIntervalSince(slot.start) / slot.duration
+                let to = pieceEnd.timeIntervalSince(slot.start) / slot.duration
+                let pieceRect = CGRect(
+                    x: rect.minX + rect.width * from, y: 0,
+                    width: max(0.5, rect.width * (to - from)), height: size.height
+                )
+                context.fill(
+                    Path(roundedRect: pieceRect, cornerRadius: 1.5),
+                    with: .color(LabelPalette.color(labelID: entry.labelID, labelsByID: labelsByID))
+                )
+            }
         }
         if let range = dragRange {
             let rect = CGRect(
