@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: Check-in got a "bis" picker (chronological partial saves) and the window now stays open after a partial save — it closes only when nothing is pending; saveCheckin takes an optional end, drafts clear per save, pickers clamp into the remaining span
+
 - 2026-08-09: Shipped defaults are now the curated 8-label set (Fokus Arbeit, Halbfokus, Calls & Orga, Ablenkung, Erholung, Sport, Schlafen, Alltag; ids unchanged, no goals) — count-agnostic Preferences tests, README updated; fresh installs (brother) start with it
 
 - 2026-08-09: Chip click on a selected label always deselects now (never saves) — onConfirm path removed; saving is Return, the button, or Cmd-1..9

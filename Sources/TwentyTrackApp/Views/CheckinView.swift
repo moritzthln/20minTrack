@@ -14,10 +14,14 @@ struct CheckinView: View {
     let lastText: String?
     let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
-    let onSave: (_ from: Date, _ labelID: String, _ secondLabelID: String?, _ text: String) -> Void
+    let onSave: (
+        _ from: Date, _ to: Date, _ labelID: String,
+        _ secondLabelID: String?, _ text: String
+    ) -> Void
     let onPostpone: () -> Void
 
     @State private var fromDate = Date.distantPast
+    @State private var toDate = Date.distantFuture
     @State private var text = ""
     /// Ordered, max two: [primary] or [primary, second] (10/10 split).
     @State private var selection: [String] = []
@@ -35,8 +39,18 @@ struct CheckinView: View {
         startOptions.contains(fromDate) ? fromDate : pending.start
     }
 
+    /// Selectable span ends: every boundary after the chosen start.
+    private var endOptions: [Date] {
+        SlotGrid.boundaries(from: effectiveFrom, to: pending.end, calendar: calendar)
+            .filter { $0 > effectiveFrom }
+    }
+
+    private var effectiveTo: Date {
+        endOptions.contains(toDate) ? toDate : pending.end
+    }
+
     private var blockCount: Int {
-        SlotGrid.blockCount(start: effectiveFrom, end: pending.end, calendar: calendar)
+        SlotGrid.blockCount(start: effectiveFrom, end: effectiveTo, calendar: calendar)
     }
 
     private var validPreselect: String? {
@@ -95,6 +109,7 @@ struct CheckinView: View {
         }
         .onAppear {
             fromDate = pending.start
+            toDate = pending.end
             selection = validPreselect.map { [$0] } ?? []
             textFocused = true
             reloadUsage()
@@ -106,8 +121,18 @@ struct CheckinView: View {
             text = ""
             selection = validPreselect.map { [$0] } ?? []
         }
-        .onChange(of: pending) { _ in reloadUsage() }
-        .onChange(of: fromDate) { _ in reloadUsage() }
+        // The window stays open after a partial save: clamp both pickers
+        // back into whatever range is still pending.
+        .onChange(of: pending) { newValue in
+            if !startOptions.contains(fromDate) { fromDate = newValue.start }
+            if !endOptions.contains(toDate) { toDate = newValue.end }
+            reloadUsage()
+        }
+        .onChange(of: fromDate) { _ in
+            if !endOptions.contains(toDate) { toDate = pending.end }
+            reloadUsage()
+        }
+        .onChange(of: toDate) { _ in reloadUsage() }
     }
 
     /// Invisible buttons carrying ⌘1–⌘9: pick the n-th label and save.
@@ -134,10 +159,18 @@ struct CheckinView: View {
                 }
                 .labelsHidden()
                 .fixedSize()
+                Text("bis")
+                Picker("Bis", selection: $toDate) {
+                    ForEach(endOptions, id: \.self) { option in
+                        Text(TimeFormatting.clock(option, calendar: calendar)).tag(option)
+                    }
+                }
+                .labelsHidden()
+                .fixedSize()
             } else {
                 Text(TimeFormatting.clock(pending.start, calendar: calendar))
+                Text("bis \(TimeFormatting.clock(pending.end, calendar: calendar))")
             }
-            Text("bis \(TimeFormatting.clock(pending.end, calendar: calendar))")
             Text("· \(blockCount) \(blockCount == 1 ? "Block" : "Blöcke")")
                 .foregroundStyle(.secondary)
         }
@@ -145,17 +178,26 @@ struct CheckinView: View {
     }
 
     private func reloadUsage() {
-        usage = usageFor(DateInterval(start: effectiveFrom, end: pending.end))
+        guard effectiveTo > effectiveFrom else { return }
+        usage = usageFor(DateInterval(start: effectiveFrom, end: effectiveTo))
     }
 
-    /// Saves the current chip selection (one label, or two split 10/10).
+    /// Saves the current chip selection (one label, or two split 10/10)
+    /// and clears the draft — the span may only be a part of the pending
+    /// window, the rest keeps being asked.
     private func save() {
         guard let primary = selection.first else { return }
-        onSave(effectiveFrom, primary, selection.count > 1 ? selection[1] : nil, text)
+        onSave(
+            effectiveFrom, effectiveTo, primary,
+            selection.count > 1 ? selection[1] : nil, text
+        )
+        text = ""
+        selection = validPreselect.map { [$0] } ?? []
     }
 
     /// ⌘1–⌘9: express lane — that single label, saved immediately.
     private func saveDirect(labelID: String) {
-        onSave(effectiveFrom, labelID, nil, text)
+        onSave(effectiveFrom, effectiveTo, labelID, nil, text)
+        text = ""
     }
 }

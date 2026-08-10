@@ -61,9 +61,9 @@ struct PopoverRootView: View {
                     preselectedLabelID: model.suggestedLabelID(for: pending)
                         ?? model.preferences.lastLabelID,
                     usageFor: { model.usageTotals(in: $0) },
-                    onSave: { from, labelID, secondLabelID, text in
+                    onSave: { from, to, labelID, secondLabelID, text in
                         model.saveCheckin(
-                            from: from, labelID: labelID,
+                            from: from, to: to, labelID: labelID,
                             secondLabelID: secondLabelID, text: text
                         )
                     },
