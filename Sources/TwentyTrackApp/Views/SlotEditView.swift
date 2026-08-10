@@ -20,8 +20,8 @@ struct SlotEditView: View {
     @State private var from = Date.distantPast
     @State private var to = Date.distantPast
     @State private var text = ""
-    @State private var selectedLabelID: String?
-    @State private var secondLabelID: String?
+    /// Ordered, max two: [primary] or [primary, second] (10/10 split).
+    @State private var selection: [String] = []
     @State private var usage: [AppUsageTotal] = []
 
     private var dayBoundaries: [Date] {
@@ -47,15 +47,17 @@ struct SlotEditView: View {
             UsageLineView(usage: usage)
             TextField("Kurz notieren… (optional)", text: $text)
                 .textFieldStyle(.roundedBorder)
-                .onSubmit { save(labelID: selectedLabelID) }
+                .onSubmit { save() }
             LabelChipsView(
                 labels: labels,
-                selectedID: $selectedLabelID,
-                onConfirm: { save(labelID: $0) }
+                selection: $selection,
+                onConfirm: { _ in save() }
             )
-            SecondLabelRow(
-                labels: labels, primaryID: selectedLabelID, secondID: $secondLabelID
-            )
+            if selection.count == 2 {
+                Text("Jeder 20-Minuten-Block wird geteilt: 10 min je Label")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
             HStack {
                 if existing != nil {
                     Button("Löschen", role: .destructive, action: onDelete)
@@ -64,9 +66,9 @@ struct SlotEditView: View {
                 Spacer()
                 Button("Abbrechen", action: onCancel)
                     .buttonStyle(PillButtonStyle())
-                Button("Speichern") { save(labelID: selectedLabelID) }
+                Button("Speichern") { save() }
                     .buttonStyle(.borderedProminent)
-                    .disabled(selectedLabelID == nil || to <= from)
+                    .disabled(selection.isEmpty || to <= from)
             }
         }
         .onAppear {
@@ -108,9 +110,9 @@ struct SlotEditView: View {
         usage = usageFor(DateInterval(start: from, end: to))
     }
 
-    private func save(labelID: String?) {
-        guard let labelID, to > from else { return }
-        onSave(from, to, labelID, secondLabelID == labelID ? nil : secondLabelID, text)
+    private func save() {
+        guard let primary = selection.first, to > from else { return }
+        onSave(from, to, primary, selection.count > 1 ? selection[1] : nil, text)
     }
 
     private func prefill() {
@@ -118,12 +120,12 @@ struct SlotEditView: View {
             from = existing.start
             to = existing.end
             text = existing.text
-            selectedLabelID = existing.labelID
+            selection = [existing.labelID]
         } else {
             from = slot.start
             to = slot.end
-            selectedLabelID = labels.contains { $0.id == preselectedLabelID }
-                ? preselectedLabelID : nil
+            selection = labels.contains { $0.id == preselectedLabelID }
+                ? [preselectedLabelID].compactMap { $0 } : []
         }
     }
 }

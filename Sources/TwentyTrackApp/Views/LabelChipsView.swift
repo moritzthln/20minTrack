@@ -1,12 +1,16 @@
 import SwiftUI
 import TwentyCore
 
-/// Selectable label chips (color dot + name), wrapping into columns.
-/// Clicking the already selected chip confirms (the "click-click saves"
-/// fast path) when `onConfirm` is set.
+/// Label chips (color dot + name) with an ordered selection of up to two
+/// labels — two selected means the span is split 10 / 10 per block.
+///
+/// Click rules: an unselected chip becomes the first pick, then the
+/// second; a third click starts over with that chip alone. Clicking the
+/// only selected chip confirms (the fast save path); clicking one of two
+/// selected chips deselects it again.
 struct LabelChipsView: View {
     let labels: [TrackLabel]
-    @Binding var selectedID: String?
+    @Binding var selection: [String]
     var onConfirm: ((String) -> Void)?
 
     private let columns = [GridItem(.adaptive(minimum: 122), spacing: 6)]
@@ -21,17 +25,15 @@ struct LabelChipsView: View {
 
     private func chip(for label: TrackLabel) -> some View {
         let color = LabelPalette.color(for: label.colorKey)
-        let selected = selectedID == label.id
+        let selected = selection.contains(label.id)
+        let split = selection.count == 2
         return Button {
-            if selected {
-                onConfirm?(label.id)
-            } else {
-                selectedID = label.id
-            }
+            handleTap(label)
         } label: {
             HStack(spacing: 6) {
                 Circle().fill(color).frame(width: 8, height: 8)
-                Text(label.name).lineLimit(1)
+                Text(selected && split ? "½ \(label.name)" : label.name)
+                    .lineLimit(1)
             }
             .font(.callout)
             .padding(.vertical, 5)
@@ -46,5 +48,25 @@ struct LabelChipsView: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
+        .help(selected
+            ? (split ? "Klick entfernt dieses Label" : "Nochmal klicken speichert · zweites Label = halbe/halbe")
+            : "Auswählen · ein zweites Label teilt den Block 10/10")
+    }
+
+    private func handleTap(_ label: TrackLabel) {
+        if let index = selection.firstIndex(of: label.id) {
+            if selection.count == 1 {
+                onConfirm?(label.id)
+            } else {
+                selection.remove(at: index)
+            }
+            return
+        }
+        switch selection.count {
+        case 0, 1:
+            selection.append(label.id)
+        default:
+            selection = [label.id]
+        }
     }
 }

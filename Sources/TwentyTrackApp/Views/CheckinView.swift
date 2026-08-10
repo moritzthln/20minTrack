@@ -19,8 +19,8 @@ struct CheckinView: View {
 
     @State private var fromDate = Date.distantPast
     @State private var text = ""
-    @State private var selectedLabelID: String?
-    @State private var secondLabelID: String?
+    /// Ordered, max two: [primary] or [primary, second] (10/10 split).
+    @State private var selection: [String] = []
     @State private var usage: [AppUsageTotal] = []
     @FocusState private var textFocused: Bool
 
@@ -58,7 +58,7 @@ struct CheckinView: View {
             TextField("Kurz notieren… (optional)", text: $text)
                 .textFieldStyle(.roundedBorder)
                 .focused($textFocused)
-                .onSubmit { save(labelID: selectedLabelID) }
+                .onSubmit { save() }
             if let lastText, text.isEmpty {
                 Button {
                     text = lastText
@@ -76,28 +76,30 @@ struct CheckinView: View {
             }
             LabelChipsView(
                 labels: labels,
-                selectedID: $selectedLabelID,
-                onConfirm: { save(labelID: $0) }
+                selection: $selection,
+                onConfirm: { _ in save() }
             )
-            SecondLabelRow(
-                labels: labels, primaryID: selectedLabelID, secondID: $secondLabelID
-            )
+            if selection.count == 2 {
+                Text("Jeder 20-Minuten-Block wird geteilt: 10 min je Label")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
             HStack {
                 Button("Später", action: onPostpone)
                     .buttonStyle(PillButtonStyle())
                     .keyboardShortcut(.cancelAction)
                     .help("Esc — fragt beim nächsten Check-in wieder mit ab")
                 Spacer()
-                Button("Speichern") { save(labelID: selectedLabelID) }
+                Button("Speichern") { save() }
                     .buttonStyle(.borderedProminent)
-                    .disabled(selectedLabelID == nil)
+                    .disabled(selection.isEmpty)
                     .help("⏎ speichert · ⌘1–⌘9 wählt ein Label und speichert sofort")
             }
             shortcutButtons
         }
         .onAppear {
             fromDate = pending.start
-            selectedLabelID = validPreselect
+            selection = validPreselect.map { [$0] } ?? []
             textFocused = true
             reloadUsage()
         }
@@ -106,8 +108,7 @@ struct CheckinView: View {
         .onChange(of: pending.start) { newStart in
             fromDate = newStart
             text = ""
-            selectedLabelID = validPreselect
-            secondLabelID = nil
+            selection = validPreselect.map { [$0] } ?? []
         }
         .onChange(of: pending) { _ in reloadUsage() }
         .onChange(of: fromDate) { _ in reloadUsage() }
@@ -116,7 +117,7 @@ struct CheckinView: View {
     /// Invisible buttons carrying ⌘1–⌘9: pick the n-th label and save.
     private var shortcutButtons: some View {
         ForEach(Array(labels.prefix(9).enumerated()), id: \.element.id) { index, label in
-            Button("") { save(labelID: label.id) }
+            Button("") { saveDirect(labelID: label.id) }
                 .keyboardShortcut(
                     KeyEquivalent(Character("\(index + 1)")), modifiers: .command
                 )
@@ -151,8 +152,14 @@ struct CheckinView: View {
         usage = usageFor(DateInterval(start: effectiveFrom, end: pending.end))
     }
 
-    private func save(labelID: String?) {
-        guard let labelID else { return }
-        onSave(effectiveFrom, labelID, secondLabelID == labelID ? nil : secondLabelID, text)
+    /// Saves the current chip selection (one label, or two split 10/10).
+    private func save() {
+        guard let primary = selection.first else { return }
+        onSave(effectiveFrom, primary, selection.count > 1 ? selection[1] : nil, text)
+    }
+
+    /// ⌘1–⌘9: express lane — that single label, saved immediately.
+    private func saveDirect(labelID: String) {
+        onSave(effectiveFrom, labelID, nil, text)
     }
 }
