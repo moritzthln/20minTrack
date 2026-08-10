@@ -70,8 +70,11 @@ struct CheckinWindowRootView: View {
                     preselectedLabelID: model.suggestedLabelID(for: pending)
                         ?? model.preferences.lastLabelID,
                     usageFor: { model.usageTotals(in: $0) },
-                    onSave: { from, labelID, text in
-                        model.saveCheckin(from: from, labelID: labelID, text: text)
+                    onSave: { from, labelID, secondLabelID, text in
+                        model.saveCheckin(
+                            from: from, labelID: labelID,
+                            secondLabelID: secondLabelID, text: text
+                        )
                         onDone()
                     },
                     onPostpone: onDone

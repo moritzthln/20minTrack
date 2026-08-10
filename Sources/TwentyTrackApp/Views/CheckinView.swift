@@ -14,12 +14,13 @@ struct CheckinView: View {
     let lastText: String?
     let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
-    let onSave: (_ from: Date, _ labelID: String, _ text: String) -> Void
+    let onSave: (_ from: Date, _ labelID: String, _ secondLabelID: String?, _ text: String) -> Void
     let onPostpone: () -> Void
 
     @State private var fromDate = Date.distantPast
     @State private var text = ""
     @State private var selectedLabelID: String?
+    @State private var secondLabelID: String?
     @State private var usage: [AppUsageTotal] = []
     @FocusState private var textFocused: Bool
 
@@ -78,6 +79,9 @@ struct CheckinView: View {
                 selectedID: $selectedLabelID,
                 onConfirm: { save(labelID: $0) }
             )
+            SecondLabelRow(
+                labels: labels, primaryID: selectedLabelID, secondID: $secondLabelID
+            )
             HStack {
                 Button("Später", action: onPostpone)
                     .buttonStyle(PillButtonStyle())
@@ -103,6 +107,7 @@ struct CheckinView: View {
             fromDate = newStart
             text = ""
             selectedLabelID = validPreselect
+            secondLabelID = nil
         }
         .onChange(of: pending) { _ in reloadUsage() }
         .onChange(of: fromDate) { _ in reloadUsage() }
@@ -148,6 +153,6 @@ struct CheckinView: View {
 
     private func save(labelID: String?) {
         guard let labelID else { return }
-        onSave(effectiveFrom, labelID, text)
+        onSave(effectiveFrom, labelID, secondLabelID == labelID ? nil : secondLabelID, text)
     }
 }

@@ -68,11 +68,25 @@ struct StatsDayView: View {
                 calendar: calendar,
                 preselectedLabelID: preferences.lastLabelID,
                 usageFor: usageFor,
-                onSave: { start, end, labelID, text in
+                onSave: { start, end, labelID, secondLabelID, text in
                     for id in target.existingIDs {
                         dayStore.remove(id: id, onDay: day)
                     }
-                    dayStore.insert(start: start, end: end, labelID: labelID, text: text)
+                    let span = DateInterval(start: start, end: end)
+                    if let secondLabelID, secondLabelID != labelID {
+                        for pair in HalfSplit.halves(of: span, calendar: calendar) {
+                            dayStore.insert(
+                                start: pair.first.start, end: pair.first.end,
+                                labelID: labelID, text: text
+                            )
+                            dayStore.insert(
+                                start: pair.second.start, end: pair.second.end,
+                                labelID: secondLabelID, text: text
+                            )
+                        }
+                    } else {
+                        dayStore.insert(start: start, end: end, labelID: labelID, text: text)
+                    }
                     preferences.lastLabelID = labelID
                     finishEdit()
                 },
