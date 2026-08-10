@@ -74,11 +74,7 @@ struct CheckinView: View {
                 .buttonStyle(.plain)
                 .help("Letzten Text übernehmen")
             }
-            LabelChipsView(
-                labels: labels,
-                selection: $selection,
-                onConfirm: { _ in save() }
-            )
+            LabelChipsView(labels: labels, selection: $selection)
             if selection.count == 2 {
                 Text("Jeder 20-Minuten-Block wird geteilt: 10 min je Label")
                     .font(.caption2)
