@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: Shipped defaults are now the curated 8-label set (Fokus Arbeit, Halbfokus, Calls & Orga, Ablenkung, Erholung, Sport, Schlafen, Alltag; ids unchanged, no goals) — count-agnostic Preferences tests, README updated; fresh installs (brother) start with it
+
 - 2026-08-09: Chip click on a selected label always deselects now (never saves) — onConfirm path removed; saving is Return, the button, or Cmd-1..9
 
 - 2026-08-09: Second label now via the chips themselves (SecondLabelRow deleted): LabelChipsView takes an ordered selection of up to two ids — 1st click primary, 2nd click adds the split partner (chips show "1/2"), 3rd unselected chip restarts, click on the sole selected chip still saves, click on one of two deselects it; Cmd-1..9 stay single-label express saves

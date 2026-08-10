@@ -23,16 +23,21 @@ public struct TrackLabel: Codable, Equatable, Identifiable {
         self.goalMinutes = goalMinutes
     }
 
-    /// The six labels the app ships with (stable slug ids — entries
-    /// reference these forever, names and colors stay editable).
+    /// The labels the app ships with (stable slug ids — entries reference
+    /// these forever, names and colors stay editable). Order = the ⌘1–⌘9
+    /// shortcut order: the work-quality trio first (green → yellow → red
+    /// is the ratio that matters), then the rest of the day. Goals are
+    /// personal and stay unset.
     public static func defaults() -> [TrackLabel] {
         [
-            TrackLabel(id: "focus-mma", name: "Fokus Arbeit MMA", colorKey: "green"),
-            TrackLabel(id: "no-focus", name: "Kein Fokus", colorKey: "red"),
-            TrackLabel(id: "orga", name: "Orga/Other", colorKey: "blue"),
-            TrackLabel(id: "sleep", name: "Schlafen", colorKey: "indigo"),
-            TrackLabel(id: "fun", name: "Spaß", colorKey: "orange"),
+            TrackLabel(id: "focus-mma", name: "Fokus Arbeit", colorKey: "green"),
+            TrackLabel(id: "half-focus", name: "Halbfokus", colorKey: "yellow"),
+            TrackLabel(id: "orga", name: "Calls & Orga", colorKey: "blue"),
+            TrackLabel(id: "no-focus", name: "Ablenkung", colorKey: "red"),
+            TrackLabel(id: "fun", name: "Erholung", colorKey: "orange"),
             TrackLabel(id: "sport", name: "Sport", colorKey: "teal"),
+            TrackLabel(id: "sleep", name: "Schlafen", colorKey: "indigo"),
+            TrackLabel(id: "everyday", name: "Alltag", colorKey: "gray"),
         ]
     }
 
