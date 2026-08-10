@@ -2,8 +2,8 @@
 
 macOS-Menüleisten-App: Der Tag wird in 20-Minuten-Blöcken getrackt.
 Alle 20 Minuten fragt die App „Was hast du gemacht?" — kurze Notiz +
-Label (z. B. Fokus Arbeit MMA, Kein Fokus, Orga/Other, Schlafen, Spaß,
-Sport). Verpasste Blöcke (Schlaf, unterwegs) werden beim nächsten
+Label (mitgeliefert: Fokus Arbeit, Halbfokus, Calls & Orga, Ablenkung,
+Erholung, Sport, Schlafen, Alltag — in den Einstellungen änderbar). Verpasste Blöcke (Schlaf, unterwegs) werden beim nächsten
 Check-in als ein Zeitraum nachgetragen. Am Ende des Tages: Tagesfazit.
 Statistiken zeigen die Zeit pro Label (Tag/Woche).
 

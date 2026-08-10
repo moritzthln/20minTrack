@@ -12,50 +12,57 @@ private func withPreferences(_ body: (Preferences) throws -> Void) rethrows {
 }
 
 func runPreferencesLabelTests() {
-    test("never-set labels seed the six defaults") {
+    test("never-set labels seed the shipped defaults") {
         try withPreferences { prefs in
             let labels = prefs.labels
             try expectEqual(labels.map(\.id), [
-                "focus-mma", "no-focus", "orga", "sleep", "fun", "sport",
+                "focus-mma", "half-focus", "orga", "no-focus",
+                "fun", "sport", "sleep", "everyday",
             ])
             try expectEqual(labels.map(\.name), [
-                "Fokus Arbeit MMA", "Kein Fokus", "Orga/Other", "Schlafen", "Spaß", "Sport",
+                "Fokus Arbeit", "Halbfokus", "Calls & Orga", "Ablenkung",
+                "Erholung", "Sport", "Schlafen", "Alltag",
             ])
             try expectEqual(labels[0].colorKey, "green")
-            try expectEqual(labels[3].colorKey, "indigo")
+            try expectEqual(labels[1].colorKey, "yellow")
+            try expectEqual(labels[3].colorKey, "red")
             try expect(labels.allSatisfy { !$0.archived }, "no default is archived")
+            try expect(labels.allSatisfy { $0.goalMinutes == nil }, "no default goal")
         }
     }
 
     test("addLabel trims, stores, and rejects empty names") {
         try withPreferences { prefs in
+            let base = prefs.labels.count
             let added = prefs.addLabel(name: "  Lesen  ", colorKey: "purple")
             try expectEqual(added?.name, "Lesen")
-            try expectEqual(prefs.labels.count, 7)
+            try expectEqual(prefs.labels.count, base + 1)
             try expectEqual(prefs.labels.last?.colorKey, "purple")
             try expectNil(prefs.addLabel(name: "   ", colorKey: "pink"))
-            try expectEqual(prefs.labels.count, 7)
+            try expectEqual(prefs.labels.count, base + 1)
         }
     }
 
     test("updateLabel renames and recolors by id") {
         try withPreferences { prefs in
+            let base = prefs.labels.count
             var label = prefs.labels[1]
-            label.name = "Ablenkung"
+            label.name = "Umbenannt"
             label.colorKey = "pink"
             prefs.updateLabel(label)
-            try expectEqual(prefs.labels[1].name, "Ablenkung")
+            try expectEqual(prefs.labels[1].name, "Umbenannt")
             try expectEqual(prefs.labels[1].colorKey, "pink")
-            try expectEqual(prefs.labels.count, 6)
+            try expectEqual(prefs.labels.count, base)
         }
     }
 
     test("updateLabel rejects an empty rename") {
         try withPreferences { prefs in
+            let original = prefs.labels[0].name
             var label = prefs.labels[0]
             label.name = "   "
             prefs.updateLabel(label)
-            try expectEqual(prefs.labels[0].name, "Fokus Arbeit MMA")
+            try expectEqual(prefs.labels[0].name, original)
         }
     }
 
@@ -73,10 +80,11 @@ func runPreferencesLabelTests() {
 
     test("archiveLabel hides from active but stays resolvable") {
         try withPreferences { prefs in
+            let base = prefs.activeLabels.count
             prefs.archiveLabel(id: "fun")
             try expect(prefs.labels.first { $0.id == "fun" }!.archived, "archived flag set")
-            try expectEqual(prefs.activeLabels.count, 5)
-            try expectEqual(prefs.label(byID: "fun")?.name, "Spaß")
+            try expectEqual(prefs.activeLabels.count, base - 1)
+            try expectEqual(prefs.label(byID: "fun")?.name, "Erholung")
         }
     }
 }
