@@ -70,12 +70,16 @@ struct CheckinWindowRootView: View {
                     preselectedLabelID: model.suggestedLabelID(for: pending)
                         ?? model.preferences.lastLabelID,
                     usageFor: { model.usageTotals(in: $0) },
-                    onSave: { from, labelID, secondLabelID, text in
+                    onSave: { from, to, labelID, secondLabelID, text in
                         model.saveCheckin(
-                            from: from, labelID: labelID,
+                            from: from, to: to, labelID: labelID,
                             secondLabelID: secondLabelID, text: text
                         )
-                        onDone()
+                        // Only close once nothing is pending — after a
+                        // partial save the window keeps asking for the rest.
+                        if model.pending == nil {
+                            onDone()
+                        }
                     },
                     onPostpone: onDone
                 )

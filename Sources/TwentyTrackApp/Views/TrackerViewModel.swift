@@ -137,13 +137,17 @@ final class TrackerViewModel: ObservableObject {
 
     /// Fills only the untracked gaps of [from, pending.end) — manual strip
     /// edits inside the window survive — then settles the whole window.
+    /// Fills the chosen part of the pending window. `to` defaults to the
+    /// window's end; a shorter span leaves the rest pending on purpose.
     func saveCheckin(
-        from: Date, labelID: String, secondLabelID: String? = nil, text: String
+        from: Date, to: Date? = nil, labelID: String,
+        secondLabelID: String? = nil, text: String
     ) {
         guard let pending else { return }
         let start = min(max(from, pending.start), pending.end)
-        guard start < pending.end else { return }
-        let range = DateInterval(start: start, end: pending.end)
+        let end = min(max(to ?? pending.end, pending.start), pending.end)
+        guard start < end else { return }
+        let range = DateInterval(start: start, end: end)
         let blocked = entriesAround(range).map { DateInterval(start: $0.start, end: $0.end) }
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         for gap in GapFill.gaps(in: range, blocked: blocked) {
