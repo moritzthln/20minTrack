@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-09: Second label now via the chips themselves (SecondLabelRow deleted): LabelChipsView takes an ordered selection of up to two ids — 1st click primary, 2nd click adds the split partner (chips show "1/2"), 3rd unselected chip restarts, click on the sole selected chip still saves, click on one of two deselects it; Cmd-1..9 stay single-label express saves
+
 - 2026-08-09: Two labels per span — HalfSplit (Core, TDD) halves every 20-min block (10/10), optional second label via SecondLabelRow in check-in + slot editor (also in the stats backfill sheet), day strips now draw sub-slot pieces proportionally so split blocks show both colors
 
 - 2026-08-09: Month + year stats tabs — tiles (Fokus, Avg/aktiver Tag, Quote, Ablenkung), per-day/per-month LabelBarChart (extracted shared component with tooltips, goal line, dense-axis mode), month goals x day count, month untracked over active days only, year aggregates via one day sweep
