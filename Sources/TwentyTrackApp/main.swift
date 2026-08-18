@@ -32,6 +32,33 @@ appMenu.addItem(
 )
 appMenuItem.submenu = appMenu
 mainMenu.addItem(appMenuItem)
+
+// Edit menu: an accessory app has no visible menu bar, but AppKit only
+// routes ⌘X/⌘C/⌘V/⌘A/⌘Z to the focused text field when these items
+// exist in the main menu — without it, pasting a link into a note or
+// copying text out of it silently does nothing.
+let editMenuItem = NSMenuItem()
+let editMenu = NSMenu(title: "Bearbeiten")
+for (title, selectorName, key) in [
+    ("Widerrufen", "undo:", "z"),
+    ("Wiederholen", "redo:", "Z"),
+    ("", "", ""),
+    ("Ausschneiden", "cut:", "x"),
+    ("Kopieren", "copy:", "c"),
+    ("Einsetzen", "paste:", "v"),
+    ("Alles auswählen", "selectAll:", "a"),
+] {
+    if title.isEmpty {
+        editMenu.addItem(.separator())
+        continue
+    }
+    editMenu.addItem(
+        NSMenuItem(title: title, action: Selector((selectorName)), keyEquivalent: key)
+    )
+}
+editMenuItem.submenu = editMenu
+mainMenu.addItem(editMenuItem)
+
 app.mainMenu = mainMenu
 
 app.run()
