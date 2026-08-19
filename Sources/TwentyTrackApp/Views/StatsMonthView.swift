@@ -39,8 +39,29 @@ struct StatsMonthView: View {
         entriesByDay.values.flatMap { $0 }
     }
 
+    /// Per-day attribution folded into one month total (settled days'
+    /// gaps count as Ablenkung).
+    private var attribution: (totals: [String: TimeInterval], untracked: TimeInterval) {
+        var totals: [String: TimeInterval] = [:]
+        var untracked: TimeInterval = 0
+        let now = Date()
+        for day in monthDays where day <= now {
+            let entries = entriesByDay[day] ?? []
+            guard !entries.isEmpty else { continue }
+            let result = DayAttribution.totals(
+                day: day, entries: entries, now: now,
+                calendar: calendar, distractionLabelID: "no-focus"
+            )
+            for (id, seconds) in result.totals {
+                totals[id, default: 0] += seconds
+            }
+            untracked += result.untracked
+        }
+        return (totals, untracked)
+    }
+
     private var totals: [String: TimeInterval] {
-        StatsMath.totals(allEntries)
+        attribution.totals
     }
 
     private var activeDayCount: Int {
@@ -63,7 +84,7 @@ struct StatsMonthView: View {
                 )
                 LabelTotalsList(
                     totals: totals,
-                    untrackedSeconds: untrackedActiveDaySeconds,
+                    untrackedSeconds: attribution.untracked,
                     labelsByID: labelsByID
                 )
             }
@@ -139,17 +160,6 @@ struct StatsMonthView: View {
                     let number = calendar.component(.day, from: day)
                     return index == 0 || number % 5 == 0 ? "\(number)" : ""
                 }
-            )
-        }
-    }
-
-    /// Untracked over active days only.
-    private var untrackedActiveDaySeconds: TimeInterval {
-        monthDays.reduce(0) { sum, day in
-            let entries = entriesByDay[day] ?? []
-            guard !entries.isEmpty, day <= Date() else { return sum }
-            return sum + StatsMath.untrackedSeconds(
-                day: day, reference: Date(), entries: entries, calendar: calendar
             )
         }
     }

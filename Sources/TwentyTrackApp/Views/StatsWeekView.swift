@@ -31,8 +31,27 @@ struct StatsWeekView: View {
         entriesByDay.values.flatMap { $0 }
     }
 
+    /// Per-day attribution folded into one week total (settled days'
+    /// gaps count as Ablenkung).
+    private var attribution: (totals: [String: TimeInterval], untracked: TimeInterval) {
+        var totals: [String: TimeInterval] = [:]
+        var untracked: TimeInterval = 0
+        let now = Date()
+        for day in weekDays where day <= now {
+            let result = DayAttribution.totals(
+                day: day, entries: entriesByDay[day] ?? [], now: now,
+                calendar: calendar, distractionLabelID: "no-focus"
+            )
+            for (id, seconds) in result.totals {
+                totals[id, default: 0] += seconds
+            }
+            untracked += result.untracked
+        }
+        return (totals, untracked)
+    }
+
     private var totals: [String: TimeInterval] {
-        StatsMath.totals(allEntries)
+        attribution.totals
     }
 
     var body: some View {
@@ -45,7 +64,7 @@ struct StatsWeekView: View {
                 dayRows
                 LabelTotalsList(
                     totals: totals,
-                    untrackedSeconds: untrackedWeekSeconds,
+                    untrackedSeconds: attribution.untracked,
                     labelsByID: labelsByID
                 )
                 fazitList
@@ -179,15 +198,6 @@ struct StatsWeekView: View {
                         .frame(width: 70, alignment: .trailing)
                 }
             }
-        }
-    }
-
-    private var untrackedWeekSeconds: TimeInterval {
-        weekDays.reduce(0) { sum, day in
-            guard day <= Date() else { return sum }
-            return sum + StatsMath.untrackedSeconds(
-                day: day, reference: Date(), entries: entriesByDay[day] ?? [], calendar: calendar
-            )
         }
     }
 

@@ -149,7 +149,13 @@ struct StatsYearView: View {
             if !entries.isEmpty {
                 activeDays += 1
                 let month = calendar.component(.month, from: cursor)
-                for (id, seconds) in StatsMath.totals(entries) {
+                // Settled days' gaps count as Ablenkung (same rule as the
+                // other tabs), empty days are skipped entirely.
+                let attributed = DayAttribution.totals(
+                    day: cursor, entries: entries, now: Date(),
+                    calendar: calendar, distractionLabelID: "no-focus"
+                )
+                for (id, seconds) in attributed.totals {
                     byMonth[month, default: [:]][id, default: 0] += seconds
                 }
             }
