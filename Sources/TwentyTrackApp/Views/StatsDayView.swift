@@ -35,8 +35,17 @@ struct StatsDayView: View {
         calendar.isDate(day, inSameDayAs: Date())
     }
 
+    /// Totals plus the leftover "Nicht erfasst" — on settled days
+    /// (older than yesterday) gaps count as Ablenkung.
+    private var attribution: (totals: [String: TimeInterval], untracked: TimeInterval) {
+        DayAttribution.totals(
+            day: day, entries: entries, now: Date(),
+            calendar: calendar, distractionLabelID: "no-focus"
+        )
+    }
+
     private var totals: [String: TimeInterval] {
-        StatsMath.totals(entries)
+        attribution.totals
     }
 
     var body: some View {
@@ -48,9 +57,7 @@ struct StatsDayView: View {
                 stripSection
                 LabelTotalsList(
                     totals: totals,
-                    untrackedSeconds: StatsMath.untrackedSeconds(
-                        day: day, reference: Date(), entries: entries, calendar: calendar
-                    ),
+                    untrackedSeconds: attribution.untracked,
                     labelsByID: labelsByID
                 )
                 entryList

@@ -74,6 +74,12 @@ fixes that, remove the pin in `build.sh` + `test.sh` together.
     chimeVolume, autoOpenPopover, trackingPaused
   - `StatsMath` — per-label totals, untracked seconds, "39 %" share
     labels, ISO week days (Monday start, locale-independent)
+  - `DayAttribution` — settled days (older than yesterday, i.e. past the
+    check-in lookback) count their remaining gaps as Ablenkung
+    ("deliberately untracked"); today/yesterday stay "Nicht erfasst",
+    and a day without a single entry is never attributed (pre-install /
+    Mac-off days would otherwise become 24 h of distraction). Used by
+    all four stats tabs.
   - `TimeFormatting` ("1 h 25 min", "09:05") · `MenuBarPresentation`
     (paused → pause icon; pending → filled symbol + block count; else
     "n m" to next boundary)
