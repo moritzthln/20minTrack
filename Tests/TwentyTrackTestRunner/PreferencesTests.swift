@@ -134,6 +134,25 @@ func runPreferencesSettingTests() {
         }
     }
 
+    test("absences default empty, roundtrip sorted, swap inverted bounds") {
+        try withPreferences { prefs in
+            try expect(prefs.absences.isEmpty, "default empty")
+            prefs.addAbsence(
+                name: "  Urlaub  ",
+                startDay: makeDate(2026, 9, 10, 0, 0), endDay: makeDate(2026, 9, 12, 0, 0)
+            )
+            let swapped = prefs.addAbsence(
+                name: "", startDay: makeDate(2026, 9, 5, 0, 0), endDay: makeDate(2026, 9, 1, 0, 0)
+            )
+            try expectEqual(prefs.absences.count, 2)
+            try expectEqual(prefs.absences[0].name, "Abwesend", "sorted by start, fallback name")
+            try expectEqual(prefs.absences[0].startDay, makeDate(2026, 9, 1, 0, 0), "bounds swapped")
+            try expectEqual(prefs.absences[1].name, "Urlaub")
+            prefs.removeAbsence(id: swapped.id)
+            try expectEqual(prefs.absences.count, 1)
+        }
+    }
+
     test("fazit prompt defaults to 21:30 enabled and clamps") {
         try withPreferences { prefs in
             try expect(prefs.fazitPromptEnabled, "enabled by default")

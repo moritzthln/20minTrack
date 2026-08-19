@@ -40,7 +40,10 @@ struct StatsWeekView: View {
         for day in weekDays where day <= now {
             let result = DayAttribution.totals(
                 day: day, entries: entriesByDay[day] ?? [], now: now,
-                calendar: calendar, distractionLabelID: "no-focus"
+                calendar: calendar, distractionLabelID: "no-focus",
+                isAbsent: AbsenceRules.isAbsent(
+                    day: day, in: preferences.absences, calendar: calendar
+                )
             )
             for (id, seconds) in result.totals {
                 totals[id, default: 0] += seconds

@@ -40,7 +40,10 @@ struct StatsDayView: View {
     private var attribution: (totals: [String: TimeInterval], untracked: TimeInterval) {
         DayAttribution.totals(
             day: day, entries: entries, now: Date(),
-            calendar: calendar, distractionLabelID: "no-focus"
+            calendar: calendar, distractionLabelID: "no-focus",
+            isAbsent: AbsenceRules.isAbsent(
+                day: day, in: preferences.absences, calendar: calendar
+            )
         )
     }
 
@@ -219,6 +222,13 @@ struct StatsDayView: View {
             Button { shift(1) } label: { Image(systemName: "chevron.right") }
                 .buttonStyle(.plain)
                 .disabled(isToday)
+            if let absence = AbsenceRules.absence(
+                containing: day, in: preferences.absences, calendar: calendar
+            ) {
+                Text("· \(absence.name)")
+                    .font(.callout)
+                    .foregroundStyle(.orange)
+            }
             Spacer()
             Text(TimeFormatting.wording(seconds: StatsMath.trackedSeconds(entries)))
                 .font(.callout)
