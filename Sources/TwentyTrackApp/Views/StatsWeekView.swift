@@ -62,6 +62,9 @@ struct StatsWeekView: View {
             VStack(alignment: .leading, spacing: 14) {
                 header
                 tileRow
+                AbsenceSummaryLine(
+                    days: weekDays, absences: preferences.absences, calendar: calendar
+                )
                 GoalsSection(labels: preferences.labels, totals: totals, goalMultiplier: 7)
                 chartSection
                 dayRows
@@ -194,13 +197,29 @@ struct StatsWeekView: View {
                         now: calendar.isDate(day, inSameDayAs: Date()) ? Date() : nil,
                         height: 14
                     )
-                    Text(TimeFormatting.wording(seconds: StatsMath.trackedSeconds(entries)))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
+                    dayRowTrailing(day: day, entries: entries)
                         .frame(width: 70, alignment: .trailing)
                 }
             }
+        }
+    }
+
+    /// The day's sum — or, on an entry-less absent day, WHICH absence.
+    @ViewBuilder
+    private func dayRowTrailing(day: Date, entries: [Entry]) -> some View {
+        if entries.isEmpty,
+           let absence = AbsenceRules.absence(
+               containing: day, in: preferences.absences, calendar: calendar
+           ) {
+            Text(absence.name)
+                .font(.caption)
+                .foregroundStyle(.orange)
+                .lineLimit(1)
+        } else {
+            Text(TimeFormatting.wording(seconds: StatsMath.trackedSeconds(entries)))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
         }
     }
 

@@ -85,6 +85,42 @@ enum StatsFigures {
     }
 }
 
+/// "Abwesend: Urlaub 3 Tage · Messe 2 Tage" — which absences fall into
+/// the shown period. Renders nothing without absent days.
+struct AbsenceSummaryLine: View {
+    let days: [Date]
+    let absences: [Absence]
+    let calendar: Calendar
+
+    private var groups: [(name: String, count: Int)] {
+        var counts: [UUID: Int] = [:]
+        for day in days {
+            if let absence = AbsenceRules.absence(
+                containing: day, in: absences, calendar: calendar
+            ) {
+                counts[absence.id, default: 0] += 1
+            }
+        }
+        return absences.compactMap { absence in
+            counts[absence.id].map { (absence.name, $0) }
+        }
+    }
+
+    var body: some View {
+        let groups = groups
+        if !groups.isEmpty {
+            HStack(spacing: 5) {
+                Image(systemName: "airplane")
+                Text("Abwesend: " + groups
+                    .map { "\($0.name) \($0.count) \($0.count == 1 ? "Tag" : "Tage")" }
+                    .joined(separator: " · "))
+            }
+            .font(.caption)
+            .foregroundStyle(.orange)
+        }
+    }
+}
+
 /// Progress bars for every label carrying a daily goal: done / target,
 /// remaining time or a green "erreicht" (`goalMultiplier` = 7 in the week
 /// view). Renders nothing when no active label has a goal.

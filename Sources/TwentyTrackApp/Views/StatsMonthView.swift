@@ -80,6 +80,9 @@ struct StatsMonthView: View {
             VStack(alignment: .leading, spacing: 14) {
                 header
                 tileRow
+                AbsenceSummaryLine(
+                    days: monthDays, absences: preferences.absences, calendar: calendar
+                )
                 chartSection
                 GoalsSection(
                     labels: preferences.labels, totals: totals,

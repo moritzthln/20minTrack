@@ -39,6 +39,19 @@ struct StatsYearView: View {
         }
     }
 
+    /// Every day of the shown year (for the absence summary).
+    private var yearDays: [Date] {
+        var days: [Date] = []
+        var cursor = yearStart
+        let end = calendar.date(byAdding: .year, value: 1, to: yearStart) ?? cursor
+        while cursor < end, days.count < 400 {
+            days.append(cursor)
+            guard let next = calendar.date(byAdding: .day, value: 1, to: cursor) else { break }
+            cursor = next
+        }
+        return days
+    }
+
     private var isCurrentYear: Bool {
         year == calendar.component(.year, from: Date())
     }
@@ -48,6 +61,9 @@ struct StatsYearView: View {
             VStack(alignment: .leading, spacing: 14) {
                 header
                 tileRow
+                AbsenceSummaryLine(
+                    days: yearDays, absences: preferences.absences, calendar: calendar
+                )
                 chartSection
                 LabelTotalsList(
                     totals: totals,
