@@ -32,12 +32,12 @@ public struct TrackLabel: Codable, Equatable, Identifiable {
         [
             TrackLabel(id: "focus-mma", name: "Fokus Arbeit", colorKey: "green"),
             TrackLabel(id: "half-focus", name: "Halbfokus", colorKey: "yellow"),
-            TrackLabel(id: "orga", name: "Calls & Orga", colorKey: "blue"),
+            TrackLabel(id: "orga", name: "Orga & Alltag", colorKey: "blue"),
+            TrackLabel(id: "calls", name: "Calls", colorKey: "mint"),
             TrackLabel(id: "no-focus", name: "Ablenkung", colorKey: "red"),
             TrackLabel(id: "fun", name: "Erholung", colorKey: "orange"),
             TrackLabel(id: "sport", name: "Sport", colorKey: "teal"),
             TrackLabel(id: "sleep", name: "Schlafen", colorKey: "indigo"),
-            TrackLabel(id: "everyday", name: "Alltag", colorKey: "gray"),
         ]
     }
 
