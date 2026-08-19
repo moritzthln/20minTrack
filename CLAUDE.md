@@ -80,6 +80,11 @@ fixes that, remove the pin in `build.sh` + `test.sh` together.
     and a day without a single entry is never attributed (pre-install /
     Mac-off days would otherwise become 24 h of distraction). Used by
     all four stats tabs.
+  - `Absence` + `AbsenceRules` — planned away periods (whole days,
+    inclusive; stored in Preferences.absences): absent days never
+    prompt (check-in + Fazit), never count gaps as Ablenkung, and
+    `normalizedAnchor` walks the anchor to the first midnight after
+    chained absences so the return check-in skips them
   - `TimeFormatting` ("1 h 25 min", "09:05") · `MenuBarPresentation`
     (paused → pause icon; pending → filled symbol + block count; else
     "n m" to next boundary)

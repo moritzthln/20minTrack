@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-19: Absences (Urlaub) — Absence model + AbsenceRules (Core, TDD: inclusive day bounds, chained-absence anchor skip), Preferences.absences with add/remove (sorted, swapped bounds, fallback name), DayAttribution isAbsent flag (no distraction on away days), prompt+Fazit gates, anchor skip in normalizeAnchor, settings section (name + date pickers + list) and an orange badge in the stats day header
+
 - 2026-08-18: DayAttribution (Core, TDD) — on days older than yesterday the remaining untracked time counts as Ablenkung (deliberate non-tracking); today/yesterday keep "Nicht erfasst" (still backfillable) and entry-less days are never attributed; wired into day/week/month/year tabs, replacing their ad-hoc untracked sums
 
 - 2026-08-18: Label rework — "Calls & Orga" became "Orga & Alltag" (id orga kept), "Alltag" (everyday) merged into it via a one-off migration (59 entries in 9 day files re-pointed, label removed), new "Calls" label (id calls, mint) after it; shipped defaults + tests + README updated. Shortcuts now: 1 Fokus, 2 Halbfokus, 3 Orga & Alltag, 4 Calls, 5 Ablenkung, 6 Erholung, 7 Sport, 8 Schlafen

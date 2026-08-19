@@ -23,13 +23,14 @@ public enum DayAttribution {
     /// still shown as "Nicht erfasst".
     public static func totals(
         day: Date, entries: [Entry], now: Date, calendar: Calendar,
-        distractionLabelID: String
+        distractionLabelID: String, isAbsent: Bool = false
     ) -> (totals: [String: TimeInterval], untracked: TimeInterval) {
         var totals = StatsMath.totals(entries)
         let untracked = StatsMath.untrackedSeconds(
             day: day, reference: now, entries: entries, calendar: calendar
         )
-        guard !entries.isEmpty,
+        guard !isAbsent,
+              !entries.isEmpty,
               untracked > 0,
               isSettled(day: day, now: now, calendar: calendar) else {
             return (totals, untracked)

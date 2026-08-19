@@ -124,6 +124,9 @@ final class StatusBarController: NSObject {
         // Muted (call) or an active macOS Focus: stay silent, do NOT mark
         // as prompted — the next boundary after unmute/focus-end prompts.
         if preferences.muted { return }
+        if AbsenceRules.isAbsent(day: Date(), in: preferences.absences, calendar: calendar) {
+            return
+        }
         if preferences.suppressDuringFocus, isSystemFocusActive() { return }
         lastPromptedEnd = pending.end
         SoundPlayer.playChime(volume: preferences.chimeVolume)
@@ -167,7 +170,9 @@ final class StatusBarController: NSObject {
     private func checkFazitPrompt(now: Date) {
         guard preferences.fazitPromptEnabled,
               !preferences.trackingPaused,
-              !preferences.muted else { return }
+              !preferences.muted,
+              !AbsenceRules.isAbsent(day: now, in: preferences.absences, calendar: calendar)
+        else { return }
         let minute = calendar.component(.hour, from: now) * 60
             + calendar.component(.minute, from: now)
         guard minute >= preferences.fazitPromptMinute else { return }

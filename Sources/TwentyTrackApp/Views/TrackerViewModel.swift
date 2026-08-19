@@ -75,6 +75,11 @@ final class TrackerViewModel: ObservableObject {
             from: adjusted, upTo: floorNow,
             entries: entriesYesterdayAndToday(now: now), calendar: calendar
         )
+        // Away days are settled by definition: the return check-in starts
+        // at the first midnight after the absence, never inside it.
+        adjusted = AbsenceRules.normalizedAnchor(
+            adjusted, absences: preferences.absences, calendar: calendar
+        )
         if adjusted != anchor {
             preferences.checkinAnchor = adjusted
         }

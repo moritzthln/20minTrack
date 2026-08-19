@@ -51,6 +51,16 @@ func runDayAttributionTests() {
         try expect(result.totals.isEmpty, "no totals for an empty day")
     }
 
+    test("an absent settled day keeps its gaps out of distraction") {
+        let result = DayAttribution.totals(
+            day: makeDate(2026, 8, 16, 0, 0), entries: entries(16, hours: 2),
+            now: now, calendar: testCalendar, distractionLabelID: "no-focus",
+            isAbsent: true
+        )
+        try expectEqual(result.untracked, 22 * 3600, accuracy: 0.5)
+        try expectNil(result.totals["no-focus"])
+    }
+
     test("a fully tracked settled day adds nothing") {
         let full = [Entry(
             start: makeDate(2026, 8, 16, 0, 0), end: makeDate(2026, 8, 17, 0, 0),

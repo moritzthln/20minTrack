@@ -153,7 +153,10 @@ struct StatsYearView: View {
                 // other tabs), empty days are skipped entirely.
                 let attributed = DayAttribution.totals(
                     day: cursor, entries: entries, now: Date(),
-                    calendar: calendar, distractionLabelID: "no-focus"
+                    calendar: calendar, distractionLabelID: "no-focus",
+                    isAbsent: AbsenceRules.isAbsent(
+                        day: cursor, in: preferences.absences, calendar: calendar
+                    )
                 )
                 for (id, seconds) in attributed.totals {
                     byMonth[month, default: [:]][id, default: 0] += seconds

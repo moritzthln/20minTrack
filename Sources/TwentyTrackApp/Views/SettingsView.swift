@@ -15,6 +15,10 @@ struct SettingsView: View {
     @State private var suppressFocus = true
     @State private var fazitEnabled = true
     @State private var fazitMinute = 1290
+    @State private var absences: [Absence] = []
+    @State private var newAbsenceName = "Urlaub"
+    @State private var newAbsenceStart = Date()
+    @State private var newAbsenceEnd = Date()
     @State private var loginEnabled = false
     @State private var loginStatus = ""
 
@@ -23,6 +27,7 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 18) {
                 labelsSection
                 checkinSection
+                absenceSection
                 generalSection
             }
             .padding(16)
@@ -239,6 +244,67 @@ struct SettingsView: View {
         }
     }
 
+    // MARK: - Absence
+
+    private var absenceSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionTitle("Abwesenheit")
+            ForEach(absences) { absence in
+                HStack(spacing: 8) {
+                    Text(absence.name)
+                        .lineLimit(1)
+                    Spacer()
+                    Text(absenceRange(absence))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                    Button {
+                        preferences.removeAbsence(id: absence.id)
+                        load()
+                        notifyChanged()
+                    } label: {
+                        Image(systemName: "minus.circle")
+                    }
+                    .buttonStyle(.plain)
+                    .help("Abwesenheit löschen")
+                }
+            }
+            HStack(spacing: 6) {
+                TextField("Name", text: $newAbsenceName)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 90)
+                DatePicker("", selection: $newAbsenceStart, displayedComponents: .date)
+                    .labelsHidden()
+                    .datePickerStyle(.field)
+                Text("–")
+                DatePicker("", selection: $newAbsenceEnd, displayedComponents: .date)
+                    .labelsHidden()
+                    .datePickerStyle(.field)
+                Button {
+                    preferences.addAbsence(
+                        name: newAbsenceName,
+                        startDay: newAbsenceStart, endDay: newAbsenceEnd
+                    )
+                    load()
+                    notifyChanged()
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                }
+                .buttonStyle(.plain)
+            }
+            Text("An diesen Tagen: keine Check-in-Fenster, Lücken zählen nicht als Ablenkung, und nach der Rückkehr wird die Abwesenheit nicht abgefragt.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func absenceRange(_ absence: Absence) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "de_DE")
+        formatter.dateFormat = "d.M."
+        return "\(formatter.string(from: absence.startDay)) – \(formatter.string(from: absence.endDay))"
+    }
+
     // MARK: - General
 
     private var generalSection: some View {
@@ -277,6 +343,7 @@ struct SettingsView: View {
         suppressFocus = preferences.suppressDuringFocus
         fazitEnabled = preferences.fazitPromptEnabled
         fazitMinute = preferences.fazitPromptMinute
+        absences = preferences.absences
         loginEnabled = LaunchAtLogin.isEnabled
         loginStatus = LaunchAtLogin.statusDescription
     }

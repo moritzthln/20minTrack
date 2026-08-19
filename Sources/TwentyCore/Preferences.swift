@@ -20,6 +20,7 @@ public final class Preferences {
         case suppressDuringFocus
         case fazitPromptEnabled
         case fazitPromptMinute
+        case absences
     }
 
     // MARK: - Labels
@@ -136,6 +137,39 @@ public final class Preferences {
             return min(max(defaults.integer(forKey: Key.fazitPromptMinute.rawValue), 0), 1439)
         }
         set { defaults.set(min(max(newValue, 0), 1439), forKey: Key.fazitPromptMinute.rawValue) }
+    }
+
+    /// Planned away periods, sorted by start. Never-set → empty.
+    public var absences: [Absence] {
+        get {
+            guard let data = defaults.data(forKey: Key.absences.rawValue),
+                  let stored = try? JSONDecoder().decode([Absence].self, from: data) else {
+                return []
+            }
+            return stored
+        }
+        set {
+            let sorted = newValue.sorted { $0.startDay < $1.startDay }
+            guard let data = try? JSONEncoder().encode(sorted) else { return }
+            defaults.set(data, forKey: Key.absences.rawValue)
+        }
+    }
+
+    /// Start/end swapped if needed; whole-day semantics live in the rules.
+    @discardableResult
+    public func addAbsence(name: String, startDay: Date, endDay: Date) -> Absence {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let absence = Absence(
+            name: trimmed.isEmpty ? "Abwesend" : trimmed,
+            startDay: min(startDay, endDay),
+            endDay: max(startDay, endDay)
+        )
+        absences = absences + [absence]
+        return absence
+    }
+
+    public func removeAbsence(id: UUID) {
+        absences = absences.filter { $0.id != id }
     }
 
     /// Suppress prompts while a macOS Focus mode is active (default on).
