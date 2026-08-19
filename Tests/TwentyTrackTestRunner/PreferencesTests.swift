@@ -16,16 +16,16 @@ func runPreferencesLabelTests() {
         try withPreferences { prefs in
             let labels = prefs.labels
             try expectEqual(labels.map(\.id), [
-                "focus-mma", "half-focus", "orga", "no-focus",
-                "fun", "sport", "sleep", "everyday",
+                "focus-mma", "half-focus", "orga", "calls",
+                "no-focus", "fun", "sport", "sleep",
             ])
             try expectEqual(labels.map(\.name), [
-                "Fokus Arbeit", "Halbfokus", "Calls & Orga", "Ablenkung",
-                "Erholung", "Sport", "Schlafen", "Alltag",
+                "Fokus Arbeit", "Halbfokus", "Orga & Alltag", "Calls",
+                "Ablenkung", "Erholung", "Sport", "Schlafen",
             ])
             try expectEqual(labels[0].colorKey, "green")
             try expectEqual(labels[1].colorKey, "yellow")
-            try expectEqual(labels[3].colorKey, "red")
+            try expectEqual(labels[4].colorKey, "red")
             try expect(labels.allSatisfy { !$0.archived }, "no default is archived")
             try expect(labels.allSatisfy { $0.goalMinutes == nil }, "no default goal")
         }

@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-18: Label rework — "Calls & Orga" became "Orga & Alltag" (id orga kept), "Alltag" (everyday) merged into it via a one-off migration (59 entries in 9 day files re-pointed, label removed), new "Calls" label (id calls, mint) after it; shipped defaults + tests + README updated. Shortcuts now: 1 Fokus, 2 Halbfokus, 3 Orga & Alltag, 4 Calls, 5 Ablenkung, 6 Erholung, 7 Sport, 8 Schlafen
+
 - 2026-08-12: Edit menu added in main.swift (undo/redo/cut/copy/paste/select-all) — an accessory app routes Cmd-C/V to text fields only when those items exist in the main menu; pasting links into notes now works
 
 - 2026-08-09: Check-in got a "bis" picker (chronological partial saves) and the window now stays open after a partial save — it closes only when nothing is pending; saveCheckin takes an optional end, drafts clear per save, pickers clamp into the remaining span
