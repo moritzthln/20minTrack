@@ -25,8 +25,9 @@ itself when nothing is pending — `autoOpenPopover` now gates this
 window instead of the popover). v5: prompt suppression — while a macOS
 Focus mode is active (`FocusAssertions` parses
 ~/Library/DoNotDisturb/DB/Assertions.json, fail-open; settings toggle
-`suppressDuringFocus`) and via the manual popover bell (`muted` pref,
-"in a call"); suppressed boundaries leave `lastPromptedEnd` untouched.
+`suppressDuringFocus`) and via the manual popover bell — a timed mute (`mutedUntil` pref:
+20 min / 1 h / 2 h / until tomorrow, expires on its own, never silent
+forever); suppressed boundaries leave `lastPromptedEnd` untouched.
 Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)

@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-19: Timed mute — muted Bool replaced by mutedUntil Date (isMuted(now:), expiry exclusive, TDD); popover bell is now a menu (20 min / 1 h / 2 h / bis morgen, when muted: "Stumm bis …" + reactivate); silence always expires on its own
+
 - 2026-08-19: Absence visibility — AbsenceSummaryLine ("Abwesend: Urlaub 3 Tage", airplane icon, orange) under the tiles in week/month/year; week day rows show the absence NAME instead of "0 min" on entry-less absent days
 
 - 2026-08-19: Absences (Urlaub) — Absence model + AbsenceRules (Core, TDD: inclusive day bounds, chained-absence anchor skip), Preferences.absences with add/remove (sorted, swapped bounds, fallback name), DayAttribution isAbsent flag (no distraction on away days), prompt+Fazit gates, anchor skip in normalizeAnchor, settings section (name + date pickers + list) and an orange badge in the stats day header
