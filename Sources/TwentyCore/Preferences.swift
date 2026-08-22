@@ -16,7 +16,7 @@ public final class Preferences {
         case chimeVolume
         case autoOpenPopover
         case trackingPaused
-        case muted
+        case mutedUntil
         case suppressDuringFocus
         case fazitPromptEnabled
         case fazitPromptMinute
@@ -113,11 +113,16 @@ public final class Preferences {
         set { defaults.set(newValue, forKey: Key.trackingPaused.rawValue) }
     }
 
-    /// Manual "in a call" switch: prompts and chimes stay silent, tracking
-    /// and pending accumulation continue.
-    public var muted: Bool {
-        get { defaults.bool(forKey: Key.muted.rawValue) }
-        set { defaults.set(newValue, forKey: Key.muted.rawValue) }
+    /// Manual "in a call" switch with an expiry: prompts and chimes stay
+    /// silent until this moment, then come back on their own — never
+    /// silent forever. nil = not muted.
+    public var mutedUntil: Date? {
+        get { defaults.object(forKey: Key.mutedUntil.rawValue) as? Date }
+        set { defaults.set(newValue, forKey: Key.mutedUntil.rawValue) }
+    }
+
+    public func isMuted(now: Date = Date()) -> Bool {
+        (mutedUntil ?? .distantPast) > now
     }
 
     /// Evening Fazit reminder (default on, 21:30). The minute is clamped

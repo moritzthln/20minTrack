@@ -16,7 +16,7 @@ final class TrackerViewModel: ObservableObject {
     @Published private(set) var activeLabels: [TrackLabel] = []
     @Published private(set) var labelsByID: [String: TrackLabel] = [:]
     @Published private(set) var todayFazit: String = ""
-    @Published private(set) var muted: Bool = false
+    @Published private(set) var mutedUntil: Date?
 
     /// Called after every data change — the status bar hooks its refresh here.
     var onDataChanged: (() -> Void)?
@@ -60,7 +60,7 @@ final class TrackerViewModel: ObservableObject {
             all.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first }
         )
         todayFazit = dayStore.fazit(onDay: now) ?? ""
-        muted = preferences.muted
+        mutedUntil = preferences.isMuted(now: now) ? preferences.mutedUntil : nil
     }
 
     /// Clamps a future anchor (clock set back) and advances it over blocks
@@ -238,9 +238,22 @@ final class TrackerViewModel: ObservableObject {
         finishChange()
     }
 
-    /// The "in a call" switch: prompts stay silent, tracking continues.
-    func toggleMuted() {
-        preferences.muted.toggle()
+    /// The "in a call" switch: prompts stay silent for the chosen span,
+    /// tracking continues, and sound comes back on its own.
+    func mute(for duration: TimeInterval) {
+        preferences.mutedUntil = Date().addingTimeInterval(duration)
+        finishChange()
+    }
+
+    /// Silent for the rest of today (until next midnight).
+    func muteUntilTomorrow() {
+        let todayStart = calendar.startOfDay(for: Date())
+        preferences.mutedUntil = calendar.date(byAdding: .day, value: 1, to: todayStart)
+        finishChange()
+    }
+
+    func unmute() {
+        preferences.mutedUntil = nil
         finishChange()
     }
 

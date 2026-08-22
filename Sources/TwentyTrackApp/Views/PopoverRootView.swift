@@ -155,16 +155,7 @@ struct PopoverRootView: View {
     private var footer: some View {
         HStack(spacing: 14) {
             footerButton("chart.bar", help: "Statistik", action: onOpenStats)
-            Button {
-                model.toggleMuted()
-            } label: {
-                Image(systemName: model.muted ? "bell.slash.fill" : "bell")
-                    .foregroundStyle(model.muted ? Color.orange : Color.secondary)
-            }
-            .buttonStyle(.plain)
-            .help(model.muted
-                ? "Meldungen wieder aktivieren"
-                : "Meldungen pausieren (z. B. für Calls) — Tracking läuft weiter")
+            muteMenu
             Spacer()
             Menu {
                 Button(model.preferences.trackingPaused ? "Tracking fortsetzen" : "Tracking pausieren") {
@@ -182,6 +173,39 @@ struct PopoverRootView: View {
             .fixedSize()
         }
         .font(.system(size: 14))
+    }
+
+    /// Timed mute: silence always comes with an expiry — never forever.
+    private var muteMenu: some View {
+        let isMuted = model.mutedUntil.map { $0 > Date() } ?? false
+        return Menu {
+            if let until = model.mutedUntil, isMuted {
+                Text("Stumm bis \(muteUntilText(until))")
+                Button("Wieder aktivieren") { model.unmute() }
+            } else {
+                Button("20 Minuten") { model.mute(for: 20 * 60) }
+                Button("1 Stunde") { model.mute(for: 3600) }
+                Button("2 Stunden") { model.mute(for: 2 * 3600) }
+                Button("Bis morgen") { model.muteUntilTomorrow() }
+            }
+        } label: {
+            Image(systemName: isMuted ? "bell.slash.fill" : "bell")
+                .foregroundStyle(isMuted ? Color.orange : Color.secondary)
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
+        .help(isMuted
+            ? "Stumm — läuft automatisch ab"
+            : "Meldungen pausieren (z. B. für Calls) — Tracking läuft weiter")
+    }
+
+    private func muteUntilText(_ until: Date) -> String {
+        let calendar = model.calendar
+        if calendar.isDate(until, inSameDayAs: Date()) {
+            return TimeFormatting.clock(until, calendar: calendar)
+        }
+        return "morgen"
     }
 
     private func footerButton(

@@ -121,16 +121,25 @@ func runPreferencesSettingTests() {
         try withPreferences { prefs in
             try expect(prefs.autoOpenPopover, "autoOpenPopover default true")
             try expect(!prefs.trackingPaused, "trackingPaused default false")
-            try expect(!prefs.muted, "muted default false")
             try expect(prefs.suppressDuringFocus, "suppressDuringFocus default true")
             prefs.autoOpenPopover = false
             prefs.trackingPaused = true
-            prefs.muted = true
             prefs.suppressDuringFocus = false
             try expect(!prefs.autoOpenPopover, "autoOpenPopover set false")
             try expect(prefs.trackingPaused, "trackingPaused set true")
-            try expect(prefs.muted, "muted set true")
             try expect(!prefs.suppressDuringFocus, "suppressDuringFocus set false")
+        }
+    }
+
+    test("mute expires on its own") {
+        try withPreferences { prefs in
+            let now = makeDate(2026, 8, 19, 12, 0)
+            try expect(!prefs.isMuted(now: now), "default not muted")
+            prefs.mutedUntil = makeDate(2026, 8, 19, 13, 0)
+            try expect(prefs.isMuted(now: now), "muted before expiry")
+            try expect(!prefs.isMuted(now: makeDate(2026, 8, 19, 13, 0)), "expiry is exclusive")
+            prefs.mutedUntil = nil
+            try expect(!prefs.isMuted(now: now), "unmuted")
         }
     }
 
