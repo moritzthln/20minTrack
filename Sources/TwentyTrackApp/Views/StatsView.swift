@@ -10,10 +10,16 @@ struct StatsView: View {
     let usageFor: (DateInterval) -> [AppUsageTotal]
 
     private enum Tab: String, CaseIterable {
-        case day = "Tag"
-        case week = "Woche"
-        case month = "Monat"
-        case year = "Jahr"
+        case day, week, month, year
+
+        var title: String {
+            switch self {
+            case .day: return loc("Tag", "Day")
+            case .week: return loc("Woche", "Week")
+            case .month: return loc("Monat", "Month")
+            case .year: return loc("Jahr", "Year")
+            }
+        }
     }
 
     @State private var tab: Tab = .day
@@ -22,7 +28,7 @@ struct StatsView: View {
         VStack(spacing: 12) {
             Picker("", selection: $tab) {
                 ForEach(Tab.allCases, id: \.self) { tab in
-                    Text(tab.rawValue).tag(tab)
+                    Text(tab.title).tag(tab)
                 }
             }
             .pickerStyle(.segmented)
@@ -111,8 +117,8 @@ struct AbsenceSummaryLine: View {
         if !groups.isEmpty {
             HStack(spacing: 5) {
                 Image(systemName: "airplane")
-                Text("Abwesend: " + groups
-                    .map { "\($0.name) \($0.count) \($0.count == 1 ? "Tag" : "Tage")" }
+                Text(loc("Abwesend: ", "Away: ") + groups
+                    .map { "\($0.name) \($0.count) " + ($0.count == 1 ? loc("Tag", "day") : loc("Tage", "days")) }
                     .joined(separator: " · "))
             }
             .font(.caption)
@@ -136,7 +142,7 @@ struct GoalsSection: View {
     var body: some View {
         if !goalLabels.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Ziele")
+                Text(loc("Ziele", "Goals"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 ForEach(goalLabels) { label in
@@ -162,12 +168,12 @@ struct GoalsSection: View {
                 if reached {
                     HStack(spacing: 3) {
                         Image(systemName: "checkmark.circle.fill")
-                        Text("erreicht")
+                        Text(loc("erreicht", "done"))
                     }
                     .foregroundStyle(Color.green)
                     .font(.caption)
                 } else {
-                    Text("noch \(TimeFormatting.wording(seconds: target - done))")
+                    Text(loc("noch", "left:") + " \(TimeFormatting.wording(seconds: target - done))")
                         .foregroundStyle(.secondary)
                         .font(.caption)
                 }
@@ -212,7 +218,7 @@ struct LabelTotalsList: View {
             ForEach(rows, id: \.id) { row in
                 barRow(
                     color: row.label.map { LabelPalette.color(for: $0.colorKey) } ?? .gray,
-                    name: row.label?.name ?? "Unbekannt",
+                    name: row.label?.name ?? loc("Unbekannt", "Unknown"),
                     seconds: row.seconds,
                     share: true,
                     secondaryName: false
@@ -221,14 +227,14 @@ struct LabelTotalsList: View {
             if untrackedSeconds > 0 {
                 barRow(
                     color: .gray,
-                    name: "Nicht erfasst",
+                    name: loc("Nicht erfasst", "Untracked"),
                     seconds: untrackedSeconds,
                     share: false,
                     secondaryName: true
                 )
             }
             if rows.isEmpty && untrackedSeconds <= 0 {
-                Text("Keine Einträge.")
+                Text(loc("Keine Einträge.", "No entries."))
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }

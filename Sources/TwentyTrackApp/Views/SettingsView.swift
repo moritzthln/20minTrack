@@ -16,7 +16,7 @@ struct SettingsView: View {
     @State private var fazitEnabled = true
     @State private var fazitMinute = 1290
     @State private var absences: [Absence] = []
-    @State private var newAbsenceName = "Urlaub"
+    @State private var newAbsenceName = loc("Urlaub", "Vacation")
     @State private var newAbsenceStart = Date()
     @State private var newAbsenceEnd = Date()
     @State private var loginEnabled = false
@@ -44,13 +44,13 @@ struct SettingsView: View {
 
     private var labelsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionTitle("Labels")
+            sectionTitle(loc("Labels", "Labels"))
             ForEach(labels.filter { !$0.archived }) { label in
                 labelRow(label)
             }
             HStack(spacing: 8) {
                 colorMenu(selection: $newLabelColor)
-                TextField("Neues Label…", text: $newLabelName)
+                TextField(loc("Neues Label…", "New label…"), text: $newLabelName)
                     .textFieldStyle(.roundedBorder)
                     .onSubmit(addLabel)
                 Button(action: addLabel) {
@@ -59,7 +59,7 @@ struct SettingsView: View {
                 .buttonStyle(.plain)
                 .disabled(newLabelName.trimmingCharacters(in: .whitespaces).isEmpty)
             }
-            Text("Archivierte Labels verschwinden aus der Auswahl; alte Einträge behalten Name und Farbe.")
+            Text(loc("Archivierte Labels verschwinden aus der Auswahl; alte Einträge behalten Name und Farbe.", "Archived labels disappear from the pickers; old entries keep their name and color."))
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
@@ -75,7 +75,7 @@ struct SettingsView: View {
                     persist(updated)
                 }
             ))
-            TextField("Name", text: Binding(
+            TextField(loc("Name", "Name"), text: Binding(
                 get: { label.name },
                 set: { newName in
                     var updated = label
@@ -95,7 +95,7 @@ struct SettingsView: View {
                 Image(systemName: "minus.circle")
             }
             .buttonStyle(.plain)
-            .help("Label archivieren")
+            .help(loc("Label archivieren", "Archive label"))
             .disabled(labels.filter { !$0.archived }.count <= 1)
         }
     }
@@ -154,7 +154,7 @@ struct SettingsView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .help("Tagesziel (leer = kein Ziel) — Statistik zeigt ✓ bei Erreichen, Woche ×7")
+        .help(loc("Tagesziel (leer = kein Ziel) — Statistik zeigt ✓ bei Erreichen, Woche ×7", "Daily goal (empty = none) — statistics show ✓ when reached, week ×7"))
     }
 
     private func setGoal(_ label: TrackLabel, minutes: Int) {
@@ -182,8 +182,8 @@ struct SettingsView: View {
 
     private var checkinSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionTitle("Check-in")
-            Toggle("Check-in-Fenster automatisch öffnen", isOn: Binding(
+            sectionTitle(loc("Check-in", "Check-in"))
+            Toggle(loc("Check-in-Fenster automatisch öffnen", "Open check-in window automatically"), isOn: Binding(
                 get: { autoOpen },
                 set: { value in
                     autoOpen = value
@@ -192,7 +192,7 @@ struct SettingsView: View {
                 }
             ))
             HStack {
-                Text("Ton")
+                Text(loc("Ton", "Sound"))
                 Slider(value: Binding(
                     get: { chimeVolume },
                     set: { value in
@@ -200,10 +200,10 @@ struct SettingsView: View {
                         preferences.chimeVolume = value
                     }
                 ), in: 0...1)
-                Button("Test") { SoundPlayer.playChime(volume: preferences.chimeVolume) }
+                Button(loc("Test", "Test")) { SoundPlayer.playChime(volume: preferences.chimeVolume) }
                     .buttonStyle(PillButtonStyle())
             }
-            Toggle("Bei macOS-Fokus keine Meldungen", isOn: Binding(
+            Toggle(loc("Bei macOS-Fokus keine Meldungen", "No prompts during macOS Focus"), isOn: Binding(
                 get: { suppressFocus },
                 set: { value in
                     suppressFocus = value
@@ -211,7 +211,7 @@ struct SettingsView: View {
                 }
             ))
             HStack {
-                Toggle("Abends ans Tagesfazit erinnern", isOn: Binding(
+                Toggle(loc("Abends ans Tagesfazit erinnern", "Evening reminder for the daily review"), isOn: Binding(
                     get: { fazitEnabled },
                     set: { value in
                         fazitEnabled = value
@@ -233,7 +233,7 @@ struct SettingsView: View {
                 .fixedSize()
                 .disabled(!fazitEnabled)
             }
-            Toggle("Tracking pausieren", isOn: Binding(
+            Toggle(loc("Tracking pausieren", "Pause tracking"), isOn: Binding(
                 get: { trackingPaused },
                 set: { value in
                     trackingPaused = value
@@ -248,7 +248,7 @@ struct SettingsView: View {
 
     private var absenceSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionTitle("Abwesenheit")
+            sectionTitle(loc("Abwesenheit", "Absence"))
             ForEach(absences) { absence in
                 HStack(spacing: 8) {
                     Text(absence.name)
@@ -266,11 +266,11 @@ struct SettingsView: View {
                         Image(systemName: "minus.circle")
                     }
                     .buttonStyle(.plain)
-                    .help("Abwesenheit löschen")
+                    .help(loc("Abwesenheit löschen", "Delete absence"))
                 }
             }
             HStack(spacing: 6) {
-                TextField("Name", text: $newAbsenceName)
+                TextField(loc("Name", "Name"), text: $newAbsenceName)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 90)
                 DatePicker("", selection: $newAbsenceStart, displayedComponents: .date)
@@ -292,7 +292,7 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
             }
-            Text("An diesen Tagen: keine Check-in-Fenster, Lücken zählen nicht als Ablenkung, und nach der Rückkehr wird die Abwesenheit nicht abgefragt.")
+            Text(loc("An diesen Tagen: keine Check-in-Fenster, Lücken zählen nicht als Ablenkung, und nach der Rückkehr wird die Abwesenheit nicht abgefragt.", "On these days: no check-in windows, gaps never count as distraction, and the return check-in skips the absence."))
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
@@ -300,8 +300,8 @@ struct SettingsView: View {
 
     private func absenceRange(_ absence: Absence) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "de_DE")
-        formatter.dateFormat = "d.M."
+        formatter.locale = l10nLocale
+        formatter.dateFormat = loc("d.M.", "M/d")
         return "\(formatter.string(from: absence.startDay)) – \(formatter.string(from: absence.endDay))"
     }
 
@@ -309,9 +309,9 @@ struct SettingsView: View {
 
     private var generalSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionTitle("Allgemein")
+            sectionTitle(loc("Allgemein", "General"))
             HStack(spacing: 8) {
-                Toggle("Beim Anmelden starten", isOn: Binding(
+                Toggle(loc("Beim Anmelden starten", "Launch at login"), isOn: Binding(
                     get: { loginEnabled },
                     set: { value in
                         LaunchAtLogin.setEnabled(value)
@@ -323,7 +323,7 @@ struct SettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            Button("Datenordner im Finder zeigen") {
+            Button(loc("Datenordner im Finder zeigen", "Show data folder in Finder")) {
                 NSWorkspace.shared.activateFileViewerSelecting([DayStore.defaultDirectory()])
             }
             .buttonStyle(PillButtonStyle())

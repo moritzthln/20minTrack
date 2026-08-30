@@ -43,7 +43,7 @@ final class CheckinWindowController {
             backing: .buffered,
             defer: false
         )
-        created.title = "Check-in"
+        created.title = loc("Check-in", "Check-in")
         created.isReleasedWhenClosed = false
         created.level = .floating
         created.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
@@ -87,10 +87,10 @@ struct CheckinWindowRootView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.circle")
                         .foregroundStyle(Color.green)
-                    Text("Alles erfasst")
+                    Text(loc("Alles erfasst", "All caught up"))
                         .font(.headline)
                     Spacer()
-                    Button("Schließen", action: onDone)
+                    Button(loc("Schließen", "Close"), action: onDone)
                         .buttonStyle(PillButtonStyle())
                 }
             }

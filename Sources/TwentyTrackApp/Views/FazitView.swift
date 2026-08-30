@@ -10,7 +10,7 @@ struct FazitView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Tagesfazit")
+            Text(loc("Tagesfazit", "Daily review"))
                 .font(.headline)
             TextEditor(text: $text)
                 .font(.body)
@@ -21,9 +21,9 @@ struct FazitView: View {
                 )
             HStack {
                 Spacer()
-                Button("Abbrechen", action: onCancel)
+                Button(loc("Abbrechen", "Cancel"), action: onCancel)
                     .buttonStyle(PillButtonStyle())
-                Button("Speichern") { onSave(text) }
+                Button(loc("Speichern", "Save")) { onSave(text) }
                     .buttonStyle(.borderedProminent)
             }
         }

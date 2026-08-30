@@ -34,7 +34,7 @@ final class FazitWindowController {
             backing: .buffered,
             defer: false
         )
-        created.title = "Tagesfazit"
+        created.title = loc("Tagesfazit", "Daily review")
         created.isReleasedWhenClosed = false
         created.level = .floating
         created.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
@@ -50,7 +50,7 @@ struct FazitWindowRootView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let line = model.todaySummaryLine {
-                Text("Heute: \(line)")
+                Text(loc("Heute: ", "Today: ") + line)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

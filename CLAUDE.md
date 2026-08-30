@@ -28,6 +28,10 @@ Focus mode is active (`FocusAssertions` parses
 `suppressDuringFocus`) and via the manual popover bell — a timed mute (`mutedUntil` pref:
 20 min / 1 h / 2 h / until tomorrow, expires on its own, never silent
 forever); suppressed boundaries leave `lastPromptedEnd` untouched.
+v6: bilingual UI — `L10n.swift` (`loc(de, en)`, `germanUI`,
+`l10nLocale`) follows the system language, `TrackLabel.defaults(german:)`
+seeds English label names on non-German systems (ids unchanged), the
+share package carries a German and an English install guide.
 Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)

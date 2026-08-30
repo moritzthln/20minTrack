@@ -35,34 +35,34 @@ struct SlotEditView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(existing == nil ? "Block eintragen" : "Block bearbeiten")
+            Text(existing == nil ? loc("Block eintragen", "Log block") : loc("Block bearbeiten", "Edit block"))
                 .font(.headline)
             HStack(spacing: 4) {
-                Text("Von")
+                Text(loc("Von", "From"))
                 timePicker(selection: $from, options: fromOptions)
-                Text("bis")
+                Text(loc("bis", "until"))
                 timePicker(selection: $to, options: toOptions)
             }
             .font(.caption)
             UsageLineView(usage: usage)
-            TextField("Kurz notieren… (optional)", text: $text)
+            TextField(loc("Kurz notieren… (optional)", "Quick note… (optional)"), text: $text)
                 .textFieldStyle(.roundedBorder)
                 .onSubmit { save() }
             LabelChipsView(labels: labels, selection: $selection)
             if selection.count == 2 {
-                Text("Jeder 20-Minuten-Block wird geteilt: 10 min je Label")
+                Text(loc("Jeder 20-Minuten-Block wird geteilt: 10 min je Label", "Each 20-minute block is split: 10 min per label"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
             HStack {
                 if existing != nil {
-                    Button("Löschen", role: .destructive, action: onDelete)
+                    Button(loc("Löschen", "Delete"), role: .destructive, action: onDelete)
                         .buttonStyle(PillButtonStyle())
                 }
                 Spacer()
-                Button("Abbrechen", action: onCancel)
+                Button(loc("Abbrechen", "Cancel"), action: onCancel)
                     .buttonStyle(PillButtonStyle())
-                Button("Speichern") { save() }
+                Button(loc("Speichern", "Save")) { save() }
                     .buttonStyle(.borderedProminent)
                     .disabled(selection.isEmpty || to <= from)
             }

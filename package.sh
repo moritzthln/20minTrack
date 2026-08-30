@@ -36,6 +36,31 @@ cat > "$STAGE/ANLEITUNG.txt" << 'EOF'
 Alle Daten bleiben lokal auf dem Mac (keine Cloud, kein Account).
 EOF
 
+cat > "$STAGE/README-ENGLISH.txt" << 'EOF'
+Install 20minTrack (macOS 13 or newer)
+======================================
+
+1. Drag "20minTrack.app" into your "Applications" folder.
+
+2. Open Terminal (Spotlight: "Terminal"), paste this command and press
+   Enter — it lifts macOS's quarantine for downloaded apps:
+
+   xattr -cr /Applications/20minTrack.app
+
+3. Launch the app. A circle with a number appears in the menu bar —
+   the countdown to the next check-in (every 20 minutes).
+
+4. Recommended: click the circle → "…" menu → Settings →
+   enable "Launch at login".
+
+5. Optional: if you use Safari/Chrome/Arc, macOS asks once per browser
+   for permission ("wants to control …") — allow it and individual
+   websites (e.g. youtube.com) appear in the usage list.
+
+The app follows your system language (English/German). All data stays
+local on your Mac (no cloud, no account).
+EOF
+
 ditto -c -k --keepParent "$STAGE" dist/20minTrack.zip
 rm -rf "$STAGE"
 echo "✓ Paket: dist/20minTrack.zip"

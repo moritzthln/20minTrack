@@ -87,7 +87,7 @@ struct StatsYearView: View {
                 .buttonStyle(.plain)
                 .disabled(isCurrentYear)
             Spacer()
-            Text("\(activeDayCount) aktive Tage")
+            Text("\(activeDayCount) " + loc("aktive Tage", "active days"))
                 .font(.callout)
                 .foregroundStyle(.secondary)
         }
@@ -96,16 +96,16 @@ struct StatsYearView: View {
     private var tileRow: some View {
         let focus = StatsFigures.focusSeconds(totals)
         return HStack(spacing: 8) {
-            StatTile(title: "Fokus", value: TimeFormatting.wording(seconds: focus))
+            StatTile(title: loc("Fokus", "Focus"), value: TimeFormatting.wording(seconds: focus))
             StatTile(
-                title: "Ø Fokus/Tag",
+                title: loc("Ø Fokus/Tag", "Ø focus/day"),
                 value: activeDayCount > 0
                     ? TimeFormatting.wording(seconds: focus / Double(activeDayCount))
                     : "–"
             )
-            StatTile(title: "Fokus-Quote", value: StatsFigures.focusShare(totals))
+            StatTile(title: loc("Fokus-Quote", "Focus ratio"), value: StatsFigures.focusShare(totals))
             StatTile(
-                title: "Ablenkung",
+                title: loc("Ablenkung", "Distraction"),
                 value: TimeFormatting.wording(seconds: totals["no-focus"] ?? 0)
             )
         }
@@ -114,7 +114,7 @@ struct StatsYearView: View {
     private var chartSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                Text("Jahresverlauf")
+                Text(loc("Jahresverlauf", "Year trend"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Picker("", selection: $chartLabelID) {
@@ -136,7 +136,7 @@ struct StatsYearView: View {
                 goalSeconds: nil,
                 axisLabel: { date, _ in
                     let formatter = DateFormatter()
-                    formatter.locale = Locale(identifier: "de_DE")
+                    formatter.locale = l10nLocale
                     formatter.dateFormat = "MMMMM"
                     formatter.timeZone = calendar.timeZone
                     return formatter.string(from: date)

@@ -31,7 +31,7 @@ struct LabelChipsView: View {
         } label: {
             HStack(spacing: 6) {
                 Circle().fill(color).frame(width: 8, height: 8)
-                Text(selected && split ? "½ \(label.name)" : label.name)
+                Text(selected && split ? "½ " + label.name : label.name)
                     .lineLimit(1)
             }
             .font(.callout)
@@ -48,8 +48,8 @@ struct LabelChipsView: View {
         }
         .buttonStyle(.plain)
         .help(selected
-            ? "Klick entfernt dieses Label"
-            : "Auswählen · ein zweites Label teilt den Block 10/10")
+            ? loc("Klick entfernt dieses Label", "Click removes this label")
+            : loc("Auswählen · ein zweites Label teilt den Block 10/10", "Select · a second label splits the block 10/10"))
     }
 
     private func handleTap(_ label: TrackLabel) {

@@ -203,7 +203,7 @@ final class StatusBarController: NSObject {
     private func showContextMenu() {
         let menu = NSMenu()
         menu.addItem(NSMenuItem(
-            title: "20minTrack beenden",
+            title: loc("20minTrack beenden", "Quit 20minTrack"),
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: ""
         ))

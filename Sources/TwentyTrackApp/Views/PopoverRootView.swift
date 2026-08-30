@@ -32,7 +32,7 @@ struct PopoverRootView: View {
     /// Always-visible daily notes, saved live on every keystroke.
     private var fazitSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Tagesfazit / Notizen")
+            Text(loc("Tagesfazit / Notizen", "Daily review / notes"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             TextEditor(text: $fazitDraft)
@@ -103,7 +103,7 @@ struct PopoverRootView: View {
     private var todaySection: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text("Heute")
+                Text(loc("Heute", "Today"))
                 Spacer()
                 Text(TimeFormatting.wording(seconds: StatsMath.trackedSeconds(model.todayEntries)))
             }
@@ -154,16 +154,16 @@ struct PopoverRootView: View {
 
     private var footer: some View {
         HStack(spacing: 14) {
-            footerButton("chart.bar", help: "Statistik", action: onOpenStats)
+            footerButton("chart.bar", help: loc("Statistik", "Statistics"), action: onOpenStats)
             muteMenu
             Spacer()
             Menu {
-                Button(model.preferences.trackingPaused ? "Tracking fortsetzen" : "Tracking pausieren") {
+                Button(model.preferences.trackingPaused ? loc("Tracking fortsetzen", "Resume tracking") : loc("Tracking pausieren", "Pause tracking")) {
                     model.togglePause()
                 }
-                Button("Einstellungen…", action: onOpenSettings)
+                Button(loc("Einstellungen…", "Settings…"), action: onOpenSettings)
                 Divider()
-                Button("20minTrack beenden") { NSApp.terminate(nil) }
+                Button(loc("20minTrack beenden", "Quit 20minTrack")) { NSApp.terminate(nil) }
             } label: {
                 Image(systemName: "ellipsis.circle")
                     .foregroundStyle(.secondary)
@@ -180,13 +180,13 @@ struct PopoverRootView: View {
         let isMuted = model.mutedUntil.map { $0 > Date() } ?? false
         return Menu {
             if let until = model.mutedUntil, isMuted {
-                Text("Stumm bis \(muteUntilText(until))")
-                Button("Wieder aktivieren") { model.unmute() }
+                Text(loc("Stumm bis", "Muted until") + " \(muteUntilText(until))")
+                Button(loc("Wieder aktivieren", "Unmute")) { model.unmute() }
             } else {
-                Button("20 Minuten") { model.mute(for: 20 * 60) }
-                Button("1 Stunde") { model.mute(for: 3600) }
-                Button("2 Stunden") { model.mute(for: 2 * 3600) }
-                Button("Bis morgen") { model.muteUntilTomorrow() }
+                Button(loc("20 Minuten", "20 minutes")) { model.mute(for: 20 * 60) }
+                Button(loc("1 Stunde", "1 hour")) { model.mute(for: 3600) }
+                Button(loc("2 Stunden", "2 hours")) { model.mute(for: 2 * 3600) }
+                Button(loc("Bis morgen", "Until tomorrow")) { model.muteUntilTomorrow() }
             }
         } label: {
             Image(systemName: isMuted ? "bell.slash.fill" : "bell")
@@ -196,8 +196,8 @@ struct PopoverRootView: View {
         .menuIndicator(.hidden)
         .fixedSize()
         .help(isMuted
-            ? "Stumm — läuft automatisch ab"
-            : "Meldungen pausieren (z. B. für Calls) — Tracking läuft weiter")
+            ? loc("Stumm — läuft automatisch ab", "Muted — expires automatically")
+            : loc("Meldungen pausieren (z. B. für Calls) — Tracking läuft weiter", "Mute prompts (e.g. for calls) — tracking continues"))
     }
 
     private func muteUntilText(_ until: Date) -> String {
@@ -205,7 +205,7 @@ struct PopoverRootView: View {
         if calendar.isDate(until, inSameDayAs: Date()) {
             return TimeFormatting.clock(until, calendar: calendar)
         }
-        return "morgen"
+        return loc("morgen", "tomorrow")
     }
 
     private func footerButton(

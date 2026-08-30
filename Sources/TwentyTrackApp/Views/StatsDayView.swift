@@ -147,12 +147,12 @@ struct StatsDayView: View {
     private var tileRow: some View {
         HStack(spacing: 8) {
             StatTile(
-                title: "Fokus",
+                title: loc("Fokus", "Focus"),
                 value: TimeFormatting.wording(seconds: StatsFigures.focusSeconds(totals))
             )
-            StatTile(title: "Fokus-Quote", value: StatsFigures.focusShare(totals))
+            StatTile(title: loc("Fokus-Quote", "Focus ratio"), value: StatsFigures.focusShare(totals))
             StatTile(
-                title: "Ablenkung",
+                title: loc("Ablenkung", "Distraction"),
                 value: TimeFormatting.wording(seconds: totals["no-focus"] ?? 0)
             )
         }
@@ -164,7 +164,7 @@ struct StatsDayView: View {
         let merged = EntryMerge.merged(entries)
         return VStack(alignment: .leading, spacing: 4) {
             if !merged.isEmpty {
-                Text("Einträge")
+                Text(loc("Einträge", "Entries"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 ForEach(merged) { row in
@@ -193,7 +193,7 @@ struct StatsDayView: View {
                 Circle()
                     .fill(LabelPalette.color(labelID: row.labelID, labelsByID: labelsByID))
                     .frame(width: 7, height: 7)
-                Text(labelsByID[row.labelID]?.name ?? "Unbekannt")
+                Text(labelsByID[row.labelID]?.name ?? loc("Unbekannt", "Unknown"))
                     .lineLimit(1)
                 Text(TimeFormatting.wording(seconds: row.end.timeIntervalSince(row.start)))
                     .foregroundStyle(.secondary)
@@ -209,7 +209,7 @@ struct StatsDayView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help("Zeitraum bearbeiten")
+        .help(loc("Zeitraum bearbeiten", "Edit span"))
     }
 
     private var header: some View {
@@ -238,10 +238,10 @@ struct StatsDayView: View {
 
     private var dayTitle: String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "de_DE")
+        formatter.locale = l10nLocale
         formatter.dateFormat = "EEE, d. MMMM"
         formatter.timeZone = calendar.timeZone
-        return isToday ? "Heute" : formatter.string(from: day)
+        return isToday ? loc("Heute", "Today") : formatter.string(from: day)
     }
 
     private var stripSection: some View {
@@ -282,7 +282,7 @@ struct StatsDayView: View {
 
     private var fazitSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Tagesfazit")
+            Text(loc("Tagesfazit", "Daily review"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             TextEditor(text: $fazitDraft)
@@ -294,7 +294,7 @@ struct StatsDayView: View {
                 )
             HStack {
                 Spacer()
-                Button("Fazit speichern") {
+                Button(loc("Fazit speichern", "Save review")) {
                     dayStore.setFazit(fazitDraft, onDay: day)
                     savedFazit = fazitDraft
                 }

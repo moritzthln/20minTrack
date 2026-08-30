@@ -18,7 +18,7 @@ final class SettingsWindowController {
                 backing: .buffered,
                 defer: false
             )
-            created.title = "Einstellungen"
+            created.title = loc("Einstellungen", "Settings")
             created.isReleasedWhenClosed = false
             created.center()
             window = created
