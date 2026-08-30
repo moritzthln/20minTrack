@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-30: Localization audit — automated scan for unlocalized German string literals found 4 leftovers (strip tooltip, hidden app/edit menu titles) + German-style day date format + Core absence fallback name, all fixed (localized in UI); scan now CLEAN
+
 - 2026-08-19: Bilingual UI — L10n.swift (loc(de,en) + l10nLocale following the system language), every user-facing string in views/windows/menus localized, TrackLabel.defaults(german:) seeds English names on non-German systems (ids stable, tests cover both), date formatters switched from hardcoded de_DE to l10nLocale, package.sh adds an English install guide
 
 - 2026-08-19: Timed mute — muted Bool replaced by mutedUntil Date (isMuted(now:), expiry exclusive, TDD); popover bell is now a menu (20 min / 1 h / 2 h / bis morgen, when muted: "Stumm bis …" + reactivate); silence always expires on its own

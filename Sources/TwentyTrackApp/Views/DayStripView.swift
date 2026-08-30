@@ -62,7 +62,7 @@ struct DayStripView: View {
         }
         .help(onSelect == nil
             ? ""
-            : "Klicken oder über einen Bereich ziehen, um ihn einzutragen/zu bearbeiten")
+            : loc("Klicken oder über einen Bereich ziehen, um ihn einzutragen/zu bearbeiten", "Click, or drag across a range, to log or edit it"))
     }
 
     // MARK: - Selection

@@ -25,7 +25,7 @@ let appMenuItem = NSMenuItem()
 let appMenu = NSMenu()
 appMenu.addItem(
     NSMenuItem(
-        title: "20minTrack beenden",
+        title: loc("20minTrack beenden", "Quit 20minTrack"),
         action: #selector(NSApplication.terminate(_:)),
         keyEquivalent: ""
     )
@@ -40,13 +40,13 @@ mainMenu.addItem(appMenuItem)
 let editMenuItem = NSMenuItem()
 let editMenu = NSMenu(title: "Bearbeiten")
 for (title, selectorName, key) in [
-    ("Widerrufen", "undo:", "z"),
-    ("Wiederholen", "redo:", "Z"),
+    (loc("Widerrufen", "Undo"), "undo:", "z"),
+    (loc("Wiederholen", "Redo"), "redo:", "Z"),
     ("", "", ""),
-    ("Ausschneiden", "cut:", "x"),
-    ("Kopieren", "copy:", "c"),
-    ("Einsetzen", "paste:", "v"),
-    ("Alles auswählen", "selectAll:", "a"),
+    (loc("Ausschneiden", "Cut"), "cut:", "x"),
+    (loc("Kopieren", "Copy"), "copy:", "c"),
+    (loc("Einsetzen", "Paste"), "paste:", "v"),
+    (loc("Alles auswählen", "Select All"), "selectAll:", "a"),
 ] {
     if title.isEmpty {
         editMenu.addItem(.separator())

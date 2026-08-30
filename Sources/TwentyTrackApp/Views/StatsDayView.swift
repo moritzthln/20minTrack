@@ -239,7 +239,7 @@ struct StatsDayView: View {
     private var dayTitle: String {
         let formatter = DateFormatter()
         formatter.locale = l10nLocale
-        formatter.dateFormat = "EEE, d. MMMM"
+        formatter.dateFormat = loc("EEE, d. MMMM", "EEE, MMMM d")
         formatter.timeZone = calendar.timeZone
         return isToday ? loc("Heute", "Today") : formatter.string(from: day)
     }

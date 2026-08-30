@@ -281,8 +281,10 @@ struct SettingsView: View {
                     .labelsHidden()
                     .datePickerStyle(.field)
                 Button {
+                    // Localized fallback here — Core's own fallback is German.
+                    let trimmed = newAbsenceName.trimmingCharacters(in: .whitespaces)
                     preferences.addAbsence(
-                        name: newAbsenceName,
+                        name: trimmed.isEmpty ? loc("Abwesend", "Away") : trimmed,
                         startDay: newAbsenceStart, endDay: newAbsenceEnd
                     )
                     load()
