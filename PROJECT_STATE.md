@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-30: Universal binary — build.sh builds both slices by triple (CLT has no xcbuild for --arch) and lipo-merges them (Timer pattern); installed app + share package verified "x86_64 arm64", Intel Macs now supported
+
 - 2026-08-30: Manual language picker — germanUI/l10nLocale became computed (UserDefaults languageOverride wins over system language), settings General section gained System/Deutsch/English picker (fresh-per-open windows pick it up immediately, window titles fully after restart)
 
 - 2026-08-30: Localization audit — automated scan for unlocalized German string literals found 4 leftovers (strip tooltip, hidden app/edit menu titles) + German-style day date format + Core absence fallback name, all fixed (localized in UI); scan now CLEAN
