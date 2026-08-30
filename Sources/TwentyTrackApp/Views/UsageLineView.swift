@@ -14,7 +14,7 @@ struct UsageLineView: View {
         let relevant = usage.filter { $0.seconds >= 60 }
         if !relevant.isEmpty {
             VStack(alignment: .leading, spacing: 4) {
-                Text("In dieser Zeit benutzt")
+                Text(loc("In dieser Zeit benutzt", "Used during this time"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 ForEach(relevant.prefix(Self.maxRows), id: \.bundleID) { total in
@@ -30,7 +30,7 @@ struct UsageLineView: View {
                     }
                 }
                 if relevant.count > Self.maxRows {
-                    Text("+ \(relevant.count - Self.maxRows) weitere")
+                    Text("+ \(relevant.count - Self.maxRows) " + loc("weitere", "more"))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

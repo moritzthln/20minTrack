@@ -84,16 +84,16 @@ struct StatsWeekView: View {
         let focus = StatsFigures.focusSeconds(totals)
         let activeDays = weekDays.filter { !(entriesByDay[$0] ?? []).isEmpty }.count
         return HStack(spacing: 8) {
-            StatTile(title: "Fokus", value: TimeFormatting.wording(seconds: focus))
+            StatTile(title: loc("Fokus", "Focus"), value: TimeFormatting.wording(seconds: focus))
             StatTile(
-                title: "Ø Fokus/Tag",
+                title: loc("Ø Fokus/Tag", "Ø focus/day"),
                 value: activeDays > 0
                     ? TimeFormatting.wording(seconds: focus / Double(activeDays))
                     : "–"
             )
-            StatTile(title: "Fokus-Quote", value: StatsFigures.focusShare(totals))
+            StatTile(title: loc("Fokus-Quote", "Focus ratio"), value: StatsFigures.focusShare(totals))
             StatTile(
-                title: "Ablenkung",
+                title: loc("Ablenkung", "Distraction"),
                 value: TimeFormatting.wording(seconds: totals["no-focus"] ?? 0)
             )
         }
@@ -104,7 +104,7 @@ struct StatsWeekView: View {
     private var chartSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                Text("Wochenverlauf")
+                Text(loc("Wochenverlauf", "Week trend"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Picker("", selection: $chartLabelID) {
@@ -134,7 +134,7 @@ struct StatsWeekView: View {
         }
         return VStack(alignment: .leading, spacing: 4) {
             if !fazite.isEmpty {
-                Text("Fazite")
+                Text(loc("Fazite", "Reviews"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 ForEach(fazite, id: \.day) { item in
@@ -174,10 +174,10 @@ struct StatsWeekView: View {
         isoCalendar.timeZone = calendar.timeZone
         let week = isoCalendar.component(.weekOfYear, from: first)
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "de_DE")
-        formatter.dateFormat = "d. MMM"
+        formatter.locale = l10nLocale
+        formatter.dateFormat = loc("d. MMM", "MMM d")
         formatter.timeZone = calendar.timeZone
-        return "KW \(week) · \(formatter.string(from: first)) – \(formatter.string(from: last))"
+        return loc("KW", "Week") + " \(week) · \(formatter.string(from: first)) – \(formatter.string(from: last))"
     }
 
     private var dayRows: some View {
@@ -225,7 +225,7 @@ struct StatsWeekView: View {
 
     fileprivate func weekdayShort(_ day: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "de_DE")
+        formatter.locale = l10nLocale
         formatter.dateFormat = "EE"
         formatter.timeZone = calendar.timeZone
         return String(formatter.string(from: day).prefix(2))

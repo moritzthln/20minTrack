@@ -26,18 +26,21 @@ public struct TrackLabel: Codable, Equatable, Identifiable {
     /// The labels the app ships with (stable slug ids — entries reference
     /// these forever, names and colors stay editable). Order = the ⌘1–⌘9
     /// shortcut order: the work-quality trio first (green → yellow → red
-    /// is the ratio that matters), then the rest of the day. Goals are
-    /// personal and stay unset.
-    public static func defaults() -> [TrackLabel] {
-        [
-            TrackLabel(id: "focus-mma", name: "Fokus Arbeit", colorKey: "green"),
-            TrackLabel(id: "half-focus", name: "Halbfokus", colorKey: "yellow"),
-            TrackLabel(id: "orga", name: "Orga & Alltag", colorKey: "blue"),
-            TrackLabel(id: "calls", name: "Calls", colorKey: "mint"),
-            TrackLabel(id: "no-focus", name: "Ablenkung", colorKey: "red"),
-            TrackLabel(id: "fun", name: "Erholung", colorKey: "orange"),
-            TrackLabel(id: "sport", name: "Sport", colorKey: "teal"),
-            TrackLabel(id: "sleep", name: "Schlafen", colorKey: "indigo"),
+    /// is the ratio that matters), then the rest of the day. Names follow
+    /// the system language on first launch; goals stay unset.
+    public static func defaults(
+        german: Bool = Locale.preferredLanguages.first?.lowercased().hasPrefix("de") ?? false
+    ) -> [TrackLabel] {
+        func name(_ de: String, _ en: String) -> String { german ? de : en }
+        return [
+            TrackLabel(id: "focus-mma", name: name("Fokus Arbeit", "Focus Work"), colorKey: "green"),
+            TrackLabel(id: "half-focus", name: name("Halbfokus", "Half Focus"), colorKey: "yellow"),
+            TrackLabel(id: "orga", name: name("Orga & Alltag", "Admin & Everyday"), colorKey: "blue"),
+            TrackLabel(id: "calls", name: name("Calls", "Calls"), colorKey: "mint"),
+            TrackLabel(id: "no-focus", name: name("Ablenkung", "Distraction"), colorKey: "red"),
+            TrackLabel(id: "fun", name: name("Erholung", "Recreation"), colorKey: "orange"),
+            TrackLabel(id: "sport", name: name("Sport", "Sport"), colorKey: "teal"),
+            TrackLabel(id: "sleep", name: name("Schlafen", "Sleep"), colorKey: "indigo"),
         ]
     }
 

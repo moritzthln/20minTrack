@@ -68,7 +68,7 @@ struct LabelBarChart: View {
         .frame(maxWidth: .infinity)
         .help(item.seconds > 0
             ? TimeFormatting.wording(seconds: item.seconds)
-            : "Keine Zeit")
+            : loc("Keine Zeit", "No time"))
     }
 
     /// "2:40" — hours:minutes, compact enough for a bar top.

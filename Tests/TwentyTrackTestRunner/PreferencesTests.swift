@@ -12,22 +12,28 @@ private func withPreferences(_ body: (Preferences) throws -> Void) rethrows {
 }
 
 func runPreferencesLabelTests() {
-    test("never-set labels seed the shipped defaults") {
+    test("never-set labels seed the shipped defaults in both languages") {
+        let german = TrackLabel.defaults(german: true)
+        let english = TrackLabel.defaults(german: false)
+        let expectedIDs = [
+            "focus-mma", "half-focus", "orga", "calls",
+            "no-focus", "fun", "sport", "sleep",
+        ]
+        try expectEqual(german.map(\.id), expectedIDs)
+        try expectEqual(english.map(\.id), expectedIDs, "ids are language-independent")
+        try expectEqual(german.map(\.name), [
+            "Fokus Arbeit", "Halbfokus", "Orga & Alltag", "Calls",
+            "Ablenkung", "Erholung", "Sport", "Schlafen",
+        ])
+        try expectEqual(english.map(\.name), [
+            "Focus Work", "Half Focus", "Admin & Everyday", "Calls",
+            "Distraction", "Recreation", "Sport", "Sleep",
+        ])
+        try expectEqual(german[0].colorKey, "green")
+        try expect(german.allSatisfy { !$0.archived }, "no default is archived")
+        try expect(german.allSatisfy { $0.goalMinutes == nil }, "no default goal")
         try withPreferences { prefs in
-            let labels = prefs.labels
-            try expectEqual(labels.map(\.id), [
-                "focus-mma", "half-focus", "orga", "calls",
-                "no-focus", "fun", "sport", "sleep",
-            ])
-            try expectEqual(labels.map(\.name), [
-                "Fokus Arbeit", "Halbfokus", "Orga & Alltag", "Calls",
-                "Ablenkung", "Erholung", "Sport", "Schlafen",
-            ])
-            try expectEqual(labels[0].colorKey, "green")
-            try expectEqual(labels[1].colorKey, "yellow")
-            try expectEqual(labels[4].colorKey, "red")
-            try expect(labels.allSatisfy { !$0.archived }, "no default is archived")
-            try expect(labels.allSatisfy { $0.goalMinutes == nil }, "no default goal")
+            try expectEqual(prefs.labels.map(\.id), expectedIDs, "prefs fall back to defaults")
         }
     }
 

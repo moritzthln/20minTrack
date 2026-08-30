@@ -12,7 +12,7 @@ struct IdleView: View {
                 HStack(spacing: 6) {
                     Image(systemName: paused ? "pause.circle" : "checkmark.circle")
                         .foregroundStyle(paused ? Color.orange : Color.green)
-                    Text(paused ? "Tracking pausiert" : "Alles erfasst")
+                    Text(paused ? loc("Tracking pausiert", "Tracking paused") : loc("Alles erfasst", "All caught up"))
                         .font(.headline)
                 }
                 if !paused {
@@ -26,7 +26,7 @@ struct IdleView: View {
         let next = SlotGrid.nextBoundary(after: now, calendar: calendar)
         let minutes = max(1, Int(ceil(next.timeIntervalSince(now) / 60)))
         return Text(
-            "Nächster Check-in um \(TimeFormatting.clock(next, calendar: calendar)) · in \(minutes) min"
+            loc("Nächster Check-in um", "Next check-in at") + " \(TimeFormatting.clock(next, calendar: calendar)) · in \(minutes) min"
         )
         .font(.caption)
         .foregroundStyle(.secondary)

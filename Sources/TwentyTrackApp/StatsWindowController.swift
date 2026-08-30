@@ -27,7 +27,7 @@ final class StatsWindowController {
                 backing: .buffered,
                 defer: false
             )
-            created.title = "Statistik"
+            created.title = loc("Statistik", "Statistics")
             created.isReleasedWhenClosed = false
             created.minSize = NSSize(width: 480, height: 540)
             created.setFrameAutosaveName("StatsWindow")

@@ -59,17 +59,17 @@ struct CheckinView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Was hast du gemacht?")
+            Text(loc("Was hast du gemacht?", "What did you do?"))
                 .font(.headline)
             spanLine
             if let todayLine {
-                Text("Heute: \(todayLine)")
+                Text(loc("Heute: ", "Today: ") + todayLine)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
             UsageLineView(usage: usage)
-            TextField("Kurz notieren… (optional)", text: $text)
+            TextField(loc("Kurz notieren… (optional)", "Quick note… (optional)"), text: $text)
                 .textFieldStyle(.roundedBorder)
                 .focused($textFocused)
                 .onSubmit { save() }
@@ -86,24 +86,24 @@ struct CheckinView: View {
                     .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
-                .help("Letzten Text übernehmen")
+                .help(loc("Letzten Text übernehmen", "Reuse the last note"))
             }
             LabelChipsView(labels: labels, selection: $selection)
             if selection.count == 2 {
-                Text("Jeder 20-Minuten-Block wird geteilt: 10 min je Label")
+                Text(loc("Jeder 20-Minuten-Block wird geteilt: 10 min je Label", "Each 20-minute block is split: 10 min per label"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
             HStack {
-                Button("Später", action: onPostpone)
+                Button(loc("Später", "Later"), action: onPostpone)
                     .buttonStyle(PillButtonStyle())
                     .keyboardShortcut(.cancelAction)
-                    .help("Esc — fragt beim nächsten Check-in wieder mit ab")
+                    .help(loc("Esc — fragt beim nächsten Check-in wieder mit ab", "Esc — will be asked again at the next check-in"))
                 Spacer()
-                Button("Speichern") { save() }
+                Button(loc("Speichern", "Save")) { save() }
                     .buttonStyle(.borderedProminent)
                     .disabled(selection.isEmpty)
-                    .help("⏎ speichert · ⌘1–⌘9 wählt ein Label und speichert sofort")
+                    .help(loc("⏎ speichert · ⌘1–⌘9 wählt ein Label und speichert sofort", "⏎ saves · ⌘1–⌘9 picks a label and saves immediately"))
             }
             shortcutButtons
         }
@@ -151,7 +151,7 @@ struct CheckinView: View {
     private var spanLine: some View {
         HStack(spacing: 4) {
             if startOptions.count > 1 {
-                Text("Von")
+                Text(loc("Von", "From"))
                 Picker("Von", selection: $fromDate) {
                     ForEach(startOptions, id: \.self) { option in
                         Text(TimeFormatting.clock(option, calendar: calendar)).tag(option)
@@ -159,7 +159,7 @@ struct CheckinView: View {
                 }
                 .labelsHidden()
                 .fixedSize()
-                Text("bis")
+                Text(loc("bis", "until"))
                 Picker("Bis", selection: $toDate) {
                     ForEach(endOptions, id: \.self) { option in
                         Text(TimeFormatting.clock(option, calendar: calendar)).tag(option)
@@ -169,9 +169,9 @@ struct CheckinView: View {
                 .fixedSize()
             } else {
                 Text(TimeFormatting.clock(pending.start, calendar: calendar))
-                Text("bis \(TimeFormatting.clock(pending.end, calendar: calendar))")
+                Text(loc("bis", "until") + " \(TimeFormatting.clock(pending.end, calendar: calendar))")
             }
-            Text("· \(blockCount) \(blockCount == 1 ? "Block" : "Blöcke")")
+            Text("· \(blockCount) " + (blockCount == 1 ? loc("Block", "block") : loc("Blöcke", "blocks")))
                 .foregroundStyle(.secondary)
         }
         .font(.caption)

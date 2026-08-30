@@ -12,11 +12,11 @@ enum LaunchAtLogin {
     static var statusDescription: String {
         switch SMAppService.mainApp.status {
         case .enabled:
-            return "Aktiv"
+            return loc("Aktiv", "Active")
         case .requiresApproval:
-            return "Wartet auf Freigabe in den Systemeinstellungen"
+            return loc("Wartet auf Freigabe in den Systemeinstellungen", "Waiting for approval in System Settings")
         default:
-            return "Inaktiv"
+            return loc("Inaktiv", "Inactive")
         }
     }
 
