@@ -324,6 +324,12 @@ struct SettingsView: View {
                         } else {
                             UserDefaults.standard.set(value, forKey: languageOverrideKey)
                         }
+                        // Labels still carrying stock names follow the
+                        // language switch; custom names stay untouched.
+                        preferences.labels = TrackLabel.relocalized(
+                            preferences.labels, german: germanUI
+                        )
+                        load()
                         notifyChanged()
                     }
                 )) {

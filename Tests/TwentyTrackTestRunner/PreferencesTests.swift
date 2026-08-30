@@ -187,3 +187,24 @@ func runPreferencesSettingTests() {
         try expect(!FocusAssertions.isActive(json: Data("junk".utf8)), "corrupt json")
     }
 }
+
+func runLabelRelocalizationTests() {
+    test("stock names switch language, custom names and ids stay") {
+        var labels = TrackLabel.defaults(german: true)
+        labels[2].name = "Mein Eigenes"   // orga renamed by the user
+        labels[0].goalMinutes = 270
+        let english = TrackLabel.relocalized(labels, german: false)
+        try expectEqual(english[0].name, "Focus Work")
+        try expectEqual(english[0].goalMinutes, 270, "goal survives")
+        try expectEqual(english[2].name, "Mein Eigenes", "custom name untouched")
+        try expectEqual(english.map(\.id), labels.map(\.id), "ids unchanged")
+        let backToGerman = TrackLabel.relocalized(english, german: true)
+        try expectEqual(backToGerman[0].name, "Fokus Arbeit", "round trip")
+        try expectEqual(backToGerman[2].name, "Mein Eigenes")
+    }
+
+    test("relocalizing an already-matching set is a no-op") {
+        let english = TrackLabel.defaults(german: false)
+        try expectEqual(TrackLabel.relocalized(english, german: false), english)
+    }
+}

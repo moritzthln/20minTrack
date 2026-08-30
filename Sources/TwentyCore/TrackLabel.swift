@@ -28,9 +28,19 @@ public struct TrackLabel: Codable, Equatable, Identifiable {
     /// shortcut order: the work-quality trio first (green → yellow → red
     /// is the ratio that matters), then the rest of the day. Names follow
     /// the system language on first launch; goals stay unset.
-    public static func defaults(
-        german: Bool = Locale.preferredLanguages.first?.lowercased().hasPrefix("de") ?? false
-    ) -> [TrackLabel] {
+    /// UserDefaults key of the app's manual language override — checked
+    /// first so seeded names match the effective UI language, not just
+    /// the system one.
+    public static let languageOverrideDefaultsKey = "languageOverride"
+
+    public static func effectiveGerman() -> Bool {
+        let code = UserDefaults.standard.string(forKey: languageOverrideDefaultsKey)
+            ?? Locale.preferredLanguages.first
+            ?? "en"
+        return code.lowercased().hasPrefix("de")
+    }
+
+    public static func defaults(german: Bool = effectiveGerman()) -> [TrackLabel] {
         func name(_ de: String, _ en: String) -> String { german ? de : en }
         return [
             TrackLabel(id: "focus-mma", name: name("Fokus Arbeit", "Focus Work"), colorKey: "green"),
@@ -42,6 +52,26 @@ public struct TrackLabel: Codable, Equatable, Identifiable {
             TrackLabel(id: "sport", name: name("Sport", "Sport"), colorKey: "teal"),
             TrackLabel(id: "sleep", name: name("Schlafen", "Sleep"), colorKey: "indigo"),
         ]
+    }
+
+    /// Renames every label that still carries a stock default name (in
+    /// either language) to the target language's default; custom names
+    /// and all ids stay untouched. Used when the UI language switches.
+    public static func relocalized(_ labels: [TrackLabel], german: Bool) -> [TrackLabel] {
+        let sourceNames = [true, false].map { defaults(german: $0) }
+        let targetByID = Dictionary(
+            defaults(german: german).map { ($0.id, $0.name) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        return labels.map { label in
+            let isStock = sourceNames.contains { variant in
+                variant.contains { $0.id == label.id && $0.name == label.name }
+            }
+            guard isStock, let target = targetByID[label.id] else { return label }
+            var updated = label
+            updated.name = target
+            return updated
+        }
     }
 
     /// Palette keys the settings color picker offers.

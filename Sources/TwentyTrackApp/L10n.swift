@@ -1,4 +1,5 @@
 import Foundation
+import TwentyCore
 
 // Lightweight two-language layer. The UI follows the system language by
 // default; a manual override ("de" / "en", stored in UserDefaults) wins.
@@ -7,14 +8,11 @@ import Foundation
 // build.sh assembles the app bundle by hand, so resource magic would be
 // fragile here.
 
-let languageOverrideKey = "languageOverride"
+let languageOverrideKey = TrackLabel.languageOverrideDefaultsKey
 
 /// True when the effective UI language is German.
 var germanUI: Bool {
-    let code = UserDefaults.standard.string(forKey: languageOverrideKey)
-        ?? Locale.preferredLanguages.first
-        ?? "en"
-    return code.lowercased().hasPrefix("de")
+    TrackLabel.effectiveGerman()
 }
 
 /// Locale for user-facing date formatting.

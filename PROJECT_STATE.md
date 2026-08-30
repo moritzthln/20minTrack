@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-30: Labels follow the language — TrackLabel.effectiveGerman() (override key checked first, shared constant with L10n) drives defaults(); TrackLabel.relocalized(labels:german:) (TDD) renames stock-named labels on language switch (custom names + ids + goals untouched), applied by the settings language picker
+
 - 2026-08-30: Universal binary — build.sh builds both slices by triple (CLT has no xcbuild for --arch) and lipo-merges them (Timer pattern); installed app + share package verified "x86_64 arm64", Intel Macs now supported
 
 - 2026-08-30: Manual language picker — germanUI/l10nLocale became computed (UserDefaults languageOverride wins over system language), settings General section gained System/Deutsch/English picker (fresh-per-open windows pick it up immediately, window titles fully after restart)
