@@ -8,14 +8,20 @@ if [ -d /Library/Developer/CommandLineTools ]; then
   export DEVELOPER_DIR=/Library/Developer/CommandLineTools
 fi
 
-echo "▸ Building release binary…"
-swift build -c release 2>&1 | tail -2
+# Universal binary. `swift build --arch` needs full Xcode (xcbuild);
+# on the pinned CLT toolchain we build each slice by triple and lipo
+# them together (Timer's package.sh pattern).
+echo "▸ Building universal release binary (arm64 + x86_64 slices)…"
+swift build -c release --triple arm64-apple-macosx13.0 2>&1 | tail -1
+swift build -c release --triple x86_64-apple-macosx13.0 2>&1 | tail -1
 
 APP="dist/20minTrack.app"
 rm -rf dist
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
-cp .build/release/TwentyTrackApp "$APP/Contents/MacOS/TwentyTrackApp"
+lipo -create ".build/arm64-apple-macosx/release/TwentyTrackApp" \
+     ".build/x86_64-apple-macosx/release/TwentyTrackApp" \
+     -output "$APP/Contents/MacOS/TwentyTrackApp"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 
 if [ ! -f Resources/AppIcon.icns ]; then
