@@ -90,6 +90,8 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-08-30: Manual language picker — germanUI/l10nLocale became computed (UserDefaults languageOverride wins over system language), settings General section gained System/Deutsch/English picker (fresh-per-open windows pick it up immediately, window titles fully after restart)
+
 - 2026-08-30: Localization audit — automated scan for unlocalized German string literals found 4 leftovers (strip tooltip, hidden app/edit menu titles) + German-style day date format + Core absence fallback name, all fixed (localized in UI); scan now CLEAN
 
 - 2026-08-19: Bilingual UI — L10n.swift (loc(de,en) + l10nLocale following the system language), every user-facing string in views/windows/menus localized, TrackLabel.defaults(german:) seeds English names on non-German systems (ids stable, tests cover both), date formatters switched from hardcoded de_DE to l10nLocale, package.sh adds an English install guide

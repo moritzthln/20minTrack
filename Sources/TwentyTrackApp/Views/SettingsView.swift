@@ -19,6 +19,7 @@ struct SettingsView: View {
     @State private var newAbsenceName = loc("Urlaub", "Vacation")
     @State private var newAbsenceStart = Date()
     @State private var newAbsenceEnd = Date()
+    @State private var languageChoice = "system"
     @State private var loginEnabled = false
     @State private var loginStatus = ""
 
@@ -313,6 +314,30 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 8) {
             sectionTitle(loc("Allgemein", "General"))
             HStack(spacing: 8) {
+                Text(loc("Sprache", "Language"))
+                Picker("", selection: Binding(
+                    get: { languageChoice },
+                    set: { value in
+                        languageChoice = value
+                        if value == "system" {
+                            UserDefaults.standard.removeObject(forKey: languageOverrideKey)
+                        } else {
+                            UserDefaults.standard.set(value, forKey: languageOverrideKey)
+                        }
+                        notifyChanged()
+                    }
+                )) {
+                    Text(loc("System", "System")).tag("system")
+                    Text("Deutsch").tag("de")
+                    Text("English").tag("en")
+                }
+                .labelsHidden()
+                .fixedSize()
+                Text(loc("Fenster übernehmen es beim nächsten Öffnen; vollständig nach App-Neustart.", "Windows pick it up when reopened; fully after an app restart."))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            HStack(spacing: 8) {
                 Toggle(loc("Beim Anmelden starten", "Launch at login"), isOn: Binding(
                     get: { loginEnabled },
                     set: { value in
@@ -346,6 +371,7 @@ struct SettingsView: View {
         fazitEnabled = preferences.fazitPromptEnabled
         fazitMinute = preferences.fazitPromptMinute
         absences = preferences.absences
+        languageChoice = UserDefaults.standard.string(forKey: languageOverrideKey) ?? "system"
         loginEnabled = LaunchAtLogin.isEnabled
         loginStatus = LaunchAtLogin.statusDescription
     }
