@@ -90,6 +90,9 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- Check-in: ⌘0 saves the 10th label (⌘1–⌘9 unchanged) — Soziales
+  is now reachable by shortcut.
+
 - Notes analysis → two new personal labels "Unterwegs" (transit, gray)
   and "Soziales" (social, pink) added via UserDefaults (not stock
   defaults); 41 historic entries relabeled (19 h transit, 20.3 h social,
