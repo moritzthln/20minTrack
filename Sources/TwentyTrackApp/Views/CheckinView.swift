@@ -3,7 +3,7 @@ import TwentyCore
 
 /// The 20-minute prompt: what happened, which label, over which span.
 /// Fast paths: the last label is preselected (Return saves), clicking the
-/// selected chip saves, ⌘1–⌘9 pick a label and save immediately.
+/// selected chip saves, ⌘1–⌘9 and ⌘0 (10th label) pick and save immediately.
 /// "Später" closes without settling — the span stays pending, nothing is
 /// ever silently dropped.
 struct CheckinView: View {
@@ -103,7 +103,7 @@ struct CheckinView: View {
                 Button(loc("Speichern", "Save")) { save() }
                     .buttonStyle(.borderedProminent)
                     .disabled(selection.isEmpty)
-                    .help(loc("⏎ speichert · ⌘1–⌘9 wählt ein Label und speichert sofort", "⏎ saves · ⌘1–⌘9 picks a label and saves immediately"))
+                    .help(loc("⏎ speichert · ⌘1–⌘9/⌘0 wählt ein Label und speichert sofort", "⏎ saves · ⌘1–⌘9/⌘0 picks a label and saves immediately"))
             }
             shortcutButtons
         }
@@ -135,12 +135,14 @@ struct CheckinView: View {
         .onChange(of: toDate) { _ in reloadUsage() }
     }
 
-    /// Invisible buttons carrying ⌘1–⌘9: pick the n-th label and save.
+    /// Invisible buttons carrying ⌘1–⌘9 plus ⌘0 for the 10th label:
+    /// pick the n-th label and save.
     private var shortcutButtons: some View {
-        ForEach(Array(labels.prefix(9).enumerated()), id: \.element.id) { index, label in
+        ForEach(Array(labels.prefix(10).enumerated()), id: \.element.id) { index, label in
             Button("") { saveDirect(labelID: label.id) }
                 .keyboardShortcut(
-                    KeyEquivalent(Character("\(index + 1)")), modifiers: .command
+                    KeyEquivalent(Character(index == 9 ? "0" : "\(index + 1)")),
+                    modifiers: .command
                 )
                 .frame(width: 0, height: 0)
                 .opacity(0)
@@ -195,7 +197,7 @@ struct CheckinView: View {
         selection = validPreselect.map { [$0] } ?? []
     }
 
-    /// ⌘1–⌘9: express lane — that single label, saved immediately.
+    /// ⌘1–⌘9/⌘0: express lane — that single label, saved immediately.
     private func saveDirect(labelID: String) {
         onSave(effectiveFrom, effectiveTo, labelID, nil, text)
         text = ""

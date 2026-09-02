@@ -24,7 +24,7 @@ public struct TrackLabel: Codable, Equatable, Identifiable {
     }
 
     /// The labels the app ships with (stable slug ids — entries reference
-    /// these forever, names and colors stay editable). Order = the ⌘1–⌘9
+    /// these forever, names and colors stay editable). Order = the ⌘1–⌘9/⌘0
     /// shortcut order: the work-quality trio first (green → yellow → red
     /// is the ratio that matters), then the rest of the day. Names follow
     /// the system language on first launch; goals stay unset.
