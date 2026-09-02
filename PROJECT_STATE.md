@@ -90,6 +90,10 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- Morning Fazit catch-up: a day without a Fazit re-prompts once the
+  next day from 09:30 until the evening prompt (FazitCatchup, tested;
+  catch-up window saves to yesterday).
+
 - Check-in: ⌘0 saves the 10th label (⌘1–⌘9 unchanged) — Soziales
   is now reachable by shortcut.
 
