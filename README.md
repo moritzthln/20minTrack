@@ -27,7 +27,7 @@ Baut die Release-App und installiert nach `/Applications/20minTrack.app`.
   speichert, Esc = „Später". Nicht zu übersehen. (Abschaltbar in den
   Einstellungen.)
 - **Check-in in einer Taste**: Das zuletzt benutzte Label ist
-  vorausgewählt — **Enter** speichert sofort. Alternativ: **⌘1–⌘9**
+  vorausgewählt — **Enter** speichert sofort. Alternativ: **⌘1–⌘9** (und **⌘0** für das 10. Label)
   wählt ein Label und speichert direkt, Klick auf das gewählte Label
   speichert ebenfalls. Notiz ist immer optional. Darunter steht, welche
   Apps im Zeitraum benutzt wurden („Benutzt: Chrome 12 min …").

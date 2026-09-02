@@ -15,7 +15,7 @@ pending until labeled — nothing is silently dropped), the last saved
 label is preselected (`Preferences.lastLabelID` — Return alone saves),
 chips are a toggle selection of up to two labels (two = 10/10 split per
 block via `HalfSplit`; a click on a selected chip deselects, it never
-saves), ⌘1–⌘9 pick-and-save a single label, and tapping an
+saves), ⌘1–⌘9 (and ⌘0 for a 10th label) pick-and-save a single label, and tapping an
 empty slot opens the editor over the whole surrounding gap (capped at
 the running block today). v4: the popover is wide (540 pt) and every
 boundary pops a centered floating check-in window

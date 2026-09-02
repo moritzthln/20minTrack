@@ -7,7 +7,7 @@ import TwentyCore
 /// Click rules: an unselected chip becomes the first pick, then the
 /// second; a third one starts over with that chip alone. A click on any
 /// selected chip always deselects it — selecting never saves; saving is
-/// Return, the button, or ⌘1–⌘9.
+/// Return, the button, or ⌘1–⌘9/⌘0.
 struct LabelChipsView: View {
     let labels: [TrackLabel]
     @Binding var selection: [String]
