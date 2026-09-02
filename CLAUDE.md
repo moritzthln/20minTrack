@@ -32,6 +32,11 @@ v6: bilingual UI — `L10n.swift` (`loc(de, en)`, `germanUI`,
 `l10nLocale`) follows the system language, `TrackLabel.defaults(german:)`
 seeds English label names on non-German systems (ids unchanged), the
 share package carries a German and an English install guide.
+v7: ⌘0 saves the 10th label in the check-in, and a morning Fazit
+catch-up — a day that ended without a Fazit prompts once more the next
+day from 09:30 (`FazitCatchup.dueDay`; window closes when the evening
+prompt takes over, absent days and days without entries never prompt,
+same mute/Focus gates, `FazitWindowController.show(catchupFor:)`).
 Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)
@@ -90,6 +95,7 @@ fixes that, remove the pin in `build.sh` + `test.sh` together.
     prompt (check-in + Fazit), never count gaps as Ablenkung, and
     `normalizedAnchor` walks the anchor to the first midnight after
     chained absences so the return check-in skips them
+  - `FazitCatchup` — morning catch-up window rule for a missed Fazit
   - `TimeFormatting` ("1 h 25 min", "09:05") · `MenuBarPresentation`
     (paused → pause icon; pending → filled symbol + block count; else
     "n m" to next boundary)

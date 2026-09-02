@@ -23,6 +23,8 @@ final class StatusBarController: NSObject {
     private let fazitWindowController: FazitWindowController
     /// The day the evening Fazit prompt already fired (or was settled).
     private var lastFazitPromptDay: Date?
+    /// The day the morning catch-up already fired (or was settled).
+    private var lastFazitCatchupDay: Date?
 
     private var titleRefreshTimer: Foundation.Timer?
     private var settingsObserver: NSObjectProtocol?
@@ -147,6 +149,7 @@ final class StatusBarController: NSObject {
             checkinWindowController.close()
         }
         checkFazitPrompt(now: now)
+        checkFazitCatchup(now: now)
         let pendingBlocks = viewModel.pending.map {
             SlotGrid.blockCount(start: $0.start, end: $0.end, calendar: calendar)
         } ?? 0
@@ -186,6 +189,44 @@ final class StatusBarController: NSObject {
         lastFazitPromptDay = today
         SoundPlayer.playChime(volume: preferences.chimeVolume)
         fazitWindowController.show()
+    }
+
+    /// Morning catch-up: yesterday ended without a Fazit → one extra
+    /// prompt from 09:30 until the evening prompt takes over. Same
+    /// gates and once-per-day marker pattern as the evening prompt.
+    private func checkFazitCatchup(now: Date) {
+        guard preferences.fazitPromptEnabled,
+              !preferences.trackingPaused,
+              !preferences.isMuted(now: now)
+        else { return }
+        let today = calendar.startOfDay(for: now)
+        guard lastFazitCatchupDay != today else { return }
+        // Cheap time-window gate first, so the day-store reads below
+        // don't repeat on every 10 s tick outside the window.
+        let minute = calendar.component(.hour, from: now) * 60
+            + calendar.component(.minute, from: now)
+        guard minute >= FazitCatchup.startMinute,
+              minute < preferences.fazitPromptMinute
+        else { return }
+        guard let yesterday = calendar.date(byAdding: .day, value: -1, to: today) else {
+            return
+        }
+        let hasFazit = !(viewModel.dayStore.fazit(onDay: yesterday) ?? "").isEmpty
+        let hasEntries = !viewModel.dayStore.entries(onDay: yesterday).isEmpty
+        guard let day = FazitCatchup.dueDay(
+            now: now, calendar: calendar,
+            yesterdayHasFazit: hasFazit, yesterdayHasEntries: hasEntries,
+            eveningPromptMinute: preferences.fazitPromptMinute,
+            absences: preferences.absences
+        ) else {
+            // Inside the window nil is final for today — settle.
+            lastFazitCatchupDay = today
+            return
+        }
+        if preferences.suppressDuringFocus, isSystemFocusActive() { return }
+        lastFazitCatchupDay = today
+        SoundPlayer.playChime(volume: preferences.chimeVolume)
+        fazitWindowController.show(catchupFor: day)
     }
 
     @objc private func statusButtonClicked() {
