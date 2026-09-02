@@ -90,6 +90,11 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- Notes analysis → two new personal labels "Unterwegs" (transit, gray)
+  and "Soziales" (social, pink) added via UserDefaults (not stock
+  defaults); 41 historic entries relabeled (19 h transit, 20.3 h social,
+  12.3 h mislabeled sleep → sleep). Backup: days-backup-2026-09-02.
+
 - 2026-08-30: Labels follow the language — TrackLabel.effectiveGerman() (override key checked first, shared constant with L10n) drives defaults(); TrackLabel.relocalized(labels:german:) (TDD) renames stock-named labels on language switch (custom names + ids + goals untouched), applied by the settings language picker
 
 - 2026-08-30: Universal binary — build.sh builds both slices by triple (CLT has no xcbuild for --arch) and lipo-merges them (Timer pattern); installed app + share package verified "x86_64 arm64", Intel Macs now supported
