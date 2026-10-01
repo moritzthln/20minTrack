@@ -37,7 +37,7 @@ catch-up — a day that ended without a Fazit prompts once more the next
 day from 09:30 (`FazitCatchup.dueDay`; window closes when the evening
 prompt takes over, absent days and days without entries never prompt,
 same mute/Focus gates, `FazitWindowController.show(catchupFor:)`).
-Public on GitHub (moritzthln/20minTrack, MIT): English README.md +
+Public on GitHub (moritzthln/20minTrack, PolyForm Noncommercial 1.0.0 — no commercial use): English README.md +
 README.de.md, install.sh one-liner (latest release ZIP), CI (tests +
 universal build). README screenshots come from `SnapshotMode`: launch
 the binary with `TWENTYMINTRACK_SNAPSHOT=<dir>` and it renders popover,

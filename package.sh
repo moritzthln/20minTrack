@@ -11,6 +11,8 @@ STAGE="dist/20minTrack-Paket"
 rm -rf "$STAGE" dist/20minTrack.zip
 mkdir -p "$STAGE"
 ditto dist/20minTrack.app "$STAGE/20minTrack.app"
+# The license requires every copy to carry its terms and Required Notice.
+cp LICENSE "$STAGE/LICENSE.txt"
 
 cat > "$STAGE/ANLEITUNG.txt" << 'EOF'
 20minTrack installieren (macOS 13 oder neuer)
