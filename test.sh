@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-if [ -d /Library/Developer/CommandLineTools ]; then
+if [ -z "${DEVELOPER_DIR:-}" ] && [ -d /Library/Developer/CommandLineTools ]; then
   export DEVELOPER_DIR=/Library/Developer/CommandLineTools
 fi
 

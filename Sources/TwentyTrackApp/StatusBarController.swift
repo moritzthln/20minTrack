@@ -90,9 +90,37 @@ final class StatusBarController: NSObject {
 
         // Login/relaunch has no wake event: prompt shortly after start when
         // something is already pending (e.g. last night's sleep).
+        if let path = SnapshotMode.outputPath {
+            presentSnapshots(to: path)
+            return
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.boundaryFired()
         }
+    }
+
+    /// README screenshots (see SnapshotMode): off-screen copies of the
+    /// popover, the statistics tabs, and the settings.
+    private func presentSnapshots(to path: String) {
+        viewModel.reload()
+        let store = viewModel.dayStore
+        func stats(_ tab: String) -> AnyView {
+            AnyView(StatsView(
+                dayStore: store, preferences: preferences, calendar: calendar,
+                usageFor: { _ in [] }, initialTab: tab
+            ))
+        }
+        let popoverView = AnyView(PopoverRootView(
+            model: viewModel, onClosePopover: {}, onOpenStats: {}, onOpenSettings: {}
+        ))
+        SnapshotMode.present([
+            .init(name: "popover", title: nil, size: NSSize(width: 540, height: 0), view: popoverView),
+            .init(name: "stats-day", title: loc("Statistik", "Statistics"), size: NSSize(width: 520, height: 860), view: stats("day")),
+            .init(name: "stats-week", title: loc("Statistik", "Statistics"), size: NSSize(width: 520, height: 860), view: stats("week")),
+            .init(name: "stats-month", title: loc("Statistik", "Statistics"), size: NSSize(width: 520, height: 860), view: stats("month")),
+            .init(name: "settings", title: loc("Einstellungen", "Settings"), size: NSSize(width: 520, height: 900),
+                  view: AnyView(SettingsView(preferences: preferences))),
+        ], to: path)
     }
 
     deinit {

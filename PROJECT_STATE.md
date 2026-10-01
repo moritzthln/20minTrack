@@ -90,6 +90,11 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- Public release prep: English README + README.de.md with real
+  screenshots (SnapshotMode, demo data), LICENSE (MIT), install.sh,
+  CI workflow, issue templates, CHANGELOG; build.sh per-arch scratch
+  paths (fixes flaky universal build), bilingual browser permission text.
+
 - Morning Fazit catch-up: a day without a Fazit re-prompts once the
   next day from 09:30 until the evening prompt (FazitCatchup, tested;
   catch-up window saves to yesterday).

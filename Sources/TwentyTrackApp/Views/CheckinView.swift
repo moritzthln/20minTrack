@@ -79,7 +79,7 @@ struct CheckinView: View {
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "arrow.uturn.backward")
-                        Text("„\(lastText)“")
+                        Text(loc("„\(lastText)“", "“\(lastText)”"))
                             .lineLimit(1)
                     }
                     .font(.caption)

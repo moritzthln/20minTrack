@@ -8,6 +8,8 @@ struct StatsView: View {
     let preferences: Preferences
     let calendar: Calendar
     let usageFor: (DateInterval) -> [AppUsageTotal]
+    /// Tab raw value to open on (snapshot mode); nil = Day.
+    var initialTab: String?
 
     private enum Tab: String, CaseIterable {
         case day, week, month, year
@@ -50,6 +52,9 @@ struct StatsView: View {
         }
         .padding(16)
         .frame(minWidth: 480, minHeight: 540)
+        .onAppear {
+            if let initialTab, let start = Tab(rawValue: initialTab) { tab = start }
+        }
     }
 }
 

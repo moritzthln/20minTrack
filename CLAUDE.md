@@ -37,6 +37,13 @@ catch-up — a day that ended without a Fazit prompts once more the next
 day from 09:30 (`FazitCatchup.dueDay`; window closes when the evening
 prompt takes over, absent days and days without entries never prompt,
 same mute/Focus gates, `FazitWindowController.show(catchupFor:)`).
+Public on GitHub (moritzthln/20minTrack, MIT): English README.md +
+README.de.md, install.sh one-liner (latest release ZIP), CI (tests +
+universal build). README screenshots come from `SnapshotMode`: launch
+the binary with `TWENTYMINTRACK_SNAPSHOT=<dir>` and it renders popover,
+stats tabs and settings off-screen into PNGs, then quits — run it
+against demo data (back up and restore the real defaults + data dir).
+Releases: `./package.sh` then `gh release create vX.Y.Z dist/20minTrack.zip`.
 Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)
@@ -60,6 +67,11 @@ with it: its SDK displaces the status-item popover (~2 cm). When Apple
 fixes that, remove the pin in `build.sh` + `test.sh` together.
 
 - Test: `./test.sh`  (custom runner — NOT `swift test`)
+- Each arch slice builds in its own scratch path (`.build/slice-<arch>`):
+  a shared `.build` makes SwiftPM reuse the other triple's build
+  description and fail with "command … not registered".
+- `NO_INSTALL=1 ./build.sh` builds `dist/` only (CI); both scripts honor
+  a preset `DEVELOPER_DIR` instead of the CLT pin.
 - Build + install release app: `./build.sh` → `/Applications/20minTrack.app`
 - Share package: `./package.sh` → `dist/20minTrack.zip`
 - Note: `xcrun … PlatformPath` lines in build output are harmless CLT noise.
