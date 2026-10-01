@@ -14,7 +14,7 @@ One keystroke to answer, nothing ever slips through the cracks, and honest stati
 [![Swift](https://img.shields.io/badge/Swift-SwiftUI-F05138?logo=swift&logoColor=white)](Package.swift)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-[**Install**](#install) · [Features](#features) · [How it works](#how-it-works) · [Privacy](#privacy) · [Contributing](#contributing) · [Deutsch](README.de.md)
+[**Install**](#install) · [Why](#how-is-this-different) · [Features](#features) · [How it works](#how-it-works) · [Privacy](#privacy) · [Contributing](#contributing) · [Deutsch](README.de.md)
 
 <br>
 
@@ -31,6 +31,41 @@ Timers measure what you *planned*. 20minTrack records what you *did*.
 Every 20 minutes, on the clock (:00, :20, :40), a small window pops up in the middle of your screen. You pick a label — *Focus Work*, *Calls*, *Distraction*, … — optionally type a few words, and press <kbd>Return</kbd>. That's it. Two seconds, then back to work.
 
 The result is a complete, block-by-block picture of your day: how much real focus you got, where the afternoon disappeared, and whether you're hitting the goals you set yourself.
+
+## How is this different?
+
+There are three common ways to track time on a Mac — and each one leaves a hole:
+
+- **Start/stop timers** (Toggl, Clockify, …) only work if you remember to press *start* — and *stop*. The hours you forget are exactly the ones you'd want to know about.
+- **Automatic trackers** (Timing, RescueTime, Rize, …) record which app was open, not what you were doing. Two hours in Chrome can be deep research or YouTube. They also cost $100+ per year.
+- **Interval prompters** (Daily, TagTime) ask you periodically — the right idea. Daily is a paid subscription; TagTime samples at random moments, which estimates your week well but never gives you a complete day.
+
+20minTrack takes the interval idea and makes it complete:
+
+| | Start/stop timers | Automatic trackers | 20minTrack |
+|---|:---:|:---:|:---:|
+| Works without remembering to start | ➖ | ✅ | ✅ |
+| Knows *what* you did, not just which app was open | ✅ | ➖ | ✅ |
+| Forgotten time comes back to you instead of vanishing | ➖ | ➖ | ✅ |
+| Every minute of the day accounted for | ➖ | ➖ | ✅ |
+| Rates the *quality* of work (focus / half focus / distraction) | ➖ | guessed from the app | ✅ you decide |
+| Free and open source | some | ➖ | ✅ |
+| 100 % local, no account | some | some | ✅ |
+
+What only 20minTrack does, as far as we know:
+
+- **Nothing ever gets lost.** Missed blocks don't disappear — they wait as one pending range until you've labeled them. Your Mac was asleep for the night? One click: *Sleep*.
+- **The clock is the grid.** Blocks start at :00, :20 and :40, so every day has the same 72 slots — days and weeks stay directly comparable.
+- **Two-second answers.** Last label preselected, <kbd>Return</kbd> saves, <kbd>⌘1</kbd>–<kbd>⌘0</kbd> for everything else. Fast enough that you'll actually keep doing it.
+- **Automatic data as a hint, not a verdict.** The check-in shows which apps and sites you used in the block, so you remember — but *you* decide what it was.
+- **Honesty built in.** Leave a day blank and it counts as distraction once it's settled. You can't hide from your own statistics.
+
+### Who it's for
+
+- **Freelancers and founders** who want to know where the week really went — not just billable hours.
+- **Anyone working on deep focus** who wants a number for it: hours of real focus per day, and the ratio to half-focus and distraction.
+- **People with ADHD or "time blindness"** — a gentle check-in every 20 minutes is an anchor, and the strip of colored blocks makes the day visible.
+- **Students** who want an honest picture of study time instead of a guess.
 
 ## Features
 

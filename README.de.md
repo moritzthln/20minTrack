@@ -27,6 +27,36 @@ Alle 20 Minuten zur vollen Uhrzeit (:00, :20, :40) erscheint mitten auf dem Bild
 
 So entsteht ein lückenloses Bild deines Tages: wie viel echter Fokus drin war, wo der Nachmittag verschwunden ist und ob du deine Ziele triffst.
 
+## Was ist anders?
+
+Es gibt drei übliche Arten, Zeit auf dem Mac zu tracken — und jede hat eine Lücke:
+
+- **Start/Stopp-Timer** (Toggl, Clockify, …) funktionieren nur, wenn man an *Start* und *Stopp* denkt. Genau die vergessenen Stunden wären die interessanten.
+- **Automatische Tracker** (Timing, RescueTime, Rize, …) wissen, welche App offen war — nicht, was du gemacht hast. Zwei Stunden Chrome können Recherche oder YouTube sein. Dazu kosten sie oft über 100 $ im Jahr.
+- **Intervall-Abfragen** (Daily, TagTime) fragen regelmäßig nach — die richtige Idee. Daily ist ein Abo, TagTime fragt zu zufälligen Zeitpunkten und liefert damit Schätzungen statt eines vollständigen Tages.
+
+20minTrack nimmt die Intervall-Idee und macht sie lückenlos:
+
+| | Start/Stopp-Timer | Automatische Tracker | 20minTrack |
+|---|:---:|:---:|:---:|
+| Läuft, ohne dass man an Start denken muss | ➖ | ✅ | ✅ |
+| Weiß, *was* du gemacht hast, nicht nur welche App offen war | ✅ | ➖ | ✅ |
+| Vergessene Zeit kommt zurück statt zu verschwinden | ➖ | ➖ | ✅ |
+| Jede Minute des Tages erfasst | ➖ | ➖ | ✅ |
+| Bewertet die *Qualität* der Arbeit (Fokus / Halbfokus / Ablenkung) | ➖ | geraten anhand der App | ✅ du entscheidest |
+| Kostenlos und Open Source | teils | ➖ | ✅ |
+| 100 % lokal, kein Account | teils | teils | ✅ |
+
+**Was nur 20minTrack macht** (soweit wir wissen):
+
+- **Nichts geht verloren.** Verpasste Blöcke warten als offener Zeitraum, bis du sie gelabelt hast. Mac war nachts zu? Ein Klick: *Schlafen*.
+- **Die Uhr ist das Raster.** Blöcke starten um :00, :20 und :40 — jeder Tag hat dieselben 72 Felder, Tage und Wochen sind direkt vergleichbar.
+- **Zwei Sekunden pro Antwort.** Letztes Label vorausgewählt, <kbd>Enter</kbd> speichert. Schnell genug, dass man dranbleibt.
+- **Automatik als Hinweis, nicht als Urteil.** Der Check-in zeigt, welche Apps und Seiten du benutzt hast — entscheiden tust du.
+- **Ehrlichkeit eingebaut.** Leere Tage zählen später als Ablenkung. Vor der eigenen Statistik kann man sich nicht verstecken.
+
+**Für wen?** Selbstständige und Gründer, alle, die an Deep Work arbeiten, Menschen mit ADHS oder „Zeitblindheit" (der 20-Minuten-Anker und die farbigen Blöcke machen den Tag sichtbar) und Studierende, die ehrlich wissen wollen, wie viel sie wirklich lernen.
+
 ## Funktionen
 
 - **Check-in mit einer Taste** — das letzte Label ist vorausgewählt, <kbd>Enter</kbd> speichert. <kbd>⌘1</kbd>–<kbd>⌘9</kbd> und <kbd>⌘0</kbd> wählen ein Label und speichern sofort. Zwei Labels gewählt = der Block wird 10/10 aufgeteilt.
