@@ -6,6 +6,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-01
+
 ### Changed
 - License changed from MIT to [PolyForm Noncommercial 1.0.0](LICENSE): free for personal and noncommercial use, commercial use not permitted. Releases up to v1.1.0 remain MIT.
 - The download ZIP now includes the license text.
@@ -32,6 +34,7 @@ First public release.
 - English and German UI.
 - Universal binary (Apple Silicon + Intel), macOS 13+.
 
-[Unreleased]: https://github.com/moritzthln/20minTrack/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/moritzthln/20minTrack/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/moritzthln/20minTrack/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/moritzthln/20minTrack/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/moritzthln/20minTrack/releases/tag/v1.0.0
