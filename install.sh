@@ -24,6 +24,12 @@ trap 'rm -rf "$tmp"' EXIT
 
 echo "▸ Downloading the latest 20minTrack release…"
 curl -fsSL "$URL" -o "$tmp/20minTrack.zip"
+# Verify the SHA-256 checksum when the release publishes one.
+if curl -fsSL "$URL.sha256" -o "$tmp/20minTrack.zip.sha256" 2>/dev/null; then
+  ( cd "$tmp" && shasum -a 256 -c 20minTrack.zip.sha256 >/dev/null ) \
+    || { echo "Checksum mismatch — download corrupted, aborting." >&2; exit 1; }
+  echo "▸ Checksum verified."
+fi
 ditto -x -k "$tmp/20minTrack.zip" "$tmp/unpacked"
 app="$(find "$tmp/unpacked" -maxdepth 3 -name '20minTrack.app' -type d | head -1)"
 if [ -z "$app" ]; then

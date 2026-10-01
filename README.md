@@ -206,7 +206,10 @@ Native Swift + SwiftUI in an AppKit shell (`NSStatusItem`, `NSPopover`, `NSWindo
 ./test.sh       # test suite (custom runner, no XCTest needed)
 ./build.sh      # universal build + install to /Applications
 ./package.sh    # shareable dist/20minTrack.zip
+./release.sh 1.2.0   # maintainers: version bump, tag, GitHub release
 ```
+
+Changes per version: [CHANGELOG.md](CHANGELOG.md).
 
 | Path | Contents |
 |---|---|
