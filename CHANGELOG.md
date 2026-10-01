@@ -6,6 +6,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-01
+
 ### Added
 - App version shown at the bottom of Settings (helps with bug reports).
 - Release script (`release.sh`) and a SHA-256 checksum next to each release ZIP.
@@ -26,5 +28,6 @@ First public release.
 - English and German UI.
 - Universal binary (Apple Silicon + Intel), macOS 13+.
 
-[Unreleased]: https://github.com/moritzthln/20minTrack/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/moritzthln/20minTrack/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/moritzthln/20minTrack/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/moritzthln/20minTrack/releases/tag/v1.0.0
