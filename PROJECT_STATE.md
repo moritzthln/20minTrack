@@ -90,6 +90,10 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- Contributor setup: CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, PR template,
+  issue config, .editorconfig; repo: Discussions, private vuln reporting,
+  branch protection on main (PR + review for others, owner may bypass).
+
 - 2026-10-01: Public on GitHub — https://github.com/moritzthln/20minTrack
   (fresh repo, history rewritten to the noreply email, release v1.0.0,
   one-line installer verified from the public URL). CI workflow kept

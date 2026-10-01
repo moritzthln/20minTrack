@@ -14,7 +14,7 @@ One keystroke to answer, nothing ever slips through the cracks, and honest stati
 [![Swift](https://img.shields.io/badge/Swift-SwiftUI-F05138?logo=swift&logoColor=white)](Package.swift)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-[**Install**](#install) · [Features](#features) · [How it works](#how-it-works) · [Privacy](#privacy) · [Deutsch](README.de.md)
+[**Install**](#install) · [Features](#features) · [How it works](#how-it-works) · [Privacy](#privacy) · [Contributing](#contributing) · [Deutsch](README.de.md)
 
 <br>
 
@@ -214,7 +214,11 @@ Native Swift + SwiftUI in an AppKit shell (`NSStatusItem`, `NSPopover`, `NSWindo
 | `Sources/TwentyTrackApp/` | The app: status item, windows, SwiftUI views |
 | `Tests/TwentyTrackTestRunner/` | Test suites |
 
-Both scripts pin the Command Line Tools toolchain on purpose — see [`CLAUDE.md`](CLAUDE.md) for architecture notes and the reasoning behind it. Issues and pull requests are welcome.
+Both scripts pin the Command Line Tools toolchain on purpose — see [`CLAUDE.md`](CLAUDE.md) for architecture notes and the reasoning behind it.
+
+## Contributing
+
+Contributions are welcome — bug reports, ideas, translations and pull requests. Please read [**CONTRIBUTING.md**](CONTRIBUTING.md) for the setup, workflow and code style, and note the [Code of Conduct](CODE_OF_CONDUCT.md). Found a security problem? See [SECURITY.md](SECURITY.md).
 
 ## License
 
