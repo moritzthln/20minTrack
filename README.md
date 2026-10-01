@@ -218,7 +218,7 @@ Both scripts pin the Command Line Tools toolchain on purpose — see [`CLAUDE.md
 
 ## Contributing
 
-Contributions are welcome — bug reports, ideas, translations and pull requests. Please read [**CONTRIBUTING.md**](CONTRIBUTING.md) for the setup, workflow and code style, and note the [Code of Conduct](CODE_OF_CONDUCT.md). Found a security problem? See [SECURITY.md](SECURITY.md).
+Contributions are welcome — bug reports, ideas, translations and pull requests. Please read [**CONTRIBUTING.md**](CONTRIBUTING.md) for the setup, workflow and code style. Found a security problem? See [SECURITY.md](SECURITY.md).
 
 ## License
 

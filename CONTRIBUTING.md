@@ -76,7 +76,3 @@ Please keep these in mind when proposing features:
 - **One interaction.** A check-in must stay answerable with a single keystroke.
 - **Nothing is silently dropped.** Time is never auto-filled or guessed; missed blocks stay pending until the user labels them.
 - **Respect attention.** Prompts stay silent during Focus modes, mutes and absences — and mutes always expire on their own.
-
-## Code of conduct
-
-This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). By participating you agree to uphold it.

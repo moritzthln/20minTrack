@@ -90,7 +90,7 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
-- Contributor setup: CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, PR template,
+- Contributor setup: CONTRIBUTING, SECURITY, PR template,
   issue config, .editorconfig; repo: Discussions, private vuln reporting,
   branch protection on main (PR + review for others, owner may bypass).
 
