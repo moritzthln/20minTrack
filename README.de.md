@@ -110,6 +110,8 @@ Für Safari, Chrome und Arc kann die Benutzt-Liste auch die Website zeigen — m
 
 Architektur-Notizen: [`CLAUDE.md`](CLAUDE.md).
 
+Mitmachen ist willkommen — siehe [CONTRIBUTING.md](CONTRIBUTING.md) (auf Englisch).
+
 ## Lizenz
 
 [MIT](LICENSE) © Moritz Thelen
