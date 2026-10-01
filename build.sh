@@ -35,6 +35,9 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 lipo -create ".build/slice-arm64/arm64-apple-macosx/release/TwentyTrackApp" \
      ".build/slice-x86_64/x86_64-apple-macosx/release/TwentyTrackApp" \
      -output "$APP/Contents/MacOS/TwentyTrackApp"
+# Drop debug symbols: they embed absolute build paths (incl. the
+# builder's home directory) and aren't needed in a release binary.
+strip -S -x "$APP/Contents/MacOS/TwentyTrackApp"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 
 if [ ! -f Resources/AppIcon.icns ]; then
