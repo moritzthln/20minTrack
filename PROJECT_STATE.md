@@ -90,6 +90,10 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- Removed the MIT-licensed releases v1.0.0/v1.1.0 (+ tags; only my own
+  test downloads) and the MIT notes in README/CHANGELOG — v1.1.1 is the
+  first offered release.
+
 - License → PolyForm Noncommercial 1.0.0 (Required Notice in LICENSE);
   contributions licensed alike + commercial relicensing allowed (CONTRIBUTING).
 

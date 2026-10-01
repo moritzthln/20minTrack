@@ -263,5 +263,3 @@ Contributions are welcome — bug reports, ideas, translations and pull requests
 [PolyForm Noncommercial 1.0.0](LICENSE) © Moritz Thelen
 
 Free for personal use, learning, research, and for schools, charities and other noncommercial organizations — use it, modify it, share it. **Commercial use is not permitted** (for example selling the app or a modified version, bundling it into a paid product, or rolling it out inside a company). For a commercial license, [open an issue](https://github.com/moritzthln/20minTrack/issues).
-
-Versions up to and including v1.1.0 were released under the MIT license.

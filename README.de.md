@@ -147,5 +147,3 @@ Mitmachen ist willkommen — siehe [CONTRIBUTING.md](CONTRIBUTING.md) (auf Engli
 [PolyForm Noncommercial 1.0.0](LICENSE) © Moritz Thelen
 
 Kostenlos für private Nutzung, zum Lernen, für Forschung, Schulen, gemeinnützige und andere nicht-kommerzielle Organisationen — nutzen, verändern und weitergeben erlaubt. **Kommerzielle Nutzung ist nicht erlaubt** (z. B. die App oder eine veränderte Version verkaufen, in ein bezahltes Produkt einbauen oder im Unternehmen einsetzen). Für eine kommerzielle Lizenz bitte [ein Issue öffnen](https://github.com/moritzthln/20minTrack/issues).
-
-Versionen bis einschließlich v1.1.0 wurden unter der MIT-Lizenz veröffentlicht.
