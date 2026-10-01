@@ -90,6 +90,11 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- 2026-10-01: Public on GitHub — https://github.com/moritzthln/20minTrack
+  (fresh repo, history rewritten to the noreply email, release v1.0.0,
+  one-line installer verified from the public URL). CI workflow kept
+  local only: token lacks `workflow` scope (`gh auth refresh -s workflow`).
+
 - Public release prep: English README + README.de.md with real
   screenshots (SnapshotMode, demo data), LICENSE (MIT), install.sh,
   CI workflow, issue templates, CHANGELOG; build.sh per-arch scratch
