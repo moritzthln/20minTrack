@@ -61,6 +61,6 @@ The app follows your system language (English/German). All data stays
 local on your Mac (no cloud, no account).
 EOF
 
-ditto -c -k --keepParent "$STAGE" dist/20minTrack.zip
+ditto -c -k --norsrc --keepParent "$STAGE" dist/20minTrack.zip
 rm -rf "$STAGE"
 echo "✓ Paket: dist/20minTrack.zip"
