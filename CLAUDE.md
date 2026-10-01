@@ -43,7 +43,7 @@ universal build). README screenshots come from `SnapshotMode`: launch
 the binary with `TWENTYMINTRACK_SNAPSHOT=<dir>` and it renders popover,
 stats tabs and settings off-screen into PNGs, then quits — run it
 against demo data (back up and restore the real defaults + data dir).
-Releases: `./package.sh` then `gh release create vX.Y.Z dist/20minTrack.zip`.
+Releases: `./release.sh X.Y.Z` (semver; needs entries under CHANGELOG [Unreleased]; bumps Info.plist, tags, publishes ZIP + .sha256). Every user-visible change gets a CHANGELOG [Unreleased] line.
 Sibling of `~/AI/Tools/Timer` — same house style.
 
 ## Tech stack (do NOT apply the workspace default stack here)

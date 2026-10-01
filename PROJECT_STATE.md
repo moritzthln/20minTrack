@@ -90,6 +90,10 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- Release process: release.sh (semver, Keep a Changelog, Info.plist bump,
+  annotated tag, ZIP + SHA-256), installer verifies checksum, app version
+  shown in Settings.
+
 - Contributor setup: CONTRIBUTING, SECURITY, PR template,
   issue config, .editorconfig; repo: Discussions, private vuln reporting,
   branch protection on main (PR + review for others, owner may bypass).

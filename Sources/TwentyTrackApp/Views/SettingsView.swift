@@ -30,6 +30,11 @@ struct SettingsView: View {
                 checkinSection
                 absenceSection
                 generalSection
+                Text(versionLine)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity)
             }
             .padding(16)
         }
@@ -309,6 +314,14 @@ struct SettingsView: View {
     }
 
     // MARK: - General
+
+    /// "20minTrack 1.2.0 (5)" — shown for bug reports.
+    private var versionLine: String {
+        let info = Bundle.main.infoDictionary
+        let version = info?["CFBundleShortVersionString"] as? String ?? "dev"
+        let build = info?["CFBundleVersion"] as? String ?? "0"
+        return "20minTrack \(version) (\(build))"
+    }
 
     private var generalSection: some View {
         VStack(alignment: .leading, spacing: 8) {

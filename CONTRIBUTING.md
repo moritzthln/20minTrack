@@ -39,7 +39,8 @@ More architecture notes: [`CLAUDE.md`](CLAUDE.md).
 2. **Logic goes into `TwentyCore` with tests first.** Add a suite file in `Tests/TwentyTrackTestRunner/` and register its run function in `main.swift`.
 3. Run `./test.sh` — all tests must pass — and `NO_INSTALL=1 ./build.sh` to make sure the universal build works.
 4. Try the change in the real app (`./build.sh` installs and you can launch it).
-5. Open a pull request against `main` and fill in the template. Screenshots are very welcome for UI changes.
+5. Add a line to `CHANGELOG.md` under **[Unreleased]** (Added / Changed / Fixed) for anything users will notice.
+6. Open a pull request against `main` and fill in the template. Screenshots are very welcome for UI changes.
 
 ### Commit messages
 
@@ -50,6 +51,10 @@ feat: add CSV export to the statistics window
 fix: keep the check-in window open after a partial save
 docs: explain absences in the README
 ```
+
+## Releases
+
+Maintainers cut releases with `./release.sh X.Y.Z` ([Semantic Versioning](https://semver.org/)): it bumps the app version, moves the *Unreleased* changelog entries into the new version, runs the tests, builds the universal ZIP plus a SHA-256 checksum, tags `vX.Y.Z` and publishes the GitHub release.
 
 ## Code style
 
