@@ -56,6 +56,10 @@ docs: explain absences in the README
 
 Maintainers cut releases with `./release.sh X.Y.Z` ([Semantic Versioning](https://semver.org/)): it bumps the app version, moves the *Unreleased* changelog entries into the new version, runs the tests, builds the universal ZIP plus a SHA-256 checksum, tags `vX.Y.Z` and publishes the GitHub release.
 
+## License of contributions
+
+20minTrack is licensed under [PolyForm Noncommercial 1.0.0](LICENSE). By opening a pull request you agree that your contribution is licensed under the same terms, and that the maintainer may also offer it under a commercial license.
+
 ## Code style
 
 - Swift + SwiftUI, match the surrounding code. 4-space indentation (see `.editorconfig`).

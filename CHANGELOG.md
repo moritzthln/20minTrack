@@ -6,6 +6,10 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- License changed from MIT to [PolyForm Noncommercial 1.0.0](LICENSE): free for personal and noncommercial use, commercial use not permitted. Releases up to v1.1.0 remain MIT.
+- The download ZIP now includes the license text.
+
 ## [1.1.0] - 2026-10-01
 
 ### Added

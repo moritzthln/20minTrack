@@ -12,7 +12,7 @@ One keystroke to answer, nothing ever slips through the cracks, and honest stati
 [![macOS 13+](https://img.shields.io/badge/macOS-13%2B-000000?logo=apple&logoColor=white)](#install)
 [![Universal](https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-universal-555555)](#install)
 [![Swift](https://img.shields.io/badge/Swift-SwiftUI-F05138?logo=swift&logoColor=white)](Package.swift)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue)](LICENSE)
 
 [**Install**](#install) · [Why](#how-is-this-different) · [Features](#features) · [How it works](#how-it-works) · [Privacy](#privacy) · [Contributing](#contributing) · [Deutsch](README.de.md)
 
@@ -49,7 +49,7 @@ There are three common ways to track time on a Mac — and each one leaves a hol
 | Forgotten time comes back to you instead of vanishing | ➖ | ➖ | ✅ |
 | Every minute of the day accounted for | ➖ | ➖ | ✅ |
 | Rates the *quality* of work (focus / half focus / distraction) | ➖ | guessed from the app | ✅ you decide |
-| Free and open source | some | ➖ | ✅ |
+| Free, source code public | some | ➖ | ✅ |
 | 100 % local, no account | some | some | ✅ |
 
 What only 20minTrack does, as far as we know:
@@ -260,4 +260,8 @@ Contributions are welcome — bug reports, ideas, translations and pull requests
 
 ## License
 
-[MIT](LICENSE) © Moritz Thelen
+[PolyForm Noncommercial 1.0.0](LICENSE) © Moritz Thelen
+
+Free for personal use, learning, research, and for schools, charities and other noncommercial organizations — use it, modify it, share it. **Commercial use is not permitted** (for example selling the app or a modified version, bundling it into a paid product, or rolling it out inside a company). For a commercial license, [open an issue](https://github.com/moritzthln/20minTrack/issues).
+
+Versions up to and including v1.1.0 were released under the MIT license.

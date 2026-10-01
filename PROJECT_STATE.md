@@ -90,6 +90,9 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- License → PolyForm Noncommercial 1.0.0 (Required Notice in LICENSE);
+  contributions licensed alike + commercial relicensing allowed (CONTRIBUTING).
+
 - Release process: release.sh (semver, Keep a Changelog, Info.plist bump,
   annotated tag, ZIP + SHA-256), installer verifies checksum, app version
   shown in Settings.
@@ -104,7 +107,7 @@ cheap nits hardened. 68 unit tests green. Installed to
   local only: token lacks `workflow` scope (`gh auth refresh -s workflow`).
 
 - Public release prep: English README + README.de.md with real
-  screenshots (SnapshotMode, demo data), LICENSE (MIT), install.sh,
+  screenshots (SnapshotMode, demo data), LICENSE (MIT, later PolyForm NC), install.sh,
   CI workflow, issue templates, CHANGELOG; build.sh per-arch scratch
   paths (fixes flaky universal build), bilingual browser permission text.
 
