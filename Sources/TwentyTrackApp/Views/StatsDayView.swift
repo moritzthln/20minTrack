@@ -285,13 +285,8 @@ struct StatsDayView: View {
             Text(loc("Tagesfazit", "Daily review"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            TextEditor(text: $fazitDraft)
-                .font(.body)
+            NotesEditor(text: $fazitDraft, font: .body)
                 .frame(minHeight: 64, maxHeight: 110)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(Color.primary.opacity(0.15), lineWidth: 1)
-                )
             HStack {
                 Spacer()
                 Button(loc("Fazit speichern", "Save review")) {

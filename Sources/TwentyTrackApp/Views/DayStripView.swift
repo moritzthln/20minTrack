@@ -99,20 +99,37 @@ struct DayStripView: View {
     private func hoverLabel(width: CGFloat) -> some View {
         if let index = dragRange.map({ $0.upperBound }) ?? hoverIndex,
            slots.indices.contains(index) {
-            let slotWidth = width / CGFloat(slots.count)
-            let labelWidth: CGFloat = 92
-            let x = min(max(CGFloat(index) * slotWidth - labelWidth / 2, 0), width - labelWidth)
-            Text(hoverText(fallbackIndex: index))
-                .font(.caption2)
+            let text = hoverText(fallbackIndex: index)
+            let labelWidth = Self.labelWidth(for: text)
+            // Centered over the slot (or the dragged span), clamped so it
+            // never runs past either end of the strip.
+            let center = hoverCenter(index: index, width: width)
+            let x = min(max(center - labelWidth / 2, 0), max(0, width - labelWidth))
+            Text(text)
+                .font(.caption2.weight(.medium))
                 .monospacedDigit()
-                .padding(.vertical, 1)
-                .padding(.horizontal, 5)
-                .background(Capsule().fill(.background.opacity(0.95)))
-                .overlay(Capsule().stroke(Color.primary.opacity(0.2), lineWidth: 0.5))
-                .frame(width: labelWidth)
-                .offset(x: x, y: -16)
+                .lineLimit(1)
+                .frame(width: labelWidth, height: 16)
+                .background(Capsule().fill(Color(nsColor: .windowBackgroundColor)))
+                .overlay(Capsule().stroke(Color.primary.opacity(0.25), lineWidth: 0.5))
+                .shadow(color: .black.opacity(0.25), radius: 2, y: 1)
+                .offset(x: x, y: -20)
                 .allowsHitTesting(false)
         }
+    }
+
+    /// "09:00–09:20" or a longer drag span — monospaced digits, so the
+    /// width follows the character count.
+    private static func labelWidth(for text: String) -> CGFloat {
+        CGFloat(text.count) * 6.4 + 14
+    }
+
+    private func hoverCenter(index: Int, width: CGFloat) -> CGFloat {
+        let slotWidth = width / CGFloat(max(slots.count, 1))
+        if let range = dragRange {
+            return (CGFloat(range.lowerBound) + CGFloat(range.count) / 2) * slotWidth
+        }
+        return (CGFloat(index) + 0.5) * slotWidth
     }
 
     private func hoverText(fallbackIndex index: Int) -> String {
@@ -169,11 +186,29 @@ struct DayStripView: View {
                 with: .color(.primary.opacity(0.85)), lineWidth: 1.5
             )
         }
-        if let now, let fraction = dayFraction(of: now) {
-            let x = fraction * size.width
-            let line = CGRect(x: x - 0.75, y: -1, width: 1.5, height: size.height + 2)
-            context.fill(Path(line), with: .color(.primary.opacity(0.75)))
+        if dragRange == nil, let hoverIndex, slots.indices.contains(hoverIndex) {
+            let rect = CGRect(
+                x: CGFloat(hoverIndex) * slotWidth - 0.5, y: -1,
+                width: slotWidth, height: size.height + 2
+            )
+            context.fill(Path(roundedRect: rect, cornerRadius: 2), with: .color(.white.opacity(0.25)))
+            context.stroke(Path(roundedRect: rect, cornerRadius: 2), with: .color(.primary.opacity(0.9)), lineWidth: 1.25)
         }
+        if let now, let fraction = dayFraction(of: now) {
+            drawNowLine(in: &context, x: fraction * size.width, height: size.height)
+        }
+    }
+
+    /// White line with a dark outline and a small cap: visible on every
+    /// label color and on untracked gray, in light and dark mode.
+    private func drawNowLine(in context: inout GraphicsContext, x: CGFloat, height: CGFloat) {
+        let outline = CGRect(x: x - 1.75, y: -2, width: 3.5, height: height + 4)
+        context.fill(Path(roundedRect: outline, cornerRadius: 1.75), with: .color(.black.opacity(0.55)))
+        let line = CGRect(x: x - 0.75, y: -1, width: 1.5, height: height + 2)
+        context.fill(Path(roundedRect: line, cornerRadius: 0.75), with: .color(.white))
+        let cap = CGRect(x: x - 3, y: -4, width: 6, height: 6)
+        context.fill(Path(ellipseIn: cap), with: .color(.black.opacity(0.55)))
+        context.fill(Path(ellipseIn: cap.insetBy(dx: 1, dy: 1)), with: .color(.white))
     }
 
     private func color(for slot: DateInterval) -> Color {

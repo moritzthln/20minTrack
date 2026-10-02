@@ -12,13 +12,8 @@ struct FazitView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text(loc("Tagesfazit", "Daily review"))
                 .font(.headline)
-            TextEditor(text: $text)
-                .font(.body)
+            NotesEditor(text: $text, font: .body)
                 .frame(height: 96)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(Color.primary.opacity(0.15), lineWidth: 1)
-                )
             HStack {
                 Spacer()
                 Button(loc("Abbrechen", "Cancel"), action: onCancel)
