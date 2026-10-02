@@ -35,13 +35,11 @@ struct PopoverRootView: View {
             Text(loc("Tagesfazit / Notizen", "Daily review / notes"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            TextEditor(text: $fazitDraft)
-                .font(.callout)
+            NotesEditor(
+                text: $fazitDraft,
+                placeholder: loc("Wie läuft der Tag?", "How is the day going?")
+            )
                 .frame(height: 54)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(Color.primary.opacity(0.12), lineWidth: 1)
-                )
                 .onChange(of: fazitDraft) { model.saveFazitLive($0) }
         }
         .onAppear { fazitDraft = model.todayFazit }
