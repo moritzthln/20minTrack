@@ -114,6 +114,8 @@ final class StatusBarController: NSObject {
             model: viewModel, onClosePopover: {}, onOpenStats: {}, onOpenSettings: {}
         ))
         SnapshotMode.present([
+            .init(name: "checkin", title: loc("Check-in", "Check-in"), size: NSSize(width: 560, height: 0),
+                  view: AnyView(CheckinWindowRootView(model: viewModel, onDone: {}))),
             .init(name: "popover", title: nil, size: NSSize(width: 540, height: 0), view: popoverView),
             .init(name: "stats-day", title: loc("Statistik", "Statistics"), size: NSSize(width: 520, height: 860), view: stats("day")),
             .init(name: "stats-week", title: loc("Statistik", "Statistics"), size: NSSize(width: 520, height: 860), view: stats("week")),
@@ -324,8 +326,5 @@ final class StatusBarController: NSObject {
         // built against the Xcode 26 SDK — build.sh pins the CLT
         // toolchain instead of papering over it here.
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-        // Key right away so the popover's ⌘, / ⌘I buttons respond
-        // without clicking into it first (the app itself stays inactive).
-        popover.contentViewController?.view.window?.makeKey()
     }
 }

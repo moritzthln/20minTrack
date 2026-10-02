@@ -38,7 +38,7 @@ More architecture notes: [`CLAUDE.md`](CLAUDE.md).
 1. Fork the repo and create a branch: `feat/<name>`, `fix/<name>` or `docs/<name>`.
 2. **Logic goes into `TwentyCore` with tests first.** Add a suite file in `Tests/TwentyTrackTestRunner/` and register its run function in `main.swift`.
 3. Run `./test.sh` — all tests must pass — and `NO_INSTALL=1 ./build.sh` to make sure the universal build works.
-4. Try the change in the real app (`./build.sh` installs and you can launch it).
+4. Try the change in the real app (`./build.sh` installs and you can launch it). If the UI changed visibly, refresh the README screenshots with `./Scripts/render_screenshots.sh` (uses demo data, restores yours afterwards).
 5. Add a line to `CHANGELOG.md` under **[Unreleased]** (Added / Changed / Fixed) for anything users will notice.
 6. Open a pull request against `main` and fill in the template. Screenshots are very welcome for UI changes.
 

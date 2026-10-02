@@ -14,4 +14,4 @@
 - [ ] User-facing strings use `loc(german, english)`
 - [ ] Files ≤ 800 lines, functions ≤ 80 lines
 - [ ] `CHANGELOG.md` updated under [Unreleased] (if users will notice)
-- [ ] Screenshots attached (for UI changes)
+- [ ] Screenshots attached and `./Scripts/render_screenshots.sh` run (for UI changes)
