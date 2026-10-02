@@ -80,7 +80,7 @@ Your last label is preselected — <kbd>Return</kbd> saves. <kbd>⌘1</kbd>–<k
 Mac asleep? In a meeting? Missed blocks collapse into **one pending range** that's asked about next time. Split it with *From / until*, fill it piece by piece — the window stays until everything is covered. *Later* postpones, but never drops time.
 
 ### 🧠 A memory aid built in
-"Used during this time: Xcode 21 min · github.com 9 min" — the apps (and browser sites) you used in the block are listed right in the check-in, so you never have to guess.
+"Used during this time: Xcode 21 min · github.com 9 min" — the apps (and browser sites) you used in the block are listed right in the check-in, optionally next to your calendar events, so you never have to guess.
 
 </td>
 <td width="50%" valign="top">
@@ -192,6 +192,8 @@ Everything stays on your Mac. No account, no cloud, no analytics, no network req
 | Entries and daily reviews | `~/Library/Application Support/20minTrack/days/YYYY-MM-DD.json` |
 | App usage (memory aid) | `~/Library/Application Support/20minTrack/usage/YYYY-MM-DD.json` |
 | Settings | `~/Library/Preferences/com.moritzthelen.twentymintrack.plist` |
+
+**Calendar hints are optional** (Settings → Calendar): with your permission, events overlapping a block are shown in the check-in as a reminder. Read-only, nothing leaves your Mac, and events never become entries on their own.
 
 The usage list records which app is frontmost. For Safari, Chrome and Arc it can also show the website domain — macOS asks once per browser for permission, and you can simply decline. The data files are plain JSON, so they're easy to back up, sync yourself, or analyze.
 

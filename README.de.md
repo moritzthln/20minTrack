@@ -61,7 +61,7 @@ Es gibt drei übliche Arten, Zeit auf dem Mac zu tracken — und jede hat eine L
 
 - **Check-in mit einer Taste** — das letzte Label ist vorausgewählt, <kbd>Enter</kbd> speichert. <kbd>⌘1</kbd>–<kbd>⌘9</kbd> und <kbd>⌘0</kbd> wählen ein Label und speichern sofort. Zwei Labels gewählt = der Block wird 10/10 aufgeteilt.
 - **Keine Lücken** — Mac zugeklappt, im Meeting? Verpasste Blöcke werden zu **einem offenen Zeitraum**, der beim nächsten Mal abgefragt wird. Mit *Von / bis* stückweise ausfüllen; das Fenster bleibt, bis alles erfasst ist. *Später* verschiebt, verwirft aber nie.
-- **Gedächtnisstütze** — „In dieser Zeit benutzt: Xcode 21 min · github.com 9 min" steht direkt im Check-in.
+- **Gedächtnisstütze** — „In dieser Zeit benutzt: Xcode 21 min · github.com 9 min" steht direkt im Check-in, optional zusammen mit deinen Kalenderterminen (nur lesend).
 - **Ehrliche Statistik** — Tag, Woche, Monat, Jahr: Fokuszeit, Fokus-Quote, Ablenkung, Balken pro Label, klickbare Tagesstreifen zum Nachtragen. Ab vorgestern zählt Unerfasstes als Ablenkung.
 - **Tagesziele** pro Label (z. B. 4 h 30 min Fokus, 8 h Schlaf) mit Fortschrittsbalken.
 - **Tagesfazit** — Erinnerung am Abend; verpasst, kommt morgens um 9:30 noch einmal.

@@ -10,7 +10,10 @@ struct StatsWeekView: View {
     @State private var anchorDay = Date()
     @State private var entriesByDay: [Date: [Entry]] = [:]
     @State private var fazitByDay: [Date: String] = [:]
-    @State private var chartLabelID = "focus-mma"
+    /// "all" = stacked composition of every label; a label id = that
+    /// label's bars with its goal line.
+    @State private var chartLabelID = "all"
+    @State private var chartIncludesSleep = false
 
     private var weekDays: [Date] {
         StatsMath.weekDays(containing: anchorDay, calendar: calendar)
@@ -84,9 +87,6 @@ struct StatsWeekView: View {
                     days: weekDays, absences: preferences.absences, calendar: calendar
                 )
                 GoalsSection(labels: preferences.labels, totals: totals, goalMultiplier: 7)
-                WeekCompositionChart(
-                    days: compositions, labels: preferences.labels, labelsByID: labelsByID
-                )
                 chartSection
                 dayRows
                 LabelTotalsList(
@@ -129,13 +129,33 @@ struct StatsWeekView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Picker("", selection: $chartLabelID) {
+                    Text(loc("Alle Labels", "All labels")).tag("all")
+                    Divider()
                     ForEach(preferences.activeLabels) { label in
                         Text(label.name).tag(label.id)
                     }
                 }
                 .labelsHidden()
                 .fixedSize()
+                Spacer()
+                if chartLabelID == "all" {
+                    Toggle(loc("Schlaf zeigen", "Show sleep"), isOn: $chartIncludesSleep)
+                        .toggleStyle(.checkbox)
+                        .font(.caption)
+                }
             }
+            if chartLabelID == "all" {
+                WeekCompositionChart(
+                    days: compositions, labels: preferences.labels,
+                    labelsByID: labelsByID, includeSleep: chartIncludesSleep
+                )
+            } else {
+                labelChart
+            }
+        }
+    }
+
+    private var labelChart: some View {
             LabelBarChart(
                 values: weekDays.map { day in
                     (day, StatsMath.totals(entriesByDay[day] ?? [])[chartLabelID] ?? 0)
@@ -145,7 +165,6 @@ struct StatsWeekView: View {
                 showValues: true,
                 axisLabel: { day, _ in weekdayShort(day) }
             )
-        }
     }
 
     /// The week's daily conclusions — the written review in one place.

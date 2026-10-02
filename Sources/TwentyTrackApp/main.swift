@@ -23,6 +23,10 @@ app.setActivationPolicy(.accessory)
 let mainMenu = NSMenu()
 let appMenuItem = NSMenuItem()
 let appMenu = NSMenu()
+for (title, selector, key) in AppMenuActions.items(paused: false) {
+    appMenu.addItem(NSMenuItem(title: title, action: selector, keyEquivalent: key))
+}
+appMenu.addItem(.separator())
 appMenu.addItem(
     NSMenuItem(
         title: loc("20minTrack beenden", "Quit 20minTrack"),

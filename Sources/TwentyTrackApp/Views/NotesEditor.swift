@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Multi-line notes field on a light "paper" surface with dark text —
-/// in light and dark appearance alike, so it reads as one clearly
-/// defined writing area instead of a black hole in a dark popover.
+/// Multi-line notes field on a soft surface that follows the appearance:
+/// slightly lifted from the background with a fine border, instead of
+/// TextEditor's default solid black fill in dark mode.
 struct NotesEditor: View {
     @Binding var text: String
     var font: Font = .callout
@@ -24,11 +24,8 @@ struct NotesEditor: View {
                     .allowsHitTesting(false)
             }
         }
-        // The forced light scheme gives dark text, a dark caret and a
-        // matching selection color on the light surface.
-        .environment(\.colorScheme, .light)
-        .background(RoundedRectangle(cornerRadius: 7).fill(Color(white: 0.975)))
-        .overlay(RoundedRectangle(cornerRadius: 7).stroke(Color.black.opacity(0.18), lineWidth: 1))
+        .background(RoundedRectangle(cornerRadius: 7).fill(Color.primary.opacity(0.06)))
+        .overlay(RoundedRectangle(cornerRadius: 7).stroke(Color.primary.opacity(0.12), lineWidth: 1))
         .clipShape(RoundedRectangle(cornerRadius: 7))
     }
 }

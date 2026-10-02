@@ -28,6 +28,7 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 18) {
                 labelsSection
                 checkinSection
+                CalendarSettingsSection(preferences: preferences)
                 absenceSection
                 generalSection
                 Text(versionLine)
@@ -38,7 +39,7 @@ struct SettingsView: View {
             }
             .padding(16)
         }
-        .frame(width: 380, height: 560)
+        .frame(minWidth: 380, maxWidth: .infinity, minHeight: 480, maxHeight: .infinity)
         .onAppear(perform: load)
         // Keep in sync when e.g. the popover menu toggles the pause.
         .onReceive(
