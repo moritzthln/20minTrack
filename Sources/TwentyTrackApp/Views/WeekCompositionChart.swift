@@ -18,8 +18,8 @@ struct WeekCompositionChart: View {
     let days: [WeekDayComposition]
     let labels: [TrackLabel]
     let labelsByID: [String: TrackLabel]
+    let includeSleep: Bool
 
-    @State private var includeSleep = false
     @State private var hoveredDay: String?
 
     private struct Segment: Identifiable {
@@ -45,19 +45,7 @@ struct WeekCompositionChart: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text(loc("Woche im Überblick", "Week at a glance"))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Toggle(loc("Schlaf zeigen", "Show sleep"), isOn: $includeSleep)
-                    .toggleStyle(.checkbox)
-                    .font(.caption)
-            }
-            chart
-                .frame(height: 170)
-        }
+        chart.frame(height: 170)
     }
 
     private var chart: some View {

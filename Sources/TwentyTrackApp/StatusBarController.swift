@@ -17,8 +17,7 @@ final class StatusBarController: NSObject {
     private let viewModel: TrackerViewModel
     private let scheduler: BoundaryScheduler
     private let usageTracker: AppUsageTracker
-    private let statsController: StatsWindowController
-    private let settingsController: SettingsWindowController
+    private let mainWindow: MainWindowController
     private let checkinWindowController: CheckinWindowController
     private let fazitWindowController: FazitWindowController
     /// The day the evening Fazit prompt already fired (or was settled).
@@ -45,14 +44,15 @@ final class StatusBarController: NSObject {
             usageStore: usageStore, calendar: calendar
         )
         self.scheduler = BoundaryScheduler(calendar: calendar)
-        self.statsController = StatsWindowController(
-            dayStore: dayStore, preferences: preferences, calendar: calendar,
-            usageFor: { [weak usageTracker] range in
-                usageTracker?.flush()
-                return usageStore.totals(in: range)
-            }
-        )
-        self.settingsController = SettingsWindowController(preferences: preferences)
+        self.mainWindow = MainWindowController(preferences: preferences) { [weak usageTracker] in
+            StatsView(
+                dayStore: dayStore, preferences: preferences, calendar: calendar,
+                usageFor: { range in
+                    usageTracker?.flush()
+                    return usageStore.totals(in: range)
+                }
+            )
+        }
         self.checkinWindowController = CheckinWindowController(viewModel: viewModel)
         self.fazitWindowController = FazitWindowController(viewModel: viewModel)
         super.init()
@@ -269,8 +269,29 @@ final class StatusBarController: NSObject {
         }
     }
 
+    // MARK: - Navigation (also reached via the app menu shortcuts)
+
+    func openStatistics() {
+        popover.performClose(nil)
+        mainWindow.show(.statistics)
+    }
+
+    func openSettings() {
+        popover.performClose(nil)
+        mainWindow.show(.settings)
+    }
+
+    func togglePause() {
+        viewModel.togglePause()
+        refresh()
+    }
+
     private func showContextMenu() {
         let menu = NSMenu()
+        for (title, selector, key) in AppMenuActions.items(paused: preferences.trackingPaused) {
+            menu.addItem(NSMenuItem(title: title, action: selector, keyEquivalent: key))
+        }
+        menu.addItem(.separator())
         menu.addItem(NSMenuItem(
             title: loc("20minTrack beenden", "Quit 20minTrack"),
             action: #selector(NSApplication.terminate(_:)),
@@ -292,16 +313,19 @@ final class StatusBarController: NSObject {
             },
             onOpenStats: { [weak self] in
                 self?.popover.performClose(nil)
-                self?.statsController.show()
+                self?.openStatistics()
             },
             onOpenSettings: { [weak self] in
                 self?.popover.performClose(nil)
-                self?.settingsController.show()
+                self?.openSettings()
             }
         ))
         // Same call as the Timer app. Positioning misbehaves only when
         // built against the Xcode 26 SDK — build.sh pins the CLT
         // toolchain instead of papering over it here.
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        // Key right away so the popover's ⌘, / ⌘I buttons respond
+        // without clicking into it first (the app itself stays inactive).
+        popover.contentViewController?.view.window?.makeKey()
     }
 }

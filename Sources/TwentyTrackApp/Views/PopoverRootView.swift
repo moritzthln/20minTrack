@@ -27,6 +27,20 @@ struct PopoverRootView: View {
         }
         .padding(16)
         .frame(width: 540)
+        .background(shortcutButtons)
+    }
+
+    /// Invisible buttons carrying ⌘I / ⌘,. The popover is key while
+    /// the app stays inactive, so neither the app menu nor the "…" menu
+    /// (whose shortcuts only fire while it is open) would receive them.
+    private var shortcutButtons: some View {
+        ZStack {
+            Button("", action: onOpenStats).keyboardShortcut("i")
+            Button("", action: onOpenSettings).keyboardShortcut(",")
+        }
+        .frame(width: 0, height: 0)
+        .opacity(0)
+        .accessibilityHidden(true)
     }
 
     /// Always-visible daily notes, saved live on every keystroke.
@@ -152,14 +166,18 @@ struct PopoverRootView: View {
 
     private var footer: some View {
         HStack(spacing: 14) {
-            footerButton("chart.bar", help: loc("Statistik", "Statistics"), action: onOpenStats)
+            footerButton("chart.bar", help: loc("Statistik (⌘I)", "Statistics (⌘I)"), action: onOpenStats)
             muteMenu
             Spacer()
             Menu {
+                Button(loc("Statistik", "Statistics"), action: onOpenStats)
+                    .keyboardShortcut("i")
+                Button(loc("Einstellungen…", "Settings…"), action: onOpenSettings)
+                    .keyboardShortcut(",")
+                Divider()
                 Button(model.preferences.trackingPaused ? loc("Tracking fortsetzen", "Resume tracking") : loc("Tracking pausieren", "Pause tracking")) {
                     model.togglePause()
                 }
-                Button(loc("Einstellungen…", "Settings…"), action: onOpenSettings)
                 Divider()
                 Button(loc("20minTrack beenden", "Quit 20minTrack")) { NSApp.terminate(nil) }
             } label: {
