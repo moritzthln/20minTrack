@@ -6,6 +6,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-02
+
 ### Added
 - Week chart "All labels" (now the default): one stacked bar per day showing how it was composed, with exact durations on hover. Picking a single label still shows its bars and goal line. ([#2](https://github.com/moritzthln/20minTrack/issues/2))
 - Statistics and Settings share one window with toolbar tabs — closing it never leaves a stray window behind. ([#3](https://github.com/moritzthln/20minTrack/issues/3))
@@ -44,5 +46,6 @@ First public release.
 - English and German UI.
 - Universal binary (Apple Silicon + Intel), macOS 13+.
 
-[Unreleased]: https://github.com/moritzthln/20minTrack/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/moritzthln/20minTrack/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/moritzthln/20minTrack/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/moritzthln/20minTrack/releases/tag/v1.1.1

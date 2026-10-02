@@ -17,17 +17,19 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.1</string>
+	<string>1.2.0</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>LSUIElement</key>
 	<true/>
-	<key>NSCalendarsUsageDescription</key><string>20minTrack shows your calendar events next to the 20-minute blocks as a reminder of what happened. It only reads them and never changes your calendar. — 20minTrack zeigt deine Termine neben den 20-Minuten-Blöcken als Erinnerung. Nur lesend, dein Kalender wird nie verändert.</string>
-	<key>NSCalendarsFullAccessUsageDescription</key><string>20minTrack shows your calendar events next to the 20-minute blocks as a reminder of what happened. It only reads them and never changes your calendar. — 20minTrack zeigt deine Termine neben den 20-Minuten-Blöcken als Erinnerung. Nur lesend, dein Kalender wird nie verändert.</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>20minTrack reads the address of the active browser tab to list websites individually in the usage list. — 20minTrack liest die Adresse des aktiven Browser-Tabs, um Websites in der Benutzt-Liste einzeln zu zeigen.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>20minTrack shows your calendar events next to the 20-minute blocks as a reminder of what happened. It only reads them and never changes your calendar. — 20minTrack zeigt deine Termine neben den 20-Minuten-Blöcken als Erinnerung. Nur lesend, dein Kalender wird nie verändert.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>20minTrack shows your calendar events next to the 20-minute blocks as a reminder of what happened. It only reads them and never changes your calendar. — 20minTrack zeigt deine Termine neben den 20-Minuten-Blöcken als Erinnerung. Nur lesend, dein Kalender wird nie verändert.</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
 </dict>
