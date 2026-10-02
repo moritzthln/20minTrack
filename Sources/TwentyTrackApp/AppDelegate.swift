@@ -29,13 +29,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-/// Statistics (⌘I) / Settings (⌘,) / Pause (deliberately no shortcut —
-/// like ⌘Q, a reflexive keystroke must never stop tracking) — shared by the
-/// hidden app menu (where the shortcuts live) and the status item menu.
+/// Statistics / Settings / Pause — shared by the hidden app menu and the
+/// status item menu. Only Settings carries the standard ⌘, (it works while
+/// one of the app's windows is key); Pause deliberately has no shortcut —
+/// like ⌘Q, a reflexive keystroke must never stop tracking.
 enum AppMenuActions {
     static func items(paused: Bool) -> [(String, Selector, String)] {
         [
-            (loc("Statistik", "Statistics"), #selector(AppDelegate.openStatistics(_:)), "i"),
+            (loc("Statistik", "Statistics"), #selector(AppDelegate.openStatistics(_:)), ""),
             (loc("Einstellungen…", "Settings…"), #selector(AppDelegate.openSettings(_:)), ","),
             (paused ? loc("Tracking fortsetzen", "Resume tracking") : loc("Tracking pausieren", "Pause tracking"),
              #selector(AppDelegate.togglePause(_:)), ""),

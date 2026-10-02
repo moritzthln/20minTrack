@@ -90,6 +90,11 @@ cheap nits hardened. 68 unit tests green. Installed to
 
 ## Recently Done
 
+- v1.2.0: issues #1–#4 (notes surface, day-strip hover, single week chart
+  with All-labels default, unified Statistics/Settings window, calendar
+  hints). Popover shortcuts removed again (didn't fire). Screenshot
+  pipeline: Scripts/render_screenshots.sh + demo_data.py.
+
 - Removed the MIT-licensed releases v1.0.0/v1.1.0 (+ tags; only my own
   test downloads) and the MIT notes in README/CHANGELOG — v1.1.1 is the
   first offered release.

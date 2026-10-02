@@ -6,6 +6,9 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Removed
+- The ⌘I / ⌘, shortcuts in the menu bar popover — they didn't fire reliably there. ⌘, still works inside the Statistics/Settings window.
+
 ## [1.2.0] - 2026-10-02
 
 ### Added

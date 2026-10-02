@@ -39,10 +39,13 @@ prompt takes over, absent days and days without entries never prompt,
 same mute/Focus gates, `FazitWindowController.show(catchupFor:)`).
 Public on GitHub (moritzthln/20minTrack, PolyForm Noncommercial 1.0.0 — no commercial use): English README.md +
 README.de.md, install.sh one-liner (latest release ZIP), CI (tests +
-universal build). README screenshots come from `SnapshotMode`: launch
-the binary with `TWENTYMINTRACK_SNAPSHOT=<dir>` and it renders popover,
-stats tabs and settings off-screen into PNGs, then quits — run it
-against demo data (back up and restore the real defaults + data dir).
+universal build). README screenshots: **after every visible UI change run
+`./Scripts/render_screenshots.sh`** (after `./build.sh`) and commit
+docs/images/ with the change — the user wants them always current. It
+backs up the real defaults + data dir, writes demo data
+(`Scripts/demo_data.py`), renders check-in, popover, stats tabs and
+settings off-screen via `SnapshotMode` (`TWENTYMINTRACK_SNAPSHOT=<dir>`),
+strips PNG metadata and always restores the real data (trap on exit).
 Releases: `./release.sh X.Y.Z` (semver; needs entries under CHANGELOG [Unreleased]; bumps Info.plist, tags, publishes ZIP + .sha256). Every user-visible change gets a CHANGELOG [Unreleased] line.
 Sibling of `~/AI/Tools/Timer` — same house style.
 
