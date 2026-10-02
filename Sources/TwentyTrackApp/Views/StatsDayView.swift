@@ -78,6 +78,7 @@ struct StatsDayView: View {
                 calendar: calendar,
                 preselectedLabelID: preferences.lastLabelID,
                 usageFor: usageFor,
+                eventsFor: { CalendarHints.current(in: $0, preferences: preferences) },
                 onSave: { start, end, labelID, secondLabelID, text in
                     for id in target.existingIDs {
                         dayStore.remove(id: id, onDay: day)

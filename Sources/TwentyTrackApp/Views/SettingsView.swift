@@ -28,6 +28,7 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 18) {
                 labelsSection
                 checkinSection
+                CalendarSettingsSection(preferences: preferences)
                 absenceSection
                 generalSection
                 Text(versionLine)

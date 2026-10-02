@@ -14,6 +14,7 @@ struct CheckinView: View {
     let lastText: String?
     let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
+    var eventsFor: (DateInterval) -> [CalendarEventInfo] = { _ in [] }
     let onSave: (
         _ from: Date, _ to: Date, _ labelID: String,
         _ secondLabelID: String?, _ text: String
@@ -26,6 +27,7 @@ struct CheckinView: View {
     /// Ordered, max two: [primary] or [primary, second] (10/10 split).
     @State private var selection: [String] = []
     @State private var usage: [AppUsageTotal] = []
+    @State private var events: [CalendarEventInfo] = []
     @FocusState private var textFocused: Bool
 
     /// Selectable span starts: every boundary in the window except its end.
@@ -68,6 +70,7 @@ struct CheckinView: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
+            CalendarHintsView(events: events, calendar: calendar)
             UsageLineView(usage: usage)
             TextField(loc("Kurz notieren… (optional)", "Quick note… (optional)"), text: $text)
                 .textFieldStyle(.roundedBorder)
@@ -182,6 +185,7 @@ struct CheckinView: View {
     private func reloadUsage() {
         guard effectiveTo > effectiveFrom else { return }
         usage = usageFor(DateInterval(start: effectiveFrom, end: effectiveTo))
+        events = eventsFor(DateInterval(start: effectiveFrom, end: effectiveTo))
     }
 
     /// Saves the current chip selection (one label, or two split 10/10)

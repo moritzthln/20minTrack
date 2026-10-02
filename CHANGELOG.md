@@ -9,6 +9,7 @@ and the project uses [Semantic Versioning](https://semver.org/).
 ### Added
 - Week chart "All labels" (now the default): one stacked bar per day showing how it was composed, with exact durations on hover. Picking a single label still shows its bars and goal line. ([#2](https://github.com/moritzthln/20minTrack/issues/2))
 - Statistics and Settings share one window with toolbar tabs — closing it never leaves a stray window behind. ([#3](https://github.com/moritzthln/20minTrack/issues/3))
+- Calendar hints (opt-in, Settings → Calendar): events that overlap a block appear in the check-in and the block editor as a reminder — read-only, local, never turned into entries. Choose which calendars to use. ([#4](https://github.com/moritzthln/20minTrack/issues/4))
 - Shortcuts: ⌘, opens Settings, ⌘I opens Statistics (popover, status item menu, app menu). Pausing deliberately has no shortcut, like Quit.
 
 ### Changed

@@ -21,6 +21,8 @@ public final class Preferences {
         case fazitPromptEnabled
         case fazitPromptMinute
         case absences
+        case calendarHintsEnabled
+        case calendarIDs
     }
 
     // MARK: - Labels
@@ -178,6 +180,19 @@ public final class Preferences {
     }
 
     /// Suppress prompts while a macOS Focus mode is active (default on).
+    /// Show overlapping calendar events in the check-in (opt-in — needs
+    /// calendar access).
+    public var calendarHintsEnabled: Bool {
+        get { defaults.bool(forKey: Key.calendarHintsEnabled.rawValue) }
+        set { defaults.set(newValue, forKey: Key.calendarHintsEnabled.rawValue) }
+    }
+
+    /// Calendars to read hints from; empty = all calendars.
+    public var calendarIDs: [String] {
+        get { defaults.stringArray(forKey: Key.calendarIDs.rawValue) ?? [] }
+        set { defaults.set(newValue, forKey: Key.calendarIDs.rawValue) }
+    }
+
     public var suppressDuringFocus: Bool {
         get {
             guard defaults.object(forKey: Key.suppressDuringFocus.rawValue) != nil else { return true }

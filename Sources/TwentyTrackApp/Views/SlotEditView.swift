@@ -10,6 +10,7 @@ struct SlotEditView: View {
     let calendar: Calendar
     let preselectedLabelID: String?
     let usageFor: (DateInterval) -> [AppUsageTotal]
+    var eventsFor: (DateInterval) -> [CalendarEventInfo] = { _ in [] }
     let onSave: (
         _ start: Date, _ end: Date, _ labelID: String,
         _ secondLabelID: String?, _ text: String
@@ -23,6 +24,7 @@ struct SlotEditView: View {
     /// Ordered, max two: [primary] or [primary, second] (10/10 split).
     @State private var selection: [String] = []
     @State private var usage: [AppUsageTotal] = []
+    @State private var events: [CalendarEventInfo] = []
 
     private var dayBoundaries: [Date] {
         let dayStart = calendar.startOfDay(for: day)
@@ -44,6 +46,7 @@ struct SlotEditView: View {
                 timePicker(selection: $to, options: toOptions)
             }
             .font(.caption)
+            CalendarHintsView(events: events, calendar: calendar)
             UsageLineView(usage: usage)
             TextField(loc("Kurz notieren… (optional)", "Quick note… (optional)"), text: $text)
                 .textFieldStyle(.roundedBorder)
@@ -101,9 +104,11 @@ struct SlotEditView: View {
     private func reloadUsage() {
         guard to > from else {
             usage = []
+            events = []
             return
         }
         usage = usageFor(DateInterval(start: from, end: to))
+        events = eventsFor(DateInterval(start: from, end: to))
     }
 
     private func save() {
