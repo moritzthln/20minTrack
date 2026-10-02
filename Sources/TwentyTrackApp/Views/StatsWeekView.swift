@@ -36,21 +36,39 @@ struct StatsWeekView: View {
     private var attribution: (totals: [String: TimeInterval], untracked: TimeInterval) {
         var totals: [String: TimeInterval] = [:]
         var untracked: TimeInterval = 0
-        let now = Date()
-        for day in weekDays where day <= now {
-            let result = DayAttribution.totals(
-                day: day, entries: entriesByDay[day] ?? [], now: now,
-                calendar: calendar, distractionLabelID: "no-focus",
-                isAbsent: AbsenceRules.isAbsent(
-                    day: day, in: preferences.absences, calendar: calendar
-                )
-            )
+        for day in weekDays {
+            guard let result = dayAttribution(day) else { continue }
             for (id, seconds) in result.totals {
                 totals[id, default: 0] += seconds
             }
             untracked += result.untracked
         }
         return (totals, untracked)
+    }
+
+    /// Attributed totals of one day; nil for days still in the future.
+    private func dayAttribution(_ day: Date) -> (totals: [String: TimeInterval], untracked: TimeInterval)? {
+        let now = Date()
+        guard day <= now else { return nil }
+        return DayAttribution.totals(
+            day: day, entries: entriesByDay[day] ?? [], now: now,
+            calendar: calendar, distractionLabelID: "no-focus",
+            isAbsent: isAbsent(day)
+        )
+    }
+
+    private func isAbsent(_ day: Date) -> Bool {
+        AbsenceRules.isAbsent(day: day, in: preferences.absences, calendar: calendar)
+    }
+
+    private var compositions: [WeekDayComposition] {
+        weekDays.map { day in
+            WeekDayComposition(
+                id: day, shortName: weekdayShort(day),
+                totals: dayAttribution(day)?.totals ?? [:],
+                isAbsent: isAbsent(day)
+            )
+        }
     }
 
     private var totals: [String: TimeInterval] {
@@ -66,6 +84,9 @@ struct StatsWeekView: View {
                     days: weekDays, absences: preferences.absences, calendar: calendar
                 )
                 GoalsSection(labels: preferences.labels, totals: totals, goalMultiplier: 7)
+                WeekCompositionChart(
+                    days: compositions, labels: preferences.labels, labelsByID: labelsByID
+                )
                 chartSection
                 dayRows
                 LabelTotalsList(
