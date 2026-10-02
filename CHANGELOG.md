@@ -6,6 +6,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-02
+
 ### Removed
 - The ⌘I / ⌘, shortcuts in the menu bar popover — they didn't fire reliably there. ⌘, still works inside the Statistics/Settings window.
 
@@ -49,6 +51,7 @@ First public release.
 - English and German UI.
 - Universal binary (Apple Silicon + Intel), macOS 13+.
 
-[Unreleased]: https://github.com/moritzthln/20minTrack/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/moritzthln/20minTrack/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/moritzthln/20minTrack/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/moritzthln/20minTrack/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/moritzthln/20minTrack/releases/tag/v1.1.1
