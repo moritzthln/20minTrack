@@ -150,6 +150,7 @@ fixes that, remove the pin in `build.sh` + `test.sh` together.
 ## Conventions
 
 - UI strings German, code/comments/commits English
+- Personal tool UX: design the one-interaction path first (preselect the last value, Enter/one click, free text optional); no automation that guesses or fills in data (offer it only as a switchable suggestion); no silent data loss ("Later" instead of "Skip"). "An app like X" means X's platform and build style.
 - Specs: `docs/superpowers/specs/2026-08-09-20mintrack-design.md` (v1),
   `docs/superpowers/specs/2026-08-09-20mintrack-v2-design.md` (v2)
 - Plan: `docs/superpowers/plans/2026-08-09-20mintrack-implementation.md`
